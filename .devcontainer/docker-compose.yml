@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: dab start -c './src/dab-config.json'
+    command: sleep infinity
     volumes:
       - "../..:/workspaces:cached"
 
