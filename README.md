@@ -47,3 +47,8 @@ POST http://localhost:5000/api/Room
 	"Encounter": "Roll a D6. 1-4= an artisan is here. You must fight them. If you survive roll on TCT1",
 	"Description": "Large blocks of stone scatter the space, iron..."
 }
+
+
+
+
+docker run -it -v "C:\dev\github\fboucher\2d6-dungeon-app\src\:/App/configs" -p 5000:5000 mcr.microsoft.com/azure-databases/data-api-builder:latest --ConfigFileName ./configs/dab-config.json
