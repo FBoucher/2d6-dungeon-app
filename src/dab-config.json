@@ -11,9 +11,7 @@
       "path": "/api"
     },
     "graphql": {
-      "enabled": true,
-      "path": "/graphql",
-      "allow-introspection": true
+      "enabled": false
     },
     "host": {
       "cors": {
@@ -30,20 +28,10 @@
     }
   },
   "entities": {
-    "Room": {
+    "room": {
       "source": {
-        "object": "Rooms",
-        "type": "table",
-        "key-fields": [
-          "RoomID"
-        ]
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "Room",
-          "plural": "Rooms"
-        }
+        "object": "rooms",
+        "type": "table"
       },
       "rest": {
         "enabled": true
@@ -68,20 +56,10 @@
         }
       ]
     },
-    "BodySearch": {
+    "bodySearch": {
       "source": {
-        "object": "BodySearch",
-        "type": "table",
-        "key-fields": [
-          "BodySearchID"
-        ]
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "BodySearch",
-          "plural": "BodySearches"
-        }
+        "object": "body_searches",
+        "type": "table"
       },
       "rest": {
         "enabled": true

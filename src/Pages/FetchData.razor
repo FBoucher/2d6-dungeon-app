@@ -25,10 +25,10 @@ else
             @foreach (var room in rooms.value)
             {
                 <tr>
-                    <td>@room.Roll</td>
-                    <td>@room.RoomType</td>
-                    <td>@room.Description</td>
-                    <td>@room.Encounter</td>
+                    <td>@room.roll.ToString()</td>
+                    <td>@room.room_type</td>
+                    <td>@room.description</td>
+                    <td>@room.encounter</td>
                 </tr>
             }
         </tbody>
@@ -43,7 +43,7 @@ else
         Console.WriteLine("strating");
 
         try{
-            rooms = await Http.GetFromJsonAsync<RoomList>("http://localhost:5000/api/Room");
+            rooms = await Http.GetFromJsonAsync<RoomList>("http://localhost:5000/api/room");
         }
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
@@ -53,7 +53,7 @@ else
         Console.WriteLine("trying something different");
 
         try{
-            var test = await Http.GetAsync("http://localhost:5000/api/Room");
+            var test = await Http.GetAsync("http://localhost:5000/api/room");
             string txt = JsonSerializer.Serialize(test.Content.ToString());
             Console.WriteLine(txt);
         }
@@ -73,13 +73,13 @@ else
 
     public class Room{
 
-        public int RoomID { get; set; }
-        public int Roll { get; set; }
-        public string Exits { get; set; }
-        public int Level { get; set; }
-        public string RoomType { get; set; }
-        public bool isUnique { get; set; }
-        public string Encounter { get; set; }
-        public string Description { get; set; }
+        public int id { get; set; }
+        public int roll { get; set; }
+        public string exits { get; set; }
+        public int level { get; set; }
+        public string room_type { get; set; }
+        public bool is_unique { get; set; }
+        public string encounter { get; set; }
+        public string description { get; set; }
     }
 }

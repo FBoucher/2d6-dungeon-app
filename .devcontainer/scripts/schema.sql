@@ -1,36 +1,36 @@
 
 
-CREATE TABLE IF NOT EXISTS 2d6db.StartingAmour (
-  StartingArmourID int NOT NULL AUTO_INCREMENT,
-  ArmourType varchar(255) DEFAULT NULL,
-  DiceSet int DEFAULT 0,
-  Modifier varchar(255) DEFAULT NULL,
-  PRIMARY KEY (StartingArmourID)
+CREATE TABLE IF NOT EXISTS 2d6db.starting_amours (
+  id int NOT NULL AUTO_INCREMENT,
+  armour_type varchar(255) DEFAULT NULL,
+  dice_set int DEFAULT 0,
+  modifier varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS 2d6db.StartingScroll (
-  StartingScrollID int NOT NULL AUTO_INCREMENT,
-  ScrollType varchar(255) DEFAULT NULL,
-  Modifier varchar(255) DEFAULT NULL,
-  PRIMARY KEY (StartingScrollID)
+CREATE TABLE IF NOT EXISTS 2d6db.starting_scrolls (
+  id int NOT NULL AUTO_INCREMENT,
+  scroll_type varchar(255) DEFAULT NULL,
+  modifier varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS 2d6db.BodySearch (
-  BodySearchID int NOT NULL AUTO_INCREMENT,
-  TableNumber INT DEFAULT 1,
-  Roll INT DEFAULT NULL,
-  Description varchar(255) DEFAULT NULL,
-  PRIMARY KEY (BodySearchID)
+CREATE TABLE IF NOT EXISTS 2d6db.body_searches (
+  id int NOT NULL AUTO_INCREMENT,
+  table_number INT DEFAULT 1,
+  roll INT DEFAULT NULL,
+  description varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS 2d6db.Rooms (
-  RoomID int NOT NULL AUTO_INCREMENT,
-  Roll int DEFAULT 0,
-  Level int DEFAULT 1,
-  RoomType varchar(255) DEFAULT NULL,
-  Description varchar(255) DEFAULT NULL,
-  Encounter varchar(255) DEFAULT NULL,
-  Exits varchar(255) DEFAULT NULL,
-  isUnique bool DEFAULT false,
-  PRIMARY KEY (RoomID)
+CREATE TABLE IF NOT EXISTS 2d6db.rooms (
+  id int NOT NULL AUTO_INCREMENT,
+  roll int DEFAULT 0,
+  level int DEFAULT 1,
+  room_type varchar(255) DEFAULT NULL,
+  description varchar(255) DEFAULT NULL,
+  encounter varchar(255) DEFAULT NULL,
+  exits varchar(255) DEFAULT NULL,
+  is_unique bool DEFAULT false,
+  PRIMARY KEY (id)
 );
