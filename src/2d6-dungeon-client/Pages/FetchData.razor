@@ -1,0 +1,85 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@using System.Text.Json
+
+<PageTitle>Room list</PageTitle>
+
+<h1>Room list</h1>
+
+@if (rooms == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Roll</th>
+                <th>RoomType</th>
+                <th>Description</th>
+                <th>Encounter</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in rooms.value)
+            {
+                <tr>
+                    <td>@room.Roll</td>
+                    <td>@room.RoomType</td>
+                    <td>@room.Description</td>
+                    <td>@room.Encounter</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private RoomList? rooms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("strating");
+
+        try{
+            rooms = await Http.GetFromJsonAsync<RoomList>("http://localhost:5000/api/Room");
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+            rooms = new RoomList();
+        }
+
+        Console.WriteLine("trying something different");
+
+        try{
+            var test = await Http.GetAsync("http://localhost:5000/api/Room");
+            string txt = JsonSerializer.Serialize(test.Content.ToString());
+            Console.WriteLine(txt);
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops2 --> " + ex.Message);
+        }
+
+
+
+        
+        
+    }
+
+    public class RoomList{
+        public List<Room> value { get; set; }
+    }
+
+    public class Room{
+
+        public int RoomID { get; set; }
+        public int Roll { get; set; }
+        public string Exits { get; set; }
+        public int Level { get; set; }
+        public string RoomType { get; set; }
+        public bool isUnique { get; set; }
+        public string Encounter { get; set; }
+        public string Description { get; set; }
+    }
+}

@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     command: sleep infinity
 
+    restart: on-failure
     depends_on:
       - apibox
 
@@ -21,6 +22,7 @@ services:
   apibox:
     image: "mcr.microsoft.com/azure-databases/data-api-builder:latest"
 
+    restart: on-failure
     depends_on:
       - 2d6server
 
