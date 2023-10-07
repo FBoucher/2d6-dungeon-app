@@ -1,0 +1,17 @@
+@page "/dungeonmap"
+@inject IJSRuntime JSRuntime 
+<PageTitle>Map</PageTitle>
+
+<h1>Dungeon</h1>
+<canvas id="myCanvas"></canvas> 
+
+
+@code { 
+    protected override async Task OnAfterRenderAsync ( bool firstRender ) 
+    { 
+        if (firstRender) 
+        { 
+            await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas"); 
+        } 
+    } 
+}
