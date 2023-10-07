@@ -2,17 +2,25 @@
 
 <PageTitle>Counter</PageTitle>
 
-<h1>Counter</h1>
+<h1>Dices</h1>
 
-<p role="status">Current count: @currentCount</p>
+<img src="dices/dice@(dice1).jpg" />
+<img src="dices/purlple-dice@(dice2).jpg" />
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="Roll2Dices">Roll</button>
 
 @code {
-    private int currentCount = 0;
+    public int dice1 = 1;
+    public int dice2 = 1;
+   
 
-    private void IncrementCount()
+
+    public async Task Roll2Dices()
     {
-        currentCount++;
+        var die = new List<int> { 1,2,3,4,5,6 };
+        var shuffled = die.OrderBy(x => Guid.NewGuid()).Take(2);
+        dice1 = shuffled.First();
+        dice2= shuffled.Last();
     }
+
 }

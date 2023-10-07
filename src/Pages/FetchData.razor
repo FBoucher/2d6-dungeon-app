@@ -49,22 +49,6 @@ else
             Console.WriteLine("Oops1 --> " + ex.Message);
             rooms = new RoomList();
         }
-
-        Console.WriteLine("trying something different");
-
-        try{
-            var test = await Http.GetAsync("http://localhost:5000/api/room");
-            string txt = JsonSerializer.Serialize(test.Content.ToString());
-            Console.WriteLine(txt);
-        }
-        catch(Exception ex){
-            Console.WriteLine("Oops2 --> " + ex.Message);
-        }
-
-
-
-        
-        
     }
 
     public class RoomList{
