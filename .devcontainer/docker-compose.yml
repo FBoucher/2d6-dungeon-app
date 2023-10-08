@@ -27,7 +27,7 @@ services:
       - 2d6server
 
     volumes:
-      - "../src/dab-config.json:/App/dab-config.json"
+      - "../database/dab-config.json:/App/dab-config.json"
 
     # Runs devbox on the same network as the database container (2d6server), allows "forwardPorts" in devcontainer.json function.
     network_mode: service:2d6server
@@ -45,6 +45,6 @@ services:
     # ports:
     #   - "3306:3306"
     volumes:
-      - "./scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql"
-      - "./scripts/data.sql:/docker-entrypoint-initdb.d/2.sql"
+      - "../database/scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "../database/scripts/data.sql:/docker-entrypoint-initdb.d/2.sql"
 
