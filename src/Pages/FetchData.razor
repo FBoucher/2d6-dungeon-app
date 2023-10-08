@@ -1,0 +1,69 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@using System.Text.Json
+
+<PageTitle>Room list</PageTitle>
+
+<h1>Room list</h1>
+
+@if (rooms == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Roll</th>
+                <th>RoomType</th>
+                <th>Description</th>
+                <th>Encounter</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in rooms.value)
+            {
+                <tr>
+                    <td>@room.roll.ToString()</td>
+                    <td>@room.room_type</td>
+                    <td>@room.description</td>
+                    <td>@room.encounter</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private RoomList? rooms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("strating");
+
+        try{
+            rooms = await Http.GetFromJsonAsync<RoomList>("http://localhost:5000/api/room");
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+            rooms = new RoomList();
+        }
+    }
+
+    public class RoomList{
+        public List<Room> value { get; set; }
+    }
+
+    public class Room{
+
+        public int id { get; set; }
+        public int roll { get; set; }
+        public string exits { get; set; }
+        public int level { get; set; }
+        public string room_type { get; set; }
+        public bool is_unique { get; set; }
+        public string encounter { get; set; }
+        public string description { get; set; }
+    }
+}

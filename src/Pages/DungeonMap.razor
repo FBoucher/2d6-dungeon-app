@@ -1,0 +1,18 @@
+@page "/dungeonmap"
+@inject IJSRuntime JSRuntime 
+<PageTitle>Map</PageTitle>
+
+<h1>Dungeon</h1>
+<canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
+
+
+@code { 
+    protected override async Task OnAfterRenderAsync ( bool firstRender ) 
+    { 
+        if (firstRender) 
+        { 
+            //await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas"); 
+            await JSRuntime.InvokeVoidAsync("onResize");
+        } 
+    } 
+}
