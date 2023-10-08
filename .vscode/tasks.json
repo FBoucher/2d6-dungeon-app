@@ -7,7 +7,7 @@
 			"type": "process",
 			"args": [
 				"build",
-				"${workspaceFolder}/src/2d6-dungeon-client/2d6-dungeon-client.csproj",
+				"${workspaceFolder}/src/app/2d6-dungeon-client.csproj",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
@@ -19,7 +19,7 @@
 			"type": "process",
 			"args": [
 				"publish",
-				"${workspaceFolder}/src/2d6-dungeon-client/2d6-dungeon-client.csproj",
+				"${workspaceFolder}/src/app/2d6-dungeon-client.csproj",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
@@ -33,7 +33,7 @@
 				"watch",
 				"run",
 				"--project",
-				"${workspaceFolder}/src/2d6-dungeon-client/2d6-dungeon-client.csproj"
+				"${workspaceFolder}/src/app/2d6-dungeon-client.csproj"
 			],
 			"problemMatcher": "$msCompile"
 		}
