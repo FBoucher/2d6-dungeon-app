@@ -3,7 +3,7 @@
 <PageTitle>Map</PageTitle>
 
 <h1>Dungeon</h1>
-<canvas id="myCanvas"></canvas> 
+<canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
 
 
 @code { 
@@ -11,7 +11,8 @@
     { 
         if (firstRender) 
         { 
-            await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas"); 
+            //await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas"); 
+            await JSRuntime.InvokeVoidAsync("onResize");
         } 
     } 
 }
