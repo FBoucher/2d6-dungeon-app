@@ -34,3 +34,12 @@ CREATE TABLE IF NOT EXISTS 2d6db.rooms (
   is_unique bool DEFAULT false,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS 2d6db.characters (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
+  xp int DEFAULT 0,
+  serialiazedObj longtext DEFAULT NULL,
+  PRIMARY KEY (id)
+);

@@ -74,6 +74,25 @@
           ]
         }
       ]
+    },
+    "character": {
+      "source": {
+        "object": "characters",
+        "type": "table"
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }
