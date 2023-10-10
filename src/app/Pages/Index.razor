@@ -1,9 +1,73 @@
 ﻿@page "/"
+@using c5m._2d6Dungeon;
+@using System.Text.Json;
+@using System.Text;
+@inject HttpClient Http;
 
-<PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<PageTitle>Home</PageTitle>
 
-Welcome to your new app.
+@if (player == null)
+{
+    <CharacterPicker @bind-ParentPlayer="player"></CharacterPicker>
+}
+else
+{
+    <div>
+        <p><b>Name:</b> @player.Name</p>
+        <p><b>XP:</b> @player.XP.ToString()</p>
+        <p><b>Level:</b> @player.Level.ToString()</p>
+        <p><b>Copper Coins:</b> @player.Coins.CupperCoins.ToString()</p>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-outline-primary" @onclick=SaveGame>Save</button>
+        </div>
+    </div>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+    public Character? player;
+
+    private async Task SaveGame(){
+
+        try{
+            // Simulate activity ;)
+            player.XP++;
+            player.Coins.CupperCoins++;
+
+            var dbPlayer = new DatabaseCharacter();
+            
+            //dbPlayer.id = player.Id;
+            dbPlayer.name = player.Name;
+            dbPlayer.xp = player.XP;
+            dbPlayer.level = player.Level;
+            dbPlayer.serialiazedObj = DatabaseEncode(player);
+
+            var response = await Http.PutAsJsonAsync<DatabaseCharacter>($"http://localhost:5000/api/character/id/{player.Id.ToString()}", dbPlayer);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    public static string DatabaseEncode(Character player) 
+    {
+        var jsonPlayer = JsonSerializer.Serialize<Character>(player);
+        var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(jsonPlayer);
+        return System.Convert.ToBase64String(plainTextBytes);
+    }
+
+    public class DatabaseCharacter
+    {
+        //public int id { get; set; }
+        public string name { get; set; }
+        public int level { get; set; }
+        public int xp { get; set; }
+        public string serialiazedObj{ get; set; }
+    }
+}

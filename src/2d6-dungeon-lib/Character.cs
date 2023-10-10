@@ -1,7 +1,8 @@
-﻿namespace _2d6_dungeon_lib;
+﻿namespace c5m._2d6Dungeon;
 
 public class Character
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public int Level { get; set; }
     public int HealthPoints { get; set; }
@@ -25,7 +26,7 @@ public class Character
     public int LiberatedPrisoners { get; set; }
     public List<string> SideQuests { get; set; }
     public FavorOfTheGods FavorOfTheGods { get; set; }
-
+    
     public Character(string name)
     {
         Name = name;

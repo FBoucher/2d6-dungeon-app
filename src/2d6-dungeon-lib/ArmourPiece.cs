@@ -1,4 +1,4 @@
-﻿namespace _2d6_dungeon_lib;
+﻿namespace c5m._2d6Dungeon;
 
 public class ArmourPiece
 {

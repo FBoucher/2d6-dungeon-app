@@ -1,0 +1,35 @@
+
+services:
+  
+  apibox:
+    image: "mcr.microsoft.com/azure-databases/data-api-builder:latest"
+
+    restart: on-failure
+    depends_on:
+      - 2d6server
+
+    volumes:
+      - "../database/dab-config.json:/App/dab-config.json"
+
+    ports:
+      - "5000:5000"
+
+    # Runs devbox on the same network as the database container (2d6server), allows "forwardPorts" in devcontainer.json function.
+    #network_mode: service:2d6server
+
+
+
+  2d6server:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: "2d6db"
+      MYSQL_USER: "frank"
+      MYSQL_PASSWORD: "myPassword"
+      MYSQL_ROOT_PASSWORD: "rootPassword"
+    ports:
+      - "3306:3306"
+    volumes:
+      - "../database/scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "../database/scripts/data.sql:/docker-entrypoint-initdb.d/2.sql"
+

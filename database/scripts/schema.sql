@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS 2d6db.rooms (
 CREATE TABLE IF NOT EXISTS 2d6db.characters (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
   xp int DEFAULT 0,
-  serialiazedObj longtext,
+  serialiazedObj longtext DEFAULT NULL,
   PRIMARY KEY (id)
 );
