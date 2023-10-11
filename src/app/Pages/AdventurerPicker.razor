@@ -1,0 +1,108 @@
+﻿@using c5m._2d6Dungeon;
+@using System.Text.Json;
+@inject HttpClient Http;
+
+<h3>Select a Adventurer</h3>
+@if (adventurers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <!--th> </th-->
+                <th>Name</th>
+                <th>XP</th>
+                <th>Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in adventurers.value)
+            {
+                <tr style="cursor:pointer" @onclick="() => SelectPlayer(c.id)">
+                    <!--button type="button" class="btn btn-outline-primary btn-sm" >Select</button-->
+                    <td>@c.name</td>
+                    <td>@c.xp.ToString()</td>
+                    <td>@c.level.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-outline-primary" @onclick=CreateNewAdventurer>New</button>
+        </div>
+    </div>
+}
+
+@code {
+
+    private DatabaseAdventurerList? adventurers;
+
+    [Parameter] public Adventurer? ParentPlayer {get; set;}
+
+    [Parameter] public EventCallback<Adventurer> ParentPlayerChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try{
+            adventurers = await Http.GetFromJsonAsync<DatabaseAdventurerList>("http://localhost:5000/api/adventurer?$select=id,name,xp,level");
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    
+    private void CreateNewAdventurer(MouseEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+    private async Task SelectPlayer(int playerId)
+    {
+        try{
+
+            var result = await Http.GetFromJsonAsync<DatabaseAdventurerList>($"http://localhost:5000/api/adventurer/id/{playerId.ToString()}");
+            var dpAdventurer = result.value.First<DatabaseAdventurer>();
+            
+            //temporatry until better load/ save game
+            if(string.IsNullOrEmpty(dpAdventurer.serialiazedObj))
+            {   
+                ParentPlayer = new Adventurer(dpAdventurer.name);
+                ParentPlayer.Id = dpAdventurer.id;
+                ParentPlayer.XP = dpAdventurer.xp;
+                ParentPlayer.Level = dpAdventurer.level;
+            }
+            else
+            {
+                ParentPlayer = DatabaseDecode(dpAdventurer.serialiazedObj);    
+            }
+            
+            await ParentPlayerChanged.InvokeAsync(ParentPlayer);
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    public static Adventurer DatabaseDecode(string base64EncodedData) 
+    {
+        var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+        var jsonPlayer = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        return JsonSerializer.Deserialize<Adventurer>(jsonPlayer);
+    }
+
+    public class DatabaseAdventurerList{
+        public List<DatabaseAdventurer> value { get; set; } = new List<DatabaseAdventurer>();
+    }
+    public class DatabaseAdventurer
+    {
+        public int id { get; set; }
+        public string name { get; set; } = string.Empty;
+        public int level { get; set; }
+        public int xp { get; set; }
+        public string serialiazedObj{ get; set; } = string.Empty;
+    }
+}

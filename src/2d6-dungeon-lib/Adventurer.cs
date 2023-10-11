@@ -1,6 +1,6 @@
 ﻿namespace c5m._2d6Dungeon;
 
-public class Character
+public class Adventurer
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -27,7 +27,7 @@ public class Character
     public List<string> SideQuests { get; set; }
     public FavorOfTheGods FavorOfTheGods { get; set; }
     
-    public Character(string name)
+    public Adventurer(string name)
     {
         Name = name;
         Level = 1;

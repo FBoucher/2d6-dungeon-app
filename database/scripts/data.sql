@@ -38,3 +38,6 @@ INSERT INTO 2d6db.rooms(roll, level, room_type, description, encounter, exits, i
 VALUES (13,1,'Gard post','A small burner provides...', 'There is someone here...', 'Enforced doors',false);
 
 
+-- demo adventurers
+INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Toby the Creator', 1, 100)
+INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Frank', 0, 0)
