@@ -70,3 +70,8 @@ function drawDots() {
       }
   }
 }
+
+function DrawRoom(posX, posY, width, height){
+  context.fillRect(posX, posY, width, height);
+  context.clearRect(posX+5, posY+5, width-10, height-10);
+}
