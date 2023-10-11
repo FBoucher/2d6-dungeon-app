@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS 2d6db.rooms (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS 2d6db.characters (
+CREATE TABLE IF NOT EXISTS 2d6db.adventurers (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(255) DEFAULT NULL,
   level int DEFAULT 0,

@@ -75,9 +75,9 @@
         }
       ]
     },
-    "character": {
+    "adventurer": {
       "source": {
-        "object": "characters",
+        "object": "adventurers",
         "type": "table"
       },
       "rest": {

@@ -3,30 +3,30 @@
 @inject HttpClient Http;
 
 
-<h3>Character Card</h3>
-<EditForm Model="@character">
+<h3>Adventurer Card</h3>
+<EditForm Model="@adventurer">
     <div class="form-group row">
         <label for="Name" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
-            <InputText id="Name" class="form-control" placeholder="Character Full Name" @bind-Value="character.Name" />
+            <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="adventurer.Name" />
         </div>
     </div>
 </EditForm>
 
 @code {
     [Parameter]
-    public Character character { get; set; } = new Character("Toby");
+    public Adventurer adventurer { get; set; } = new Adventurer("Toby");
 
     [Parameter]
-    public string Id { get; set; }
+    public int Id { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
-        if (int.Parse(Id) > 0)
+        if(Id > 0)
         {
             try
             {
-                character = await Http.GetFromJsonAsync<Character>($"http://localhost:5000/api/character/{int.Parse(Id)}");
+                adventurer = await Http.GetFromJsonAsync<Adventurer>($"http://localhost:5000/api/adventurer/{Id.ToString()}");
             }
             catch (Exception ex)
             {
