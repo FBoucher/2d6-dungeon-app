@@ -14,7 +14,7 @@
 else
 {
     <div>
-    <p><b>Name:</b> @player.Name</p>
+        <p><b>Name:</b> @player.Name</p>
         <p><b>XP:</b> @player.XP.ToString()</p>
         <p><b>Level:</b> @player.Level.ToString()</p>
         <p><b>Copper Coins:</b> @player.Coins.CupperCoins.ToString()</p>
@@ -41,16 +41,9 @@ else
                 player.XP++;
                 player.Coins.CupperCoins++;
 
-                var dbPlayer = new DatabaseAdventurer();
+                var dbPlayer = new AdventurerPreview(player);
 
-                //dbPlayer.id = player.Id;
-                dbPlayer.name = player.Name;
-                dbPlayer.xp = player.XP;
-                dbPlayer.level = player.Level;
-                dbPlayer.serialiazedObj = DatabaseEncode(player);
-
-                var response = await
-                Http.PutAsJsonAsync<DatabaseAdventurer>($"http://localhost:5000/api/adventurer/id/{player.Id.ToString()}", dbPlayer);
+                var response = await Http.PutAsJsonAsync<AdventurerPreview>($"http://localhost:5000/api/adventurer/id/{player.Id.ToString()}", dbPlayer);
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync();
@@ -62,19 +55,6 @@ else
         }
     }
 
-    public static string DatabaseEncode(Adventurer player)
-    {
-        var jsonPlayer = JsonSerializer.Serialize<Adventurer>(player);
-        var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(jsonPlayer);
-        return System.Convert.ToBase64String(plainTextBytes);
-    }
 
-    public class DatabaseAdventurer
-    {
-        //public int id { get; set; }
-        public string name { get; set; } = string.Empty;
-        public int level { get; set; }
-        public int xp { get; set; }
-        public string serialiazedObj { get; set; } = string.Empty;
-    }
+
 }

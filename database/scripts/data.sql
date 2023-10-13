@@ -39,5 +39,5 @@ VALUES (13,1,'Gard post','A small burner provides...', 'There is someone here...
 
 
 -- demo adventurers
-INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Toby the Creator', 1, 100)
-INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Frank', 0, 0)
+INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Toby the Creator', 1, 100);
+INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Frank', 0, 0);
