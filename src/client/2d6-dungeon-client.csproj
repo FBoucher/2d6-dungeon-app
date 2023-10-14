@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2d6-dungeon-lib\2d6-dungeon-lib.csproj" />
+    <ProjectReference Include="..\2d6-dungeon-service\2d6-dungeon-service.csproj" />
   </ItemGroup>
 
 </Project>

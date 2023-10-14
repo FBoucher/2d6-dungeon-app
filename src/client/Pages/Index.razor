@@ -1,0 +1,54 @@
+﻿@page "/"
+@using c5m._2d6Dungeon;
+@inject ID6Service D6Service;
+
+
+<PageTitle>Home</PageTitle>
+
+@if (player == null)
+{
+    <AdventurerPicker @bind-ParentPlayer="player"></AdventurerPicker>
+}
+else
+{
+    <div>
+        <p><b>Name:</b> @player.Name</p>
+        <p><b>XP:</b> @player.XP.ToString()</p>
+        <p><b>Level:</b> @player.Level.ToString()</p>
+        <p><b>Copper Coins:</b> @player.Coins.CupperCoins.ToString()</p>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-outline-primary" @onclick=SaveGame>Save</button>
+        </div>
+    </div>
+}
+
+
+@code {
+    public Adventurer? player;
+
+    private async Task SaveGame()
+    {
+        try
+        {
+            if (player != null)
+            {
+                player = fakeActivity(player);
+                await D6Service.SaveAdventurer(player);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    private Adventurer fakeActivity(Adventurer adventurer){
+        // Simulate activity to help debuging ;)
+        adventurer.XP++;
+        adventurer.Coins.CupperCoins++;
+        return adventurer;
+    }
+
+}
