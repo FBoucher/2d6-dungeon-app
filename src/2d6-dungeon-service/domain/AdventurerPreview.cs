@@ -13,6 +13,7 @@ public class AdventurerPreview
     public int xp { get; set; }
     public string serialiazedObj { get; set; } = string.Empty;
 
+    public AdventurerPreview(){}
 
     public AdventurerPreview(Adventurer a)
     {
