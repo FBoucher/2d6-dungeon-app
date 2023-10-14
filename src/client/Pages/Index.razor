@@ -1,8 +1,6 @@
 ﻿@page "/"
 @using c5m._2d6Dungeon;
-@using System.Text.Json;
-@using System.Text;
-@inject HttpClient Http;
+@inject ID6Service D6Service;
 
 
 <PageTitle>Home</PageTitle>
@@ -32,21 +30,12 @@ else
 
     private async Task SaveGame()
     {
-
         try
         {
             if (player != null)
             {
-                // Simulate activity ;)
-                player.XP++;
-                player.Coins.CupperCoins++;
-
-                var dbPlayer = new AdventurerPreview(player);
-
-                var response = await Http.PutAsJsonAsync<AdventurerPreview>($"http://localhost:5000/api/adventurer/id/{player.Id.ToString()}", dbPlayer);
-                response.EnsureSuccessStatusCode();
-
-                var content = await response.Content.ReadAsStringAsync();
+                player = fakeActivity(player);
+                await D6Service.SaveAdventurer(player);
             }
         }
         catch (Exception ex)
@@ -55,6 +44,11 @@ else
         }
     }
 
-
+    private Adventurer fakeActivity(Adventurer adventurer){
+        // Simulate activity to help debuging ;)
+        adventurer.XP++;
+        adventurer.Coins.CupperCoins++;
+        return adventurer;
+    }
 
 }

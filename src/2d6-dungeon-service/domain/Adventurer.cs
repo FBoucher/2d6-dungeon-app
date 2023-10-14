@@ -29,6 +29,26 @@ public class Adventurer
     public List<string>? SideQuests { get; set; }
     public FavorOfTheGods FavorOfTheGods { get; set; }
     
+    public Adventurer()
+    {
+        Name = string.Empty;
+        Level = 1;
+        XP = 0;
+        Discipline = string.Empty;
+        Manoeuvres = new List<Manoeuvre>();
+        ArmourPieces = new List<ArmourPiece>();
+        MagicScolls = new List<MagicScoll>();
+        MagicPotions = new List<MagicPotion>();
+        LegendStatusLevelTracker = 0;
+        Fever = false;
+        Pneumonia = false;
+        Coins = new Coins();
+        Treasures = new List<string>();
+        SideQuests = new List<string>();
+        LiberatedPrisoners = 0;
+        FavorOfTheGods = new FavorOfTheGods();
+    }
+    
     public Adventurer(string name)
     {
         Name = name;
