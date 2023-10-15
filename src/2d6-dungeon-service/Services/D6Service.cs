@@ -5,6 +5,8 @@ namespace c5m._2d6Dungeon;
 
 public class D6Service : ID6Service
 {
+
+#region == Sercice =====
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
     public D6Service(HttpClient httpClient)
@@ -12,7 +14,9 @@ public class D6Service : ID6Service
         _httpClient = httpClient;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
+#endregion
 
+#region == Adventurer =====
     public async Task<Adventurer> GetAdventurer(int id)
     {
         var result = await _httpClient.GetFromJsonAsync<AdventurerPreviewList>($"adventurer/id/{id.ToString()}");
@@ -38,19 +42,31 @@ public class D6Service : ID6Service
         return false;
     }
 
-    private List<int> RollDices(int diceCount)
+#endregion
+
+#region == Dices =====
+
+    
+
+    #endregion
+
+
+    #region == Turn =====
+
+    private int DungeonLevel = 1;
+    private int DungeonRoomCount = 1;
+
+    public async Task StartNextTurn()
     {
-        var die = new List<int> { 1,2,3,4,5,6 };
-        var shuffled = die.OrderBy(x => Guid.NewGuid()).Take(diceCount).ToList<int>(); 
-        return shuffled;
-    }
-    public List<int> Roll2Dices()
-    {
-        return RollDices(2);
+        if(DungeonRoomCount < 1){
+            throw new NotImplementedException();
+        }
+        else{
+            DiceResult result = DiceResult.Roll2Dices();
+
+        }
     }
 
-    public int Roll1Dice()
-    {
-        return RollDices(1).First();
-    }
+    #endregion
+
 }
