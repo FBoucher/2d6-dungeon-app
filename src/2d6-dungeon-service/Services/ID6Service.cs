@@ -6,8 +6,4 @@ public interface ID6Service
     Task<Adventurer> GetAdventurer(int id);
     Task<bool> SaveAdventurer(Adventurer player);
 
-    // List<int> Roll2Dices();
-    // int Roll1Dice();
-
-    Task StartNextTurn();
 }

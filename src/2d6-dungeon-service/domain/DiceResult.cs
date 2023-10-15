@@ -23,7 +23,7 @@ public class DiceResult
         result.DiceRolled = DiceRolled.TwoD6;
         List<int> dices = RollDices(2);
         result.PrimaryDice = dices.First<int>();
-        result.PrimaryDice = dices.Last<int>();
+        result.SecondaryDice = dices.Last<int>();
         result.IsOneDiceOne = dices.Contains(1);
         result.IsDoubleSix = (result.PrimaryDice == 6 && result.SecondaryDice == 6) ? true: false;
         return result;
@@ -34,6 +34,7 @@ public class DiceResult
         var result = new DiceResult();
         result.DiceRolled = DiceRolled.OneD6;
         result.PrimaryDice = RollDices(1).First();
+        result.SecondaryDice = 0;
         return result;
     }
 

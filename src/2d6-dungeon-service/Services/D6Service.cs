@@ -6,7 +6,7 @@ namespace c5m._2d6Dungeon;
 public class D6Service : ID6Service
 {
 
-#region == Sercice =====
+    #region == Sercice =====
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
     public D6Service(HttpClient httpClient)
@@ -14,15 +14,15 @@ public class D6Service : ID6Service
         _httpClient = httpClient;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
-#endregion
+    #endregion
 
-#region == Adventurer =====
+    #region == Adventurer =====
     public async Task<Adventurer> GetAdventurer(int id)
     {
         var result = await _httpClient.GetFromJsonAsync<AdventurerPreviewList>($"adventurer/id/{id.ToString()}");
         var adventurerPrev = result.value.First<AdventurerPreview>();
-            
-        return new Adventurer(adventurerPrev);    
+
+        return new Adventurer(adventurerPrev);
     }
 
     public async Task<AdventurerPreviewList?> GetAdventurerPreviews()
@@ -37,34 +37,23 @@ public class D6Service : ID6Service
         var response = await _httpClient.PutAsJsonAsync<AdventurerPreview>($"adventurer/id/{player.Id.ToString()}", dbPlayer);
         var status = response.EnsureSuccessStatusCode();
 
-        if(status.IsSuccessStatusCode)
+        if (status.IsSuccessStatusCode)
             return true;
         return false;
     }
 
-#endregion
-
-#region == Dices =====
-
-    
-
     #endregion
 
 
-    #region == Turn =====
 
-    private int DungeonLevel = 1;
-    private int DungeonRoomCount = 1;
+    #region == Rooms =====
 
-    public async Task StartNextTurn()
+    public async Task<Room> GetRoom(int id)
     {
-        if(DungeonRoomCount < 1){
-            throw new NotImplementedException();
-        }
-        else{
-            DiceResult result = DiceResult.Roll2Dices();
+        var result = await _httpClient.GetFromJsonAsync<RoomList>($"room/id/{id.ToString()}");
+        var room = result.value.First<Room>();
 
-        }
+        return room;
     }
 
     #endregion
