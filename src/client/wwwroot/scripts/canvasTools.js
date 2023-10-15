@@ -6,11 +6,7 @@ function getDocumentHeight() {
   return Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 };
 
-// var canvas = document.getElementById('dotCanvas');
-// var context = canvas.getContext('2d');
 
-// var vw = getDocumentWidth(),
-//     vh = getDocumentHeight();
 var canvas;
 var context;
 var vw,vh;
@@ -21,57 +17,46 @@ function onResize() {
   canvas = document.getElementById('dotCanvas');
   context = canvas.getContext('2d');
 
-  vw = getDocumentWidth();
-  vh = getDocumentHeight();
+  //vw = getDocumentWidth();
+  //vh = getDocumentHeight();
+
+  vw = canvas.width;
+  vh = canvas.height;
+
   resizeCanvas();
 }
 
 function resizeCanvas() {
-  canvas.width = vw;
-  canvas.height = vh;
+  //canvas.width = vw;
+  //canvas.height = vh;
   drawDots();
 }
-//resizeCanvas();
-
-
-// grid
-function drawGrid(){
-  var cellW = 10,
-      cellH = 10;
-  
-  // vertical lines
-  for (var x = 0; x <= vw; x += cellW) {
-      context.moveTo(x, 0); // x, y
-      context.lineTo(x, vh);
-  }
-  
-  // horizontal lines
-  for (var y = 0; y <= vh; y += cellH) {
-      context.moveTo(0, y); // x, y
-      context.lineTo(vw, y);
-  }
-
-  context.strokeStyle = "#cccccc";
-  context.stroke();
-}
-// drawGrid();
-
 // dots
 function drawDots() {
 
-  var r = 2,
-      cw = 30,
-      ch = 30;
+  var r = 0.5,
+      cw = 10,
+      ch = 10;
   
-  for (var x = 20; x < vw; x+=cw) {
-    for (var y = 20; y < vh; y+=ch) {
-        context.fillStyle = '#000000';   
+  for (var x = 0; x < vw; x+=cw) {
+    for (var y = 0; y < vh; y+=ch) {
+        context.fillStyle = '#777777';   
         context.fillRect(x-r/2,y-r/2,r,r);
       }
   }
 }
 
 function DrawRoom(posX, posY, width, height){
+  context.fillStyle = '#000000'; 
   context.fillRect(posX, posY, width, height);
-  context.clearRect(posX+5, posY+5, width-10, height-10);
+  context.stroke();
+  context.fillStyle = '#Ece7d7';
+  context.fillRect(posX+1, posY+1, width-2, height-2);
+  context.stroke();
+}
+
+function ClearMap(){
+  context.fillStyle = '#ffffff';
+  context.clearRect(0, 0, vw, vh);  
+  drawDots()
 }

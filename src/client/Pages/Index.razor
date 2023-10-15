@@ -21,7 +21,8 @@ else
     <div class="row">
         <div class="col-md-12 text-right">
             <button type="button" class="btn btn-outline-primary" @onclick="StarGame" disabled="@isStartDisable">Start</button> | 
-            <button type="button" class="btn btn-outline-primary" @onclick="SaveGame" disabled="@isSaveDisable">Save</button>
+            <button type="button" class="btn btn-outline-primary" @onclick="SaveGame" disabled="@isSaveDisable">Save</button> | 
+            <button type="button" class="btn btn-outline-danger" @onclick="Reset" >Reset (debug)</button>
         </div>
     </div>
     <br/>
@@ -48,12 +49,9 @@ else
         }
     </div>
     <br/>
-    @* @if(currentTurn != null && currentTurn.CurrentRoom != null)
-    { *@
-        <canvas id="dotCanvas" style="width: 500px; height: 200px;"></canvas> 
-    @* } *@
 
 }
+<canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
 
 
 @code {
@@ -61,7 +59,6 @@ else
     public GameTurn? currentTurn;
     public int primaryDice = 0;
     public int secondaryDice = 0;
-
     public bool isStartDisable = false;
     public bool isSaveDisable = true;
     private string actionLabel = string.Empty;
@@ -95,7 +92,7 @@ else
         }
     }
 
-    private void SetNextActionLabel(){
+    private async void SetNextActionLabel(){
         switch(currentTurn.NextAction)
         {
             case(ActionType.RollForARoom): 
@@ -103,15 +100,31 @@ else
                 break;
             case(ActionType.RollForExits): 
                 actionLabel = "Roll 1D6 to determine the number of exists.";
+                await DrawRoom(); 
                 break;   
             case(ActionType.DoubleSizedRoom): 
                 actionLabel = "Roll again 2D6.";
                 break;   
             case(ActionType.DrawRoom): 
                 actionLabel = "Roll 2D6 to see what's in that room.";
+                await DrawRoom();
                 break;   
         }
     }
+
+    protected async Task DrawRoom() 
+    { 
+        int cubeSize = 10;
+        int dotRay = 1;
+        int x = 2;
+        int y = 2;
+        int gidX = (cubeSize * x);
+        int gidY = (cubeSize * y);
+        if(currentTurn.CurrentRoom.IsCorridor == true){
+            Console.WriteLine("it's a corridor");
+        }
+        await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentTurn.CurrentRoom.Width*cubeSize, currentTurn.CurrentRoom.Height*cubeSize);
+    } 
 
     private Adventurer fakeActivity(Adventurer adventurer){
         // Simulate activity to help debuging ;)
@@ -137,6 +150,12 @@ else
             await JSRuntime.InvokeVoidAsync("onResize");
         } 
     } 
+
+    private async Task Reset(){
+        primaryDice = secondaryDice = 0;
+        await JSRuntime.InvokeVoidAsync("ClearMap");
+        StarGame();
+    }
 
 
 }
