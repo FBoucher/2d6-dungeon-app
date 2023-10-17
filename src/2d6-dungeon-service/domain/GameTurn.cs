@@ -29,7 +29,7 @@ public class GameTurn
             {
                 CurrentRoom = DraftCurrentRoom(LastDiceResult);
                 NextAction = ActionType.DrawRoom;
-                Message = "You found this room";
+                Message = "You found a square room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
             }
             else
             {
@@ -49,7 +49,7 @@ public class GameTurn
             {
                 CurrentRoom = DraftCurrentRoom(LastDiceResult);
                 NextAction = ActionType.DrawRoom;
-                Message = "You found this room";
+                Message = "You found a room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
             }
         }
     }
@@ -61,7 +61,9 @@ public class GameTurn
         }
         LastDiceResult.PrimaryDice += dResult.PrimaryDice;
         LastDiceResult.SecondaryDice += dResult.SecondaryDice;
+        CurrentRoom = DraftCurrentRoom(LastDiceResult);
         NextAction = ActionType.DrawRoom;
+        Message = "You found this big room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
     }
 
     private MappedRoom DraftCurrentRoom(DiceResult dResult){

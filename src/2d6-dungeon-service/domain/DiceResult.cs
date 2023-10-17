@@ -11,20 +11,19 @@ public class DiceResult
 
 
 
-    private static List<int> RollDices(int diceCount)
+    private static int RollDice()
     {
         var die = new List<int> { 1,2,3,4,5,6 };
-        var shuffled = die.OrderBy(x => Guid.NewGuid()).Take(diceCount).ToList<int>(); 
-        return shuffled;
+        return die.OrderBy(x => Guid.NewGuid()).First<int>(); 
     }
     public static DiceResult Roll2Dices()
     {
         var result = new DiceResult();
         result.DiceRolled = DiceRolled.TwoD6;
-        List<int> dices = RollDices(2);
-        result.PrimaryDice = dices.First<int>();
-        result.SecondaryDice = dices.Last<int>();
-        result.IsOneDiceOne = dices.Contains(1);
+        result.PrimaryDice = RollDice();
+        result.SecondaryDice = RollDice();
+        result.IsOneDiceOne = ((result.PrimaryDice == 1 && result.SecondaryDice != 1) || (result.PrimaryDice != 1 && result.SecondaryDice == 1)) ? true: false;
+        result.IsDouble = (result.PrimaryDice == result.SecondaryDice) ? true: false;
         result.IsDoubleSix = (result.PrimaryDice == 6 && result.SecondaryDice == 6) ? true: false;
         return result;
     }
@@ -33,7 +32,7 @@ public class DiceResult
     {
         var result = new DiceResult();
         result.DiceRolled = DiceRolled.OneD6;
-        result.PrimaryDice = RollDices(1).First();
+        result.PrimaryDice = RollDice();
         result.SecondaryDice = 0;
         return result;
     }
