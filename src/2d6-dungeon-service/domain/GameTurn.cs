@@ -16,9 +16,12 @@ public class GameTurn
                 break;
             case(ActionType.DoubleSizedRoom): FinishDoubleSizedRoom(dResult);
                 break;
+            case(ActionType.RollForExits): RollForExits(dResult);
+                break;
         };
         return this;
     }
+
 
     private void RolledForRoom(DiceResult dResult)
     {
@@ -29,7 +32,7 @@ public class GameTurn
             {
                 CurrentRoom = DraftCurrentRoom(LastDiceResult);
                 NextAction = ActionType.DrawRoom;
-                Message = "You found a square room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
+                Message = $"You found a square room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
             }
             else
             {
@@ -49,7 +52,7 @@ public class GameTurn
             {
                 CurrentRoom = DraftCurrentRoom(LastDiceResult);
                 NextAction = ActionType.DrawRoom;
-                Message = "You found a room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
+                Message = $"You found a room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
             }
         }
     }
@@ -63,7 +66,39 @@ public class GameTurn
         LastDiceResult.SecondaryDice += dResult.SecondaryDice;
         CurrentRoom = DraftCurrentRoom(LastDiceResult);
         NextAction = ActionType.DrawRoom;
-        Message = "You found this big room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
+        Message = $"You found this big room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
+    }
+
+    private void RollForExits(DiceResult dResult)
+    {
+        if(CurrentRoom == null){
+            throw new Exception("Lost the info about the current room. PLease start the turn again.");
+        }
+
+        switch(dResult.PrimaryDice){
+            case(1): CurrentRoom.Exits = 0;
+                break;
+            case >=2 and <=3 : CurrentRoom.Exits = 1;
+                break;
+            case >=5 and <=6 : CurrentRoom.Exits = 2;
+                break;
+            default: CurrentRoom.Exits = 3;
+                break;
+        }
+
+
+        if(CurrentRoom.IsCorridor)
+        {
+            NextAction = ActionType.EndOfTurn;
+            Message = $"You found a corridor with {CurrentRoom.Exits} exits";
+        }
+        else
+        {
+            NextAction = ActionType.RollRoomDescription;
+            Message = $"There {CurrentRoom.Exits} exits in this room.";
+        }
+
+        
     }
 
     private MappedRoom DraftCurrentRoom(DiceResult dResult){
@@ -82,5 +117,7 @@ public enum ActionType
     RollForARoom,
     DoubleSizedRoom,
     RollForExits,
-    DrawRoom
+    DrawRoom,
+    EndOfTurn,
+    RollRoomDescription
 }

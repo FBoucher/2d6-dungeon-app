@@ -76,6 +76,13 @@ else
         }
     }
 
+    private void NewTurn()
+    {
+        currentTurn = new GameTurn();
+        isStartDisable = true;
+        isSaveDisable = false;
+    }
+
     private async Task SaveGame()
     {
         try
@@ -108,7 +115,14 @@ else
             case(ActionType.DrawRoom): 
                 actionLabel = "Roll 2D6 to see what's in that room.";
                 await DrawRoom();
-                break;   
+                break; 
+            case(ActionType.RollRoomDescription):
+                actionLabel = "Roll 2D6 to see what's in that room.";
+                break; 
+            case(ActionType.EndOfTurn): 
+                actionLabel = "Start a new turn";
+                //NewTurn();
+                break;  
         }
     }
 
@@ -120,7 +134,7 @@ else
         int y = 2;
         int gidX = (cubeSize * x);
         int gidY = (cubeSize * y);
-        
+
         if(currentTurn.CurrentRoom.IsCorridor == true){
             Console.WriteLine("it's a corridor");
         }
