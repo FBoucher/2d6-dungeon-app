@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS 2d6db.rooms (
   id int NOT NULL AUTO_INCREMENT,
   roll int DEFAULT 0,
   level int DEFAULT 1,
+  size varchar(10) DEFAULT NULL,
   room_type varchar(255) DEFAULT NULL,
   description varchar(255) DEFAULT NULL,
   encounter varchar(255) DEFAULT NULL,
