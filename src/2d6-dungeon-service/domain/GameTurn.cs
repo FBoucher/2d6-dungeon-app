@@ -1,4 +1,6 @@
-﻿namespace c5m._2d6Dungeon;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace c5m._2d6Dungeon;
 
 public class GameTurn
 {
@@ -8,8 +10,13 @@ public class GameTurn
     public DiceResult? LastDiceResult { get; set; }
     public string? Message { get; set; }
 
+    private ID6Service D6Service;
 
-    public GameTurn ContinueTurn(DiceResult dResult)
+    public GameTurn(ID6Service d6Service){
+        D6Service = d6Service;
+    }
+
+    public async Task<GameTurn> ContinueTurn(DiceResult dResult)
     {
         switch(NextAction){
             case(ActionType.RollForARoom): RolledForRoom(dResult);
@@ -17,6 +24,8 @@ public class GameTurn
             case(ActionType.DoubleSizedRoom): FinishDoubleSizedRoom(dResult);
                 break;
             case(ActionType.RollForExits): RollForExits(dResult);
+                break;
+            case(ActionType.RollRoomDefinition): await RollRoomDefinition(dResult);
                 break;
         };
         return this;
@@ -94,7 +103,7 @@ public class GameTurn
         }
         else
         {
-            NextAction = ActionType.RollRoomDescription;
+            NextAction = ActionType.RollRoomDefinition;
             Message = $"There {CurrentRoom.Exits} exits in this room.";
         }
 
@@ -109,6 +118,30 @@ public class GameTurn
         };
     }
 
+    private async Task<Room> RollRoomDefinition(DiceResult dResult){
+        int area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
+        int roll = 0;
+        string roomSize;
+        Room currentRoom;
+
+        switch(area){
+            case(<6): 
+                roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
+                roomSize = "small";
+                break;
+            case >32 : 
+                roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
+                roomSize = "large";
+                break;
+            default: 
+                roll = int.Parse(string.Concat(LastDiceResult.PrimaryDice.ToString(),  LastDiceResult.SecondaryDice.ToString()));
+                roomSize = "regular";
+                break;
+        }
+        currentRoom = await D6Service.RollRoom(roll, roomSize);
+        return currentRoom;
+    }
+
 }
 
 public enum ActionType
@@ -119,5 +152,5 @@ public enum ActionType
     RollForExits,
     DrawRoom,
     EndOfTurn,
-    RollRoomDescription
+    RollRoomDefinition
 }

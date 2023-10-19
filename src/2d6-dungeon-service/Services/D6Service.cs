@@ -56,6 +56,15 @@ public class D6Service : ID6Service
         return room;
     }
 
+    public async Task<Room> RollRoom(int roll, string size)
+    {
+        // ex: http://localhost:5000/api/room/?$filter=roll eq 2 and size eq 'small'
+        var result = await _httpClient.GetFromJsonAsync<RoomList>($"room/?$filter=roll eq {roll.ToString()} and size eq '{size}'");
+        var room = result.value.First<Room>();
+
+        return room;
+    }
+
     #endregion
 
 }

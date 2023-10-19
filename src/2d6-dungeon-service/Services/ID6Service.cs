@@ -6,4 +6,5 @@ public interface ID6Service
     Task<Adventurer> GetAdventurer(int id);
     Task<bool> SaveAdventurer(Adventurer player);
 
+    Task<Room> RollRoom(int roll, string size);
 }
