@@ -14,13 +14,11 @@
     public int dice1 = 1;
     public int dice2 = 1;
    
-
-
     public async Task Roll2Dices()
     {
-        var dices = d6Sercice.Roll2Dices();
-        dice1 = dices.First();
-        dice2= dices.Last();
+        var dices = DiceResult.Roll2Dices();
+        dice1 = dices.PrimaryDice;
+        dice2= dices.SecondaryDice;
     }
 
 }

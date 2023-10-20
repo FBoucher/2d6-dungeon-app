@@ -30,12 +30,30 @@ VALUES(2, 2, 'Blood suddenly spurts from the body. Gain the bloodied status. The
 
 
 -- rooms Level 1
-INSERT INTO 2d6db.rooms(roll, level, room_type, description, encounter, exits, is_unique)
-VALUES (11,1,'Empty space','This room is bare and seems to have been cleared out or forgotten about', 'The room is quiet. You hear nothing', 'Archways',false);
-INSERT INTO 2d6db.rooms(roll, level, room_type, description, encounter, exits, is_unique)
-VALUES (12,1,'Abandoned Gard post','There is dusty table...', 'Beneath the table is a pile of rubbish...', 'Wooden doors',false);
-INSERT INTO 2d6db.rooms(roll, level, room_type, description, encounter, exits, is_unique)
-VALUES (13,1,'Gard post','A small burner provides...', 'There is someone here...', 'Enforced doors',false);
+-- small
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (2,1,'Empty space', 'small','There is nothing in this small space', 'Archways',false);
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (3,1,'Strange Text', 'small','This narrow room connects the corridors and has no furniture. On the wall though...', 'Archways',false);
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (4,1,'Grakada Mural', 'small','There is a large mural of Grakada here. Her old faces smiles...', 'Archways',true);
+
+
+-- regular
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, encounter, exits, is_unique)
+VALUES (11,1,'Empty space', 'regular','This room is bare and seems to have been cleared out or forgotten about', 'The room is quiet. You hear nothing', 'Archways',false);
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, encounter, exits, is_unique)
+VALUES (12,1,'Abandoned Gard post', 'regular','There is dusty table...', 'Beneath the table is a pile of rubbish...', 'Wooden doors',false);
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, encounter, exits, is_unique)
+VALUES (13,1,'Gard post', 'regular','A small burner provides...', 'There is someone here...', 'Enforced doors',false);
+
+-- large
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (2,1,'Stone workshop', 'large','This large space has rough walls and piles of stone laying everywhere. There are...', 'Wooden doors',false);
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (3,1,'Grand hall', 'large','There are evently spaced pillars running along this large marble lined hall, ...', 'Archways',true);
+INSERT INTO 2d6db.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (4,1,'Church', 'large','This room is lined with pews and chairs. Behind am allar...', 'Wooden doors',true);
 
 
 -- demo adventurers

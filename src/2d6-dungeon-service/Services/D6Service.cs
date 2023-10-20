@@ -5,6 +5,8 @@ namespace c5m._2d6Dungeon;
 
 public class D6Service : ID6Service
 {
+
+    #region == Sercice =====
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _options;
     public D6Service(HttpClient httpClient)
@@ -12,13 +14,15 @@ public class D6Service : ID6Service
         _httpClient = httpClient;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
+    #endregion
 
+    #region == Adventurer =====
     public async Task<Adventurer> GetAdventurer(int id)
     {
         var result = await _httpClient.GetFromJsonAsync<AdventurerPreviewList>($"adventurer/id/{id.ToString()}");
         var adventurerPrev = result.value.First<AdventurerPreview>();
-            
-        return new Adventurer(adventurerPrev);    
+
+        return new Adventurer(adventurerPrev);
     }
 
     public async Task<AdventurerPreviewList?> GetAdventurerPreviews()
@@ -33,24 +37,34 @@ public class D6Service : ID6Service
         var response = await _httpClient.PutAsJsonAsync<AdventurerPreview>($"adventurer/id/{player.Id.ToString()}", dbPlayer);
         var status = response.EnsureSuccessStatusCode();
 
-        if(status.IsSuccessStatusCode)
+        if (status.IsSuccessStatusCode)
             return true;
         return false;
     }
 
-    private List<int> RollDices(int diceCount)
+    #endregion
+
+
+
+    #region == Rooms =====
+
+    public async Task<Room> GetRoom(int id)
     {
-        var die = new List<int> { 1,2,3,4,5,6 };
-        var shuffled = die.OrderBy(x => Guid.NewGuid()).Take(diceCount).ToList<int>(); 
-        return shuffled;
-    }
-    public List<int> Roll2Dices()
-    {
-        return RollDices(2);
+        var result = await _httpClient.GetFromJsonAsync<RoomList>($"room/id/{id.ToString()}");
+        var room = result.value.First<Room>();
+
+        return room;
     }
 
-    public int Roll1Dice()
+    public async Task<Room> RollRoom(int roll, string size)
     {
-        return RollDices(1).First();
+        // ex: http://localhost:5000/api/room/?$filter=roll eq 2 and size eq 'small'
+        var result = await _httpClient.GetFromJsonAsync<RoomList>($"room/?$filter=roll eq {roll.ToString()} and size eq '{size}'");
+        var room = result.value.First<Room>();
+
+        return room;
     }
+
+    #endregion
+
 }
