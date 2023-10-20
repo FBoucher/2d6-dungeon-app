@@ -19,6 +19,8 @@ public class GameTurn
     public async Task<GameTurn> ContinueTurn(DiceResult dResult)
     {
         switch(NextAction){
+            case(ActionType.StartDungeonLevel): StartDungeonLevel(dResult);
+                break;
             case(ActionType.RollForARoom): RolledForRoom(dResult);
                 break;
             case(ActionType.DoubleSizedRoom): FinishDoubleSizedRoom(dResult);
@@ -31,6 +33,24 @@ public class GameTurn
         return this;
     }
 
+    private void StartDungeonLevel(DiceResult dResult)
+    {
+        LastDiceResult = dResult;
+        int area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
+        if(area > 12){
+            LastDiceResult.PrimaryDice =  (int)Math.Ceiling(((decimal)LastDiceResult.PrimaryDice / 2));
+            LastDiceResult.SecondaryDice = (int)Math.Ceiling(((decimal)LastDiceResult.SecondaryDice / 2));
+            area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
+        }
+        if(area < 6){
+            LastDiceResult.PrimaryDice =  3;
+            LastDiceResult.SecondaryDice = 2; 
+        }
+        CurrentRoom = DraftCurrentRoom(LastDiceResult);
+        CurrentRoom.ExitsCount = 3;
+        NextAction = ActionType.DungeonStarted;
+        Message = "You are in the dungeon entrance";
+    }
 
     private void RolledForRoom(DiceResult dResult)
     {
@@ -167,5 +187,5 @@ public enum ActionType
     EndOfTurn,
     RollRoomDefinition,
     Encounter,
-    Waiting
+    DungeonStarted
 }

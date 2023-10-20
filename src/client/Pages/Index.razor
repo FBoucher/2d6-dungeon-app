@@ -46,7 +46,7 @@ else
         }
         @if(secondaryDice != 0)
         {
-            <img src="dices/dice@(secondaryDice).jpg" />
+            <img src="dices/purlple-dice@(secondaryDice).jpg" />
         }
     </div>
     <br/>
@@ -74,6 +74,7 @@ else
             currentTurn = new GameTurn(D6Service);
             isStartDisable = true;
             isSaveDisable = false;
+            currentTurn.NextAction = ActionType.StartDungeonLevel;
             SetNextActionLabel();
         }
     }
@@ -104,6 +105,9 @@ else
     private async void SetNextActionLabel(){
         switch(currentTurn.NextAction)
         {
+            case(ActionType.StartDungeonLevel): 
+                actionLabel = "Roll 2D6 to determine the Entrance of the dungeon.";
+                break;
             case(ActionType.RollForARoom): 
                 actionLabel = "Roll 2D6 to determine the size of the room.";
                 break;
@@ -126,6 +130,11 @@ else
                 actionLabel = "Encounter??";
                 //NewTurn();
                 break;  
+            case(ActionType.DungeonStarted): 
+                actionLabel = "The lobby has 3 exits";
+                await DrawRoom();
+                currentTurn.NextAction = ActionType.RollForARoom;
+                break; 
             case(ActionType.EndOfTurn): 
                 actionLabel = "Start a new turn";
                 //NewTurn();
