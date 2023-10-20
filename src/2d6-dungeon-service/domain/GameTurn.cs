@@ -85,13 +85,13 @@ public class GameTurn
         }
 
         switch(dResult.PrimaryDice){
-            case(1): CurrentRoom.Exits = 0;
+            case(1): CurrentRoom.ExitsCount = 0;
                 break;
-            case >=2 and <=3 : CurrentRoom.Exits = 1;
+            case >=2 and <=3 : CurrentRoom.ExitsCount = 1;
                 break;
-            case >=5 and <=6 : CurrentRoom.Exits = 2;
+            case >=5 and <=6 : CurrentRoom.ExitsCount = 2;
                 break;
-            default: CurrentRoom.Exits = 3;
+            default: CurrentRoom.ExitsCount = 3;
                 break;
         }
 
@@ -103,7 +103,7 @@ public class GameTurn
         }
         else
         {
-            NextAction = ActionType.RollRoomDefinition;
+            NextAction = ActionType.Encounter;
             Message = $"There {CurrentRoom.Exits} exits in this room.";
         }
 
@@ -118,28 +118,41 @@ public class GameTurn
         };
     }
 
-    private async Task<Room> RollRoomDefinition(DiceResult dResult){
+    private async Task RollRoomDefinition(DiceResult dResult){
+        LastDiceResult = dResult;
         int area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
         int roll = 0;
         string roomSize;
-        Room currentRoom;
+        Room room;
+
+        //temporary until more data
+        Random r = new Random();
+        int[]? values;
 
         switch(area){
             case(<6): 
-                roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
+                //roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
+                values = new[] { 2, 3, 4};
+                roll = values[r.Next(values.Length)];
                 roomSize = "small";
                 break;
             case >32 : 
-                roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
+                //roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
+                values = new[] { 2, 3, 4};
+                roll = values[r.Next(values.Length)];
                 roomSize = "large";
                 break;
             default: 
-                roll = int.Parse(string.Concat(LastDiceResult.PrimaryDice.ToString(),  LastDiceResult.SecondaryDice.ToString()));
+                //roll = int.Parse(string.Concat(LastDiceResult.PrimaryDice.ToString(),  LastDiceResult.SecondaryDice.ToString()));
+                values = new[] { 11, 12, 13};
+                roll = values[r.Next(values.Length)];
                 roomSize = "regular";
                 break;
         }
-        currentRoom = await D6Service.RollRoom(roll, roomSize);
-        return currentRoom;
+        room = await D6Service.RollRoom(roll, roomSize);
+        //TODO: Is Room Unique?
+        CurrentRoom.Description = room.description;
+        NextAction = ActionType.RollForExits;
     }
 
 }
@@ -152,5 +165,7 @@ public enum ActionType
     RollForExits,
     DrawRoom,
     EndOfTurn,
-    RollRoomDefinition
+    RollRoomDefinition,
+    Encounter,
+    Waiting
 }

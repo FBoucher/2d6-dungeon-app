@@ -31,6 +31,7 @@ else
         {
             <div class="col-md-12 text-right">
                 <p id="message">@currentTurn.Message</p>
+                <p id="message">@roomDescription</p>
             </div>
             <div class="col-md-12 text-right">
                 <button type="button" class="btn btn-outline-primary" @onclick=DoTurnAction>@actionLabel</button>
@@ -62,6 +63,7 @@ else
     public bool isStartDisable = false;
     public bool isSaveDisable = true;
     private string actionLabel = string.Empty;
+    private string roomDescription = string.Empty;
     private bool firstRender = true;
 
 
@@ -119,7 +121,11 @@ else
                 break; 
             case(ActionType.RollRoomDefinition):
                 actionLabel = "Roll 2D6 to see what's in that room.";
-                break; 
+                break;
+            case(ActionType.Encounter): 
+                actionLabel = "Encounter??";
+                //NewTurn();
+                break;  
             case(ActionType.EndOfTurn): 
                 actionLabel = "Start a new turn";
                 //NewTurn();
@@ -155,6 +161,10 @@ else
         primaryDice = dResult.PrimaryDice;
         secondaryDice = dResult.SecondaryDice;
         await currentTurn.ContinueTurn(dResult);
+
+        if(currentTurn.CurrentRoom != null){
+            roomDescription  = currentTurn.CurrentRoom.Description;
+        }
         SetNextActionLabel();
     }
 
@@ -169,6 +179,7 @@ else
 
     private async Task Reset(){
         primaryDice = secondaryDice = 0;
+        roomDescription = string.Empty;
         await JSRuntime.InvokeVoidAsync("ClearMap");
         StarGame();
     }
