@@ -1,11 +1,3 @@
-function getDocumentWidth() {
-  return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-};
-
-function getDocumentHeight() {
-  return Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-};
-
 
 var canvas;
 var context;
@@ -17,9 +9,6 @@ function onResize() {
   canvas = document.getElementById('dotCanvas');
   context = canvas.getContext('2d');
 
-  //vw = getDocumentWidth();
-  //vh = getDocumentHeight();
-
   vw = canvas.width;
   vh = canvas.height;
 
@@ -27,16 +16,28 @@ function onResize() {
 }
 
 function resizeCanvas() {
-  //canvas.width = vw;
-  //canvas.height = vh;
+  // Get the DPR and size of the canvas
+  const dpr = window.devicePixelRatio;
+  const rect = canvas.getBoundingClientRect();
+
+  // Set the "actual" size of the canvas
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+
+  // Scale the context to ensure correct drawing operations
+  context.scale(dpr, dpr);
+
+  // Set the "drawn" size of the canvas
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
   drawDots();
 }
 // dots
 function drawDots() {
 
-  var r = 0.5,
-      cw = 10,
-      ch = 10;
+  var r = 1,
+      cw = 30,
+      ch = 30;
   
   for (var x = 0; x < vw; x+=cw) {
     for (var y = 0; y < vh; y+=ch) {
@@ -50,13 +51,13 @@ function DrawRoom(posX, posY, width, height){
   context.fillStyle = '#000000'; 
   context.fillRect(posX, posY, width, height);
   context.stroke();
-  context.fillStyle = '#Ece7d7';
+  context.fillStyle = '#ffffff';
   context.fillRect(posX+1, posY+1, width-2, height-2);
   context.stroke();
 }
 
 function ClearMap(){
-  context.fillStyle = '#ffffff';
+  context.fillStyle = '#Ece7d7';
   context.clearRect(0, 0, vw, vh);  
   drawDots()
 }
