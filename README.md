@@ -8,13 +8,13 @@ This project is a digital version of the game, with creator's approval. It's a w
 
 ### Features
 
-- [] Help with the construction of your adventurer.
-- [] Save and load adventurers.
-- [] Save and load adventures.
+- [ ] Help with the construction of your adventurer.
+- [ ] Save and load adventurers.
+- [ ] Save and load adventures.
 - [X] Help with the rules when creating a new room.
 - [X] No need of physical dices.
-- [] Help drawing the map.
-- [] Help with battle rules  
+- [ ] Help drawing the map.
+- [ ] Help with battle rules  
 
 
 ### Contributing
