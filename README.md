@@ -18,6 +18,6 @@ This project is a digital version of the game, with creator's approval. It's a w
 
 
 ### Contributing
-**2d6-dungeon-app** is built for the community, by the community - and maintained by Frank Boucher. Your contributions are welcome! There a [diagram](medias/2d6-Dungeon-app_v0.1png) of the classes services and database tables to help visualizing the structure. Note that it's always evolving.
+**2d6-dungeon-app** is built for the community, by the community - and maintained by Frank Boucher. Your contributions are welcome! There a [diagram](medias/2d6-Dungeon-app_v0-1.png) of the classes services and database tables to help visualizing the structure. Note that it's always evolving.
 
 Take a look at [CONTRIBUTING](/CONTRIBUTING.md) for details.
