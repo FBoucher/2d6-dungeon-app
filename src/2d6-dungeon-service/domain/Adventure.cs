@@ -1,8 +1,36 @@
 ﻿namespace c5m._2d6Dungeon;
+using System.Text.Json;
 
 public class Adventure
 {
-    public Adventurer adventurer { get; set; }
-    public Dungeon dungeon { get; set; }
-    GameTurn gameTurn { get; set; }
+    public int Id { get; set; }
+    public Adventurer Adventurer { get; set; }
+    public Dungeon Dungeon { get; set; }
+    GameTurn GameTurn { get; set; }
+
+
+    public Adventure()
+    {
+        
+    }
+
+    public Adventure(AdventurePreview preview){
+        if(string.IsNullOrEmpty(preview.serialiazedObj)){
+            // todo: what should happens
+        }
+        else{
+            Adventure aComplete = DatabaseDecode(preview.serialiazedObj);
+            Id = aComplete.Id;
+            Adventurer = aComplete.Adventurer;
+            Dungeon = aComplete.Dungeon;
+            GameTurn = aComplete.GameTurn;
+        }
+    }
+
+    private static Adventure DatabaseDecode(string base64EncodedData) 
+    {
+        var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+        var jsonAdventure = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        return JsonSerializer.Deserialize<Adventure>(jsonAdventure);
+    }
 }

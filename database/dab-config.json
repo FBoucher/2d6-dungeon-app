@@ -93,6 +93,25 @@
           ]
         }
       ]
+    },
+    "adventure": {
+      "source": {
+        "object": "adventures",
+        "type": "table"
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }

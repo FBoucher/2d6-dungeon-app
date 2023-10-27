@@ -1,0 +1,23 @@
+﻿@page "/theadventure/{state}"
+@using c5m._2d6Dungeon;
+@inject ID6Service D6Service;
+
+
+<PageTitle>Adventure</PageTitle>
+
+@if (State == "new")
+{
+    @* <AdventurePicker @bind-ParentPlayer="adventure"></AdventurePicker> *@
+    <p>NEW</p>
+}
+else
+{
+    <AdventurePicker @bind-ParentAdventure="theAdventure"></AdventurePicker>
+
+}
+
+@code{
+    [Parameter]
+    public string State { get; set; }
+    public Adventure? theAdventure;
+}

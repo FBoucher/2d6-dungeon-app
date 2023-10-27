@@ -16,6 +16,30 @@ public class D6Service : ID6Service
     }
     #endregion
 
+    #region == Adventure =====
+
+    public async Task<int> GetSaveGameCount()
+    {
+        //todo: implement a save game in the database. 
+        return await Task.FromResult<int>(1);
+    }
+
+    public async Task<AdventurePreviewList?> GetAdventurePreviews()
+    {
+        return await _httpClient.GetFromJsonAsync<AdventurePreviewList?>("adventure?$select=id,adventurer_name,level,last_saved_datetime");
+    }
+
+    public async Task<Adventure> GetAdventure(int id)
+    {
+        var result = await _httpClient.GetFromJsonAsync<AdventurePreviewList>($"adventure/id/{id.ToString()}");
+        var adventurePrev = result.value.First<AdventurePreview>();
+
+        return new Adventure(adventurePrev);
+    }
+
+    #endregion
+
+
     #region == Adventurer =====
     public async Task<Adventurer> GetAdventurer(int id)
     {

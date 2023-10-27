@@ -1,0 +1,73 @@
+﻿@using c5m._2d6Dungeon;
+@using System.Text.Json;
+@inject ID6Service D6Service;
+
+<h3>Select the Adventure you would like to continue.</h3>
+@if (AdventurePreviews == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <!--th> </th-->
+                <th>Adventurer Name</th>
+                <th>Level</th>
+                <th>Last Saved Datetime</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in AdventurePreviews.value)
+            {
+                <tr style="cursor:pointer" @onclick="() => SelectAdventure(a.id)">
+                    <!--button type="button" class="btn btn-outline-primary btn-sm" >Select</button-->
+                    <td>@a.adventurer_name</td>
+                    <td>@a.level.ToString()</td>
+                    <td>@a.last_saved_datetime.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" disabled="true" class="btn btn-outline-primary" @onclick=CreateNewAdventure>New</button>
+        </div>
+    </div>
+}
+
+@code {
+
+    private AdventurePreviewList? AdventurePreviews;
+
+    [Parameter] public Adventure? ParentAdventure {get; set;}
+
+    [Parameter] public EventCallback<Adventure> ParentAdventureChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try{
+            AdventurePreviews = await D6Service.GetAdventurePreviews();    
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    
+    private void CreateNewAdventure(MouseEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+    private async Task SelectAdventure(int adventureId)
+    {
+        try{
+            ParentAdventure = await D6Service.GetAdventure(adventureId);
+            await ParentAdventureChanged.InvokeAsync(ParentAdventure);
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+}

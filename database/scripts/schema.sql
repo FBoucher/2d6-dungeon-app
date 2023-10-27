@@ -44,3 +44,12 @@ CREATE TABLE IF NOT EXISTS 2d6db.adventurers (
   serialiazedObj longtext DEFAULT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS 2d6db.adventures (
+  id int NOT NULL AUTO_INCREMENT,
+  adventurer_name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
+  last_saved_datetime varchar(50) DEFAULT NULL,
+  serialiazedObj longtext DEFAULT NULL,
+  PRIMARY KEY (id)
+);
