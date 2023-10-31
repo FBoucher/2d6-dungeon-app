@@ -11,7 +11,8 @@ public class Adventure
 
     public Adventure()
     {
-        
+        Adventurer = new Adventurer(CreationTools.GetAdventurerName());
+        Dungeon = new Dungeon();
     }
 
     public Adventure(AdventurePreview preview){

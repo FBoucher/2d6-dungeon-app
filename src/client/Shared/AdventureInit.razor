@@ -1,0 +1,121 @@
+﻿@using c5m._2d6Dungeon;
+@inject IJSRuntime JSRuntime 
+
+<h3>Adventure Initialization</h3>
+<div>To create a new adventure you will need: </div>
+
+<div class="jumbotron">
+    @* <h3>Create or select an Adventurer</h3> *@
+@if (selectedAdventurer == null)
+{
+    <AdventurerPicker @bind-ParentPlayer="selectedAdventurer"></AdventurerPicker>
+}
+else
+{
+    <div>
+        <p><b>Name:</b> @selectedAdventurer.Name</p>
+        <p><b>XP:</b> @selectedAdventurer.XP.ToString()</p>
+        <p><b>Level:</b> @selectedAdventurer.Level.ToString()</p>
+        <p><b>Copper Coins:</b> @selectedAdventurer.Coins.CupperCoins.ToString()</p>
+    </div>
+}  
+</div> 
+
+<div class="jumbotron">
+    <h3>Create a new Dungeon</h3>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+                <p id="message"></p>
+        </div>
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-outline-primary" @onclick=RollDices>@actionLabel</button>
+        </div>
+    </div>
+    <div>
+        @if(primaryDice != 0)
+        {
+            <img src="dices/dice@(primaryDice).jpg" />
+        }
+        @if(secondaryDice != 0)
+        {
+            <img src="dices/purlple-dice@(secondaryDice).jpg" />
+        }
+    </div>
+
+    <canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
+</div>  
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-outline-primary" @onclick="Generate">Generate</button>
+        <button type="button" class="btn btn-outline-primary" @onclick="StarGame" disabled="@isStartDisable">Start</button>
+    </div>
+</div>
+
+
+
+@code {
+
+    [Parameter] public Adventure? ParentAdventure {get; set;}
+
+    [Parameter] public EventCallback<Adventure> ParentAdventureChanged { get; set; }
+
+    private Adventure? betaAdventure;
+    public Adventurer? selectedAdventurer;
+    private bool isStartDisable = false;
+    private bool firstRender = true;
+    public int primaryDice = 0;
+    public int secondaryDice = 0;
+    private string actionLabel = "Roll 2D6 to determine the Entrance of the dungeon";
+    private MappedRoom entryRoom;
+
+    private void StarGame()
+    {
+        betaAdventure = new Adventure();
+        betaAdventure.Adventurer = selectedAdventurer;
+        betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
+        throw new NotImplementedException();
+        //todo: save the adventure
+    }
+
+    private void Generate()
+    {
+        betaAdventure = new Adventure();
+        isStartDisable = true;
+    }
+
+    private async Task RollDices()
+    {
+        await RenderCanvas() ;
+        var dResult = DiceResult.Roll2Dices();
+        primaryDice = dResult.PrimaryDice;
+        secondaryDice = dResult.SecondaryDice;
+        entryRoom = Dungeon.StartDungeonLevel(dResult);
+        await DrawRoom(entryRoom);
+        
+        actionLabel = "The lobby has 3 exits";
+    }
+
+    private async Task RenderCanvas() 
+    { 
+        if (firstRender) 
+        { 
+            firstRender = false;
+            await JSRuntime.InvokeVoidAsync("onResize");
+        } 
+    }
+
+    protected async Task DrawRoom(MappedRoom currentRoom) 
+    { 
+        int cubeSize = 30;
+        int dotRay = 1;
+        int x = 2;
+        int y = 2;
+        int gidX = (cubeSize * x);
+        int gidY = (cubeSize * y);
+
+        await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentRoom.Width*cubeSize, currentRoom.Height*cubeSize);
+    }
+
+}

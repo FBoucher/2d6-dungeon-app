@@ -7,13 +7,13 @@
 
 @if (State == "new")
 {
-    @* <AdventurePicker @bind-ParentPlayer="adventure"></AdventurePicker> *@
     <p>NEW</p>
+    <AdventureInit @bind-ParentAdventure="theAdventure"></AdventureInit>
 }
 else
 {
+    <p>LOAD</p>
     <AdventurePicker @bind-ParentAdventure="theAdventure"></AdventurePicker>
-
 }
 
 @code{
