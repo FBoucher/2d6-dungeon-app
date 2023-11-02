@@ -1,0 +1,26 @@
+﻿@using c5m._2d6Dungeon;
+
+<h3>AdventurerCreate</h3>
+
+<EditForm Model="@adventurer">
+
+    <div class="form-group row">
+        <label for="Name" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="adventurer.Name" />
+        </div>
+    </div>
+
+	@* <div class="form-group row">
+        <label for="Name" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="adventurer.Weapon" />
+        </div>
+    </div> *@
+
+</EditForm>
+
+@code {
+
+	private Adventurer adventurer = new Adventurer();
+}

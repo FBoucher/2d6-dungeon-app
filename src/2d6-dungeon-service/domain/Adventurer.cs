@@ -10,7 +10,7 @@ public class Adventurer
     public int HealthPoints { get; set; }
     public int XP { get; set; }
     public int Shift { get; set; }
-    public string Discipline { get; set; }
+    public int Discipline { get; set; }
     public int Precision { get; set; }
     public int Weapon { get; set; }
     public int AppliedRunes { get; set; }
@@ -34,7 +34,6 @@ public class Adventurer
         Name = string.Empty;
         Level = 1;
         XP = 0;
-        Discipline = string.Empty;
         Manoeuvres = new List<Manoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
         MagicScolls = new List<MagicScoll>();
@@ -47,6 +46,12 @@ public class Adventurer
         SideQuests = new List<string>();
         LiberatedPrisoners = 0;
         FavorOfTheGods = new FavorOfTheGods();
+
+        //Values from Core Rules
+        Shift = 2;
+        Discipline = 1;
+        Precision = 0;
+        HealthPoints = 10;
     }
     
     public Adventurer(string name)
@@ -54,7 +59,6 @@ public class Adventurer
         Name = name;
         Level = 1;
         XP = 0;
-        Discipline = string.Empty;
         Manoeuvres = new List<Manoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
         MagicScolls = new List<MagicScoll>();
@@ -67,6 +71,12 @@ public class Adventurer
         SideQuests = new List<string>();
         LiberatedPrisoners = 0;
         FavorOfTheGods = new FavorOfTheGods();
+
+        //Values from Core Rules
+        Shift = 2;
+        Discipline = 1;
+        Precision = 0;
+        HealthPoints = 10;
     }
 
     public Adventurer(AdventurerPreview preview){
@@ -76,7 +86,6 @@ public class Adventurer
             Name =  preview.name;
             XP = preview.xp;
             Level = preview.level;
-            Discipline = string.Empty;
             Manoeuvres = new List<Manoeuvre>();
             ArmourPieces = new List<ArmourPiece>();
             MagicScolls = new List<MagicScoll>();
@@ -89,6 +98,12 @@ public class Adventurer
             SideQuests = new List<string>();
             LiberatedPrisoners = 0;
             FavorOfTheGods = new FavorOfTheGods();
+
+            //Values from Core Rules
+            Shift = 2;
+            Discipline = 1;
+            Precision = 0;
+            HealthPoints = 10;
         }
         else
         {
@@ -110,6 +125,11 @@ public class Adventurer
             SideQuests = aComplete.SideQuests;
             LiberatedPrisoners = aComplete.LiberatedPrisoners;
             FavorOfTheGods = aComplete.FavorOfTheGods;
+
+            Shift = aComplete.Shift;
+            Discipline = aComplete.Discipline;
+            Precision = aComplete.Precision;
+            HealthPoints = aComplete.HealthPoints;
         }
     }
 

@@ -69,6 +69,13 @@ public class D6Service : ID6Service
     #endregion
 
 
+    #region == Adventurer Options =====
+
+    //public async Task<List<Weapon>> GetWeapons(){}
+
+
+    #endregion
+
 
     #region == Rooms =====
 
