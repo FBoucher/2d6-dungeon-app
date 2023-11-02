@@ -17,6 +17,15 @@ This project is a digital version of the game, with creator's approval. It's a w
 - [ ] Help with battle rules  
 
 
+### How to Run it Locally
+
+- You will need Docker, Docker Compose witch are included in [Docker Desktop](https://docs.docker.com/desktop/), and [.NET 7](https://dotnet.microsoft.com/en-us/download) installed.
+- Clone the repository locally.
+- From the repository's root folder start the database and API with the command: `docker compose -f .devcontainer/docker-compose.API.yml up -d` 
+- To start 2d6-dungeon-client, from Open the solution in VSCode or Visual Studio and press F5. Or from repository's root folder execute the command `dotnet run -p src/client`.
+- Navigate to http://localhost:5075 in your favorite web browser.
+
+
 ### Contributing
 **2d6-dungeon-app** is built for the community, by the community - and maintained by Frank Boucher. Your contributions are welcome! There a [diagram](medias/2d6-Dungeon-app_v0-1.png) of the classes services and database tables to help visualizing the structure. Note that it's always evolving.
 
