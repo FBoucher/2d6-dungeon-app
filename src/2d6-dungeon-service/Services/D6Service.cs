@@ -98,4 +98,37 @@ public class D6Service : ID6Service
 
     #endregion
 
+
+    #region == WeaponManoeuvre =====
+
+    public async Task<List<string>> GetWeapons()
+    {
+        var result = await _httpClient.GetFromJsonAsync<tempWeaponList>("weapon_manoeuvre?$select=weapon");
+        var weapons = result.value.GroupBy(w => new {w.weapon})
+                        .Select(w => w.First().weapon)
+                        .ToList();
+        return weapons;
+    }
+
+    //TODO: DO something cleaner
+    private class tempWeaponList
+    {
+        public List<tempWeapon> value { get; set; }
+    }
+
+    private class tempWeapon
+    {
+        public int id { get; set; }
+        public string weapon { get; set; }
+    }
+    // ==============
+
+    public async Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(string weapon, int level)
+    {
+        var q = $"weapon_manoeuvre?$filter=level eq {level} and weapon eq '{weapon}'";
+        return await _httpClient.GetFromJsonAsync<WeaponManoeuvreList>(q);
+    }
+
+    #endregion
 }
+

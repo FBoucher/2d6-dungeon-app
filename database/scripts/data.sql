@@ -59,3 +59,17 @@ VALUES (4,1,'Church', 'large','This room is lined with pews and chairs. Behind a
 -- demo adventurers
 INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Toby the Creator', 1, 100);
 INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Frank', 0, 0);
+
+
+-- weapon_manoeuvres
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'LONGSWORD', '1-2', 'DISGUISED SWOOP', '6D +2');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'LONGSWORD', '5-2', 'INCISIVE CUT', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'LONGSWORD', '3-2', 'THRUST', '6D');
+
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'GREATAXE', '1-2', 'WEIGHTED CHARGE', '6D +3');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'GREATAXE', '5-2', 'LOW SWISH', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'GREATAXE', '3-2', 'HACK', '6D');
+
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'HEAVY MACE', '1-2', 'SOLID BELTING', '6D +2');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'HEAVY MACE', '5-2', 'POMMEL THUMP', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'HEAVY MACE', '3-2', 'CARVING HIT', '6D +1');

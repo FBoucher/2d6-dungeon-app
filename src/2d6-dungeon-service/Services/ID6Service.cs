@@ -14,4 +14,8 @@ public interface ID6Service
 
     // Room
     Task<Room> RollRoom(int roll, string size);
+
+    // WeaponManoeuvre
+    Task<List<string>> GetWeapons();
+    Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(string weapon, int level);
 }

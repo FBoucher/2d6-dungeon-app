@@ -1,5 +1,6 @@
 ﻿@page "/fetchdata"
 @using c5m._2d6Dungeon;
+@inject ID6Service D6Service;
 @inject HttpClient Http
 @using System.Text.Json
 
@@ -34,10 +35,23 @@ else
             }
         </tbody>
     </table>
+
+    <div class="row justify-content-md-center">
+
+    <p>Test Fetching</p>
+    <div class="row align-items-center">
+        <button type="button" class="btn btn-outline-primary" @onclick="GetWeapons">Get Weapons</button> 
+
+        <input id="weaponName" @bind="weaponName" />
+        <button type="button" class="btn btn-outline-primary" @onclick="GetWeaponManoeuvres">Get Manoeuvre for</button>
+    </div>
+    
+</div>
 }
 
 @code {
     private RoomList? rooms;
+    private string weaponName = "LONGSWORD";
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,6 +63,26 @@ else
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
             rooms = new RoomList();
+        }
+    }
+
+    private async Task GetWeapons()
+    {
+        try{
+            var weapons = await D6Service.GetWeapons();
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+        }
+    }
+
+    private async Task GetWeaponManoeuvres()
+    {
+        try{
+            var manoeuvres = await D6Service.GetWeaponManoeuvreList(weaponName, 1);
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
         }
     }
 }
