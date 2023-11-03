@@ -14,7 +14,7 @@ public class Adventurer
     public int Precision { get; set; }
     public int Weapon { get; set; }
     public int AppliedRunes { get; set; }
-    public List<Manoeuvre>? Manoeuvres { get; set; }
+    public List<WeaponManoeuvre>? WeaponManoeuvres { get; set; }
     public List<ArmourPiece>? ArmourPieces { get; set; }
     public List<MagicScoll>? MagicScolls { get; set; }
     public int LegendStatusLevelTracker { get; set; }
@@ -34,7 +34,7 @@ public class Adventurer
         Name = string.Empty;
         Level = 1;
         XP = 0;
-        Manoeuvres = new List<Manoeuvre>();
+        WeaponManoeuvres = new List<WeaponManoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
         MagicScolls = new List<MagicScoll>();
         MagicPotions = new List<MagicPotion>();
@@ -59,7 +59,7 @@ public class Adventurer
         Name = name;
         Level = 1;
         XP = 0;
-        Manoeuvres = new List<Manoeuvre>();
+        WeaponManoeuvres = new List<WeaponManoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
         MagicScolls = new List<MagicScoll>();
         MagicPotions = new List<MagicPotion>();
@@ -86,7 +86,7 @@ public class Adventurer
             Name =  preview.name;
             XP = preview.xp;
             Level = preview.level;
-            Manoeuvres = new List<Manoeuvre>();
+            WeaponManoeuvres = new List<WeaponManoeuvre>();
             ArmourPieces = new List<ArmourPiece>();
             MagicScolls = new List<MagicScoll>();
             MagicPotions = new List<MagicPotion>();
@@ -113,7 +113,7 @@ public class Adventurer
             Level = aComplete.Level;
             XP = aComplete.XP;
             Discipline = aComplete.Discipline;
-            Manoeuvres = aComplete.Manoeuvres;
+            WeaponManoeuvres = aComplete.WeaponManoeuvres;
             ArmourPieces = aComplete.ArmourPieces;
             MagicScolls = aComplete.MagicScolls;
             MagicPotions = aComplete.MagicPotions;

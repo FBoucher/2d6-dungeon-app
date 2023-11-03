@@ -112,6 +112,25 @@
           ]
         }
       ]
+    },
+    "weapon_manoeuvre": {
+      "source": {
+        "object": "weapon_manoeuvres",
+        "type": "table"
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }
