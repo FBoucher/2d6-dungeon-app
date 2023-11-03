@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using c5m._2d6Dungeon.Services.Domain;
 
 namespace c5m._2d6Dungeon;
 
@@ -103,25 +104,13 @@ public class D6Service : ID6Service
 
     public async Task<List<string>> GetWeapons()
     {
-        var result = await _httpClient.GetFromJsonAsync<tempWeaponList>("weapon_manoeuvre?$select=weapon");
+        var result = await _httpClient.GetFromJsonAsync<WeaponList>("weapon_manoeuvre?$select=weapon");
         var weapons = result.value.GroupBy(w => new {w.weapon})
                         .Select(w => w.First().weapon)
                         .ToList();
         return weapons;
     }
 
-    //TODO: DO something cleaner
-    private class tempWeaponList
-    {
-        public List<tempWeapon> value { get; set; }
-    }
-
-    private class tempWeapon
-    {
-        public int id { get; set; }
-        public string weapon { get; set; }
-    }
-    // ==============
 
     public async Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(string weapon, int level)
     {
