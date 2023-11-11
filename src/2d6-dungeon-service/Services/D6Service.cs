@@ -12,8 +12,9 @@ public class D6Service : ID6Service
     private readonly JsonSerializerOptions _options;
     public D6Service(HttpClient httpClient)
     {
-        _httpClient = httpClient;
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _httpClient = httpClient;
+ 
     }
     #endregion
 
@@ -104,7 +105,7 @@ public class D6Service : ID6Service
 
     public async Task<WeaponList> GetWeapons()
     {
-        var result = await _httpClient.GetFromJsonAsync<WeaponList>("weapon");
+        var result = await _httpClient.GetFromJsonAsync<WeaponList>("weapon", _options);
         // var weapons = result.value.GroupBy(w => new {w.weapon})
         //                 .Select(w => w.First().weapon)
         //                 .ToList();
@@ -116,7 +117,7 @@ public class D6Service : ID6Service
     public async Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(int weaponId, int level)
     {
         var q = $"weapon_manoeuvre?$filter=level eq {level} and weapon_id eq {weaponId}";
-        return await _httpClient.GetFromJsonAsync<WeaponManoeuvreList>(q);
+        return await _httpClient.GetFromJsonAsync<WeaponManoeuvreList>(q, _options);
     }
 
     #endregion
