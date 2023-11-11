@@ -11,7 +11,9 @@
       "path": "/api"
     },
     "graphql": {
-      "enabled": false
+      "enabled": true,
+      "path": "/graphql",
+      "allow-introspection": true
     },
     "host": {
       "cors": {
@@ -25,6 +27,7 @@
       },
       "mode": "development",
       "authenticate-devmode-requests": false
+
     }
   },
   "entities": {
@@ -32,6 +35,13 @@
       "source": {
         "object": "rooms",
         "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "room",
+          "plural": "rooms"
+        }
       },
       "rest": {
         "enabled": true
@@ -41,16 +51,7 @@
           "role": "anonymous",
           "actions": [
             {
-              "action": "create"
-            },
-            {
-              "action": "read"
-            },
-            {
-              "action": "update"
-            },
-            {
-              "action": "delete"
+              "action": "*"
             }
           ]
         }
@@ -60,6 +61,13 @@
       "source": {
         "object": "body_searches",
         "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "bodySearch",
+          "plural": "bodySearches"
+        }
       },
       "rest": {
         "enabled": true
@@ -80,6 +88,13 @@
         "object": "adventurers",
         "type": "table"
       },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "adventurer",
+          "plural": "adventurers"
+        }
+      },
       "rest": {
         "enabled": true
       },
@@ -99,6 +114,13 @@
         "object": "adventures",
         "type": "table"
       },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "adventure",
+          "plural": "adventures"
+        }
+      },
       "rest": {
         "enabled": true
       },
@@ -117,6 +139,39 @@
       "source": {
         "object": "weapon_manoeuvres",
         "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "weapon_manoeuvre",
+          "plural": "weapon_manoeuvres"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
+    },
+    "weapons": {
+      "source": {
+        "object": "weapons",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "weapon",
+          "plural": "weapons"
+        }
       },
       "rest": {
         "enabled": true

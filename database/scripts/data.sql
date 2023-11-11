@@ -61,15 +61,21 @@ INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Toby the Creator', 1, 100
 INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Frank', 0, 0);
 
 
+-- weapons
+INSERT INTO 2d6db.weapons(id, name) VALUES(1, 'LONGSWORD');
+INSERT INTO 2d6db.weapons(id, name) VALUES(2, 'GREATAXE');
+INSERT INTO 2d6db.weapons(id, name) VALUES(3, 'HEAVY MACE');
+
+
 -- weapon_manoeuvres
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'LONGSWORD', '1-2', 'DISGUISED SWOOP', '6D +2');
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'LONGSWORD', '5-2', 'INCISIVE CUT', '6D +1');
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'LONGSWORD', '3-2', 'THRUST', '6D');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 1, '1-2', 'DISGUISED SWOOP', '6D +2');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 1, '5-2', 'INCISIVE CUT', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 1, '3-2', 'THRUST', '6D');
 
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'GREATAXE', '1-2', 'WEIGHTED CHARGE', '6D +3');
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'GREATAXE', '5-2', 'LOW SWISH', '6D +1');
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'GREATAXE', '3-2', 'HACK', '6D');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 2, '1-2', 'WEIGHTED CHARGE', '6D +3');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 2, '5-2', 'LOW SWISH', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 2, '3-2', 'HACK', '6D');
 
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'HEAVY MACE', '1-2', 'SOLID BELTING', '6D +2');
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'HEAVY MACE', '5-2', 'POMMEL THUMP', '6D +1');
-INSERT INTO 2d6db.weapon_manoeuvres(level, weapon ,dice_set, description, modifier) VALUES(1, 'HEAVY MACE', '3-2', 'CARVING HIT', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '1-2', 'SOLID BELTING', '6D +2');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '5-2', 'POMMEL THUMP', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '3-2', 'CARVING HIT', '6D +1');

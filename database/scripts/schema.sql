@@ -54,12 +54,20 @@ CREATE TABLE IF NOT EXISTS 2d6db.adventures (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS 2d6db.weapons (
+  id int NOT NULL,
+  name varchar(100) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS 2d6db.weapon_manoeuvres (
   id int NOT NULL AUTO_INCREMENT,
   level int DEFAULT 0,
-  weapon varchar(50) DEFAULT NULL,
+  weapon_id int DEFAULT NULL,
   dice_set varchar(5) DEFAULT '1-1',
   description varchar(100) DEFAULT NULL,
   modifier varchar(50) DEFAULT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  FOREIGN KEY (weapon_id)
+        REFERENCES weapons(id)
 );
