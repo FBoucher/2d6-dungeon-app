@@ -161,7 +161,7 @@
         }
       ]
     },
-    "weapons": {
+    "weapon": {
       "source": {
         "object": "weapons",
         "type": "table"

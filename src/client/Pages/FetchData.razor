@@ -6,7 +6,7 @@
 
 <PageTitle>Room list</PageTitle>
 
-<h1>Room list</h1>
+@* <h1>Room list</h1>
 
 @if (rooms == null)
 {
@@ -34,24 +34,83 @@ else
                 </tr>
             }
         </tbody>
-    </table>
+    </table> 
+}  
+*@
 
-    <div class="row justify-content-md-center">
+<hr/>
+
+<div class="row justify-content-md-center">
 
     <p>Test Fetching</p>
     <div class="row align-items-center">
         <button type="button" class="btn btn-outline-primary" @onclick="GetWeapons">Get Weapons</button> 
-
-        <input id="weaponName" @bind="weaponName" />
-        <button type="button" class="btn btn-outline-primary" @onclick="GetWeaponManoeuvres">Get Manoeuvre for</button>
+        
+@if (weapons == null)
+{
+        <p><em>no weapons loaded yet...</em></p>
+}
+else
+{       
+        <InputSelect Value="selectedWeaponId" 
+                     ValueExpression = "@( () => selectedWeaponId)"
+                     ValueChanged = "@( (int weaponId) => ValueChanged(weaponId))"
+                     class="form-control" 
+                     id ="selectedWeapon">
+            @if (selectedWeaponId == 0)
+            {
+                <option value="0" selected> - Select a Weapon - </option>
+            }
+            @foreach (var w in weapons.value)
+            {
+                <option value="@w.id"> @w.name </option>
+            }
+        </InputSelect>
+}
     </div>
+
+
+
+
+
+@if (manoeuvres == null)
+{
+    <p><em>No manoeuvres yet...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Weapon</th>
+                <th>Description</th>
+                <th>Modifier</th>
+                <th>Dice Set</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in manoeuvres.value)
+            {
+                <tr>
+                    <td>@weaponName</td>
+                    <td>@m.description</td>
+                    <td>@m.modifier</td>
+                    <td>@m.dice_set</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
     
 </div>
-}
+
 
 @code {
     private RoomList? rooms;
-    private string weaponName = "LONGSWORD";
+    private string weaponName = "a weapon...";
+    private WeaponList? weapons;
+    private WeaponManoeuvreList? manoeuvres;
+    private int selectedWeaponId = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,17 +128,21 @@ else
     private async Task GetWeapons()
     {
         try{
-            var weapons = await D6Service.GetWeapons();
+            weapons = await D6Service.GetWeapons();
         }
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
         }
     }
 
-    private async Task GetWeaponManoeuvres()
+    private async Task ValueChanged(int weaponId)
     {
         try{
-            var manoeuvres = await D6Service.GetWeaponManoeuvreList(weaponName, 1);
+            selectedWeaponId = weaponId;
+            if(selectedWeaponId > 0){
+                weaponName = weapons.value.Where(w => w.id == selectedWeaponId).Select(w => w.name).FirstOrDefault();
+                manoeuvres = await D6Service.GetWeaponManoeuvreList(selectedWeaponId, 1);
+            }
         }
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);

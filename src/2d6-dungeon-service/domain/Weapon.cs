@@ -1,9 +1,9 @@
-﻿namespace c5m._2d6Dungeon.Services.Domain;
+﻿namespace c5m._2d6Dungeon;
 
 public class Weapon
 {
     public int id { get; set; }
-    public string weapon { get; set; }
+    public string name { get; set; }
 }
 
 public class WeaponList

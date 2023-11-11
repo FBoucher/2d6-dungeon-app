@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using c5m._2d6Dungeon.Services.Domain;
+using c5m._2d6Dungeon;
 
 namespace c5m._2d6Dungeon;
 
@@ -102,19 +102,20 @@ public class D6Service : ID6Service
 
     #region == WeaponManoeuvre =====
 
-    public async Task<List<string>> GetWeapons()
+    public async Task<WeaponList> GetWeapons()
     {
-        var result = await _httpClient.GetFromJsonAsync<WeaponList>("weapon_manoeuvre?$select=weapon");
-        var weapons = result.value.GroupBy(w => new {w.weapon})
-                        .Select(w => w.First().weapon)
-                        .ToList();
-        return weapons;
+        var result = await _httpClient.GetFromJsonAsync<WeaponList>("weapon");
+        // var weapons = result.value.GroupBy(w => new {w.weapon})
+        //                 .Select(w => w.First().weapon)
+        //                 .ToList();
+        // return weapons;
+        return result;
     }
 
 
-    public async Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(string weapon, int level)
+    public async Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(int weaponId, int level)
     {
-        var q = $"weapon_manoeuvre?$filter=level eq {level} and weapon eq '{weapon}'";
+        var q = $"weapon_manoeuvre?$filter=level eq {level} and weapon_id eq {weaponId}";
         return await _httpClient.GetFromJsonAsync<WeaponManoeuvreList>(q);
     }
 
