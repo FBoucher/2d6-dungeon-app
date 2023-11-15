@@ -1,5 +1,6 @@
 ﻿@page "/fetchdata"
 @using c5m._2d6Dungeon;
+@using Microsoft.AspNetCore.Components.QuickGrid;
 @inject ID6Service D6Service;
 @inject HttpClient Http
 @using System.Text.Json
@@ -79,27 +80,14 @@ else
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Weapon</th>
-                <th>Description</th>
-                <th>Modifier</th>
-                <th>Dice Set</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var m in manoeuvres.value)
-            {
-                <tr>
-                    <td>@weaponName</td>
-                    <td>@m.Description</td>
-                    <td>@m.Modifier</td>
-                    <td>@m.DiceSet</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="grid">
+        <QuickGrid Items="@manoeuvresQueryable">
+            <PropertyColumn Title="Weapon" Property="@(m => weaponName)" />
+            <PropertyColumn Property="@(m => m.Description)" Sortable="true" />
+            <PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
+            <PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
+        </QuickGrid>
+    </div>
 }
     
 </div>
@@ -111,6 +99,8 @@ else
     private WeaponList? weapons;
     private WeaponManoeuvreList? manoeuvres;
     private int selectedWeaponId = 1;
+
+    IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,6 +132,7 @@ else
             if(selectedWeaponId > 0){
                 weaponName = weapons.value.Where(w => w.Id == selectedWeaponId).Select(w => w.Name).FirstOrDefault();
                 manoeuvres = await D6Service.GetWeaponManoeuvreList(selectedWeaponId, 1);
+                manoeuvresQueryable = manoeuvres.value.AsQueryable();
             }
         }
         catch(Exception ex){

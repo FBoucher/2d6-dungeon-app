@@ -55,6 +55,7 @@ docker run -it -v "C:\dev\github\fboucher\2d6-dungeon-app\src\:/App/configs" -p 
 
 note: Password need to be strong otherwise container will stop.
 
+
 ```bash
 
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=1rootPassword" -p 1433:1433 --name sql1 -hostname sql1 -d mcr.microsoft.com/mssql/server:2022-latest
