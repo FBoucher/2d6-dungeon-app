@@ -1,4 +1,5 @@
 ﻿@using c5m._2d6Dungeon;
+@using Microsoft.AspNetCore.Components.QuickGrid;
 @using System.Text.Json;
 @inject ID6Service D6Service;
 
@@ -9,27 +10,16 @@
 }
 else
 {
-    <table class="table table-hover table-striped">
-        <thead>
-            <tr>
-                <!--th> </th-->
-                <th>Name</th>
-                <th>XP</th>
-                <th>Level</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var c in adventurers.value)
-            {
-                <tr style="cursor:pointer" @onclick="() => SelectPlayer(c.id)">
-                    <!--button type="button" class="btn btn-outline-primary btn-sm" >Select</button-->
-                    <td>@c.name</td>
-                    <td>@c.xp.ToString()</td>
-                    <td>@c.level.ToString()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="grid">
+        <QuickGrid Items="@adventurersQueryable" class="table table-hover table-striped">
+            <TemplateColumn Title="">
+                <button @onclick="@(() => SelectPlayer(context.id))" class="btn btn-outline-secondary btn-sm" >Select</button>
+            </TemplateColumn>
+            <PropertyColumn Property="@(c => c.name)" Sortable="true" />
+            <PropertyColumn Property="@(c => c.xp.ToString())" />
+            <PropertyColumn Property="@(c => c.level.ToString())" Sortable="true" />
+        </QuickGrid>
+    </div>
     <div class="row">
         <div class="col-md-12 text-right">
             <button type="button" disabled="true" class="btn btn-outline-primary" @onclick=CreateNewAdventurer>New</button>
@@ -40,6 +30,7 @@ else
 @code {
 
     private AdventurerPreviewList? adventurers;
+    IQueryable<AdventurerPreview>? adventurersQueryable;
 
     [Parameter] public Adventurer? ParentPlayer {get; set;}
 
@@ -48,7 +39,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         try{
-            adventurers = await D6Service.GetAdventurerPreviews();    
+            adventurers = await D6Service.GetAdventurerPreviews();  
+            adventurersQueryable = adventurers.value.AsQueryable();  
         }
         catch(Exception ex){
             Console.WriteLine("Oops! --> " + ex.Message);
