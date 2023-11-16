@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using c5m._2d6Dungeon.Game;
 
 namespace c5m._2d6Dungeon;
 

@@ -1,26 +1,137 @@
 ﻿@using c5m._2d6Dungeon;
+@using Microsoft.AspNetCore.Components.QuickGrid;
+@inject ID6Service D6Service;
 
 <h3>AdventurerCreate</h3>
 
-<EditForm Model="@adventurer">
+<EditForm Model="@ParentAdventurer">
 
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Adventurer Details
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            <div class="form-group row">
+                <label for="ParentAdventurer.Name" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="ParentAdventurer.Name" />
+                </div>
+            </div>
+        </div>
+        </div> 
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                Weapon & Manoeuvres
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+@if (weapons == null)
+{
+                <p><em>no weapons loaded yet...</em></p>
+}
+else
+{       
+                <div class="form-group row">
+                    <label for="WeaponId" class="col-sm-2 col-form-label">Weapon</label>
+                    <div class="col-sm-10">
+                        <InputSelect Value="selectedWeaponId" 
+                                    ValueExpression = "@( () => selectedWeaponId)"
+                                    ValueChanged = "@( (int weaponId) => WeaponSelected(weaponId))"
+                                    class="form-control" 
+                                    id ="selectedWeapon">
+                            @if (selectedWeaponId == 0)
+                            {
+                                <option value="0" selected> - Select a Weapon - </option>
+                            }
+                            @foreach (var w in weapons.value)
+                            {
+                                <option value="@w.Id"> @w.Name </option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+}
+
+@if (manoeuvresQueryable == null)
+{
+    <p><em>Select a wepon first</em></p>
+}
+else
+{
     <div class="form-group row">
-        <label for="Name" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
-            <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="adventurer.Name" />
+                    <label for="WeaponId" class="col-sm-2 col-form-label">Manoeuvres</label>
+                    <div class="col-sm-10">
+                        <div class="grid">
+                            <QuickGrid Items="@manoeuvresQueryable">
+                                <PropertyColumn Title="Weapon" Property="@(m => weaponName)" />
+                                <PropertyColumn Property="@(m => m.Description)" Sortable="true" />
+                                <PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
+                                <PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
+                            </QuickGrid>
+                        </div>
+                    </div>
+    </div>
+}
+            </div>
         </div>
     </div>
+</div>
 
-	@* <div class="form-group row">
-        <label for="Name" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
-            <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="adventurer.Weapon" />
-        </div>
-    </div> *@
 
 </EditForm>
 
 @code {
+    
+    [Parameter] public Game.Adventurer? ParentAdventurer {get; set;}
+    [Parameter] public EventCallback<Game.Adventurer> ParentAdventurerChanged { get; set; }
+        
+    private WeaponList? weapons;
+    private int selectedWeaponId = 1;
+    private string weaponName = string.Empty;
+    //private WeaponManoeuvreList? manoeuvres;
+    private IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
 
-	private Adventurer adventurer = new Adventurer();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try{
+            ParentAdventurer = new Game.Adventurer();
+            weapons = await D6Service.GetWeapons();
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+        }
+    }
+
+
+    private async Task WeaponSelected(int weaponId)
+    {
+        try{
+            selectedWeaponId = weaponId;
+            if(selectedWeaponId > 0){
+                weaponName = weapons.value.Where(w => w.Id == selectedWeaponId).Select(w => w.Name).FirstOrDefault();
+                var manoeuvres = await D6Service.GetWeaponManoeuvreList(selectedWeaponId, 1);
+                manoeuvresQueryable = manoeuvres.value.AsQueryable();
+            }
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+        }
+    }
+
+
 }

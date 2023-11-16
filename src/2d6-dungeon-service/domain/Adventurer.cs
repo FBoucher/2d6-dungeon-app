@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace c5m._2d6Dungeon;
+namespace c5m._2d6Dungeon.Game;
 
 public class Adventurer
 {

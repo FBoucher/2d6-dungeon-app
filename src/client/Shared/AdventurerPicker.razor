@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.QuickGrid;
 @using System.Text.Json;
 @inject ID6Service D6Service;
+@inject NavigationManager Navigation;
 
 <h3>Select a Adventurer</h3>
 @if (adventurers == null)
@@ -22,7 +23,7 @@ else
     </div>
     <div class="row">
         <div class="col-md-12 text-right">
-            <button type="button" disabled="true" class="btn btn-outline-primary" @onclick=CreateNewAdventurer>New</button>
+            <button type="button" class="btn btn-outline-primary" @onclick=CreateNewAdventurer>New</button>
         </div>
     </div>
 }
@@ -32,9 +33,9 @@ else
     private AdventurerPreviewList? adventurers;
     IQueryable<AdventurerPreview>? adventurersQueryable;
 
-    [Parameter] public Adventurer? ParentPlayer {get; set;}
+    [Parameter] public Game.Adventurer? ParentPlayer {get; set;}
 
-    [Parameter] public EventCallback<Adventurer> ParentPlayerChanged { get; set; }
+    [Parameter] public EventCallback<Game.Adventurer> ParentPlayerChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,7 +51,7 @@ else
     
     private void CreateNewAdventurer(MouseEventArgs e)
     {
-        throw new NotImplementedException();
+        Navigation.NavigateTo("adventurer/new");
     }
     private async Task SelectPlayer(int playerId)
     {
