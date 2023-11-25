@@ -1,8 +1,8 @@
 
 
-CREATE TABLE IF NOT EXISTS 2d6db.starting_amours (
+CREATE TABLE IF NOT EXISTS 2d6db.armour_pieces (
   id int NOT NULL AUTO_INCREMENT,
-  armour_type varchar(255) DEFAULT NULL,
+  name varchar(255) DEFAULT NULL,
   dice_set int DEFAULT 0,
   modifier varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)

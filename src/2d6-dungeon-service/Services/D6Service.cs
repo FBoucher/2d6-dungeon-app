@@ -122,5 +122,19 @@ public class D6Service : ID6Service
     }
 
     #endregion
+
+
+
+    #region == ArmourPiece =====
+
+    public async Task<ArmourPieceList> GetArmourPieces()
+    {
+        var result = await _httpClient.GetFromJsonAsync<ArmourPieceList>("armour_piece", _options);
+        return result;
+    }
+
+
+
+    #endregion
 }
 

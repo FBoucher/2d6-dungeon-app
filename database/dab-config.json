@@ -186,6 +186,32 @@
           ]
         }
       ]
+    },
+    "armour_piece": {
+      "source": {
+        "object": "armour_pieces",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "armour_piece",
+          "plural": "armour_pieces"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }

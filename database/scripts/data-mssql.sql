@@ -1,12 +1,12 @@
 
 -- Starting Amour
-INSERT INTO dbo.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO dbo.armour_pieces(name, dice_set, modifier)
 VALUES('Jerkin', 4, '-1 Damage');
-INSERT INTO dbo.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO dbo.armour_pieces(name, dice_set, modifier)
 VALUES('Padded Tunic', 5, '-1 Damage');
-INSERT INTO dbo.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO dbo.armour_pieces(name, dice_set, modifier)
 VALUES('Quilted Coat', 3, '-1 Damage');
-INSERT INTO dbo.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO dbo.armour_pieces(name, dice_set, modifier)
 VALUES('Hide doublet', 2, '-1 Damage');
 
 -- Starting Scroll
