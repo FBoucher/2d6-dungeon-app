@@ -50,8 +50,9 @@ else
                         <InputSelect Value="selectedWeaponId" 
                                     ValueExpression = "@( () => selectedWeaponId)"
                                     ValueChanged = "@( (int weaponId) => WeaponSelected(weaponId))"
-                                    class="form-control" 
-                                    id ="selectedWeapon">
+                                    class="form-control dropdown" 
+                                    id ="selectedWeapon"
+                                    disabled="@isSwitchWeaponPossible" >
                             @if (selectedWeaponId == 0)
                             {
                                 <option value="0" selected> - Select a Weapon - </option>
@@ -72,11 +73,21 @@ else
 else
 {
     <div class="form-group row">
+                    <p>Pick two Starting Manoeuvres</p>
                     <label for="WeaponId" class="col-sm-2 col-form-label">Manoeuvres</label>
                     <div class="col-sm-10">
                         <div class="grid">
                             <QuickGrid Items="@manoeuvresQueryable">
-                                <PropertyColumn Title="Weapon" Property="@(m => weaponName)" />
+                                <TemplateColumn Title="" Context="manoeuvre">
+                                    <div class="btn-group-toggle" data-toggle="buttons">
+                                    <button @onclick="@(() => SelectManoeuvre(manoeuvre.Id))" 
+                                            id="@manoeuvre.Id"
+                                            type="button" 
+                                            class="btn btn-outline-primary" 
+                                            data-bs-toggle="button" 
+                                            autocomplete="off" >Select</button>
+                                    </div>
+                                </TemplateColumn>
                                 <PropertyColumn Property="@(m => m.Description)" Sortable="true" />
                                 <PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
                                 <PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
@@ -101,9 +112,9 @@ else
     private WeaponList? weapons;
     private int selectedWeaponId = 1;
     private string weaponName = string.Empty;
-    //private WeaponManoeuvreList? manoeuvres;
     private IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
-
+    private List<int> selectedManoeuvres = new List<int>();
+    private bool isSwitchWeaponPossible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -111,6 +122,7 @@ else
         try{
             ParentAdventurer = new Game.Adventurer();
             weapons = await D6Service.GetWeapons();
+            WeaponSelected(weapons.value.First().Id);
         }
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
@@ -131,6 +143,25 @@ else
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
         }
+    }
+
+    private async Task SelectManoeuvre(int manoeuvreId)
+    {
+        if(selectedManoeuvres.Contains(manoeuvreId) ){
+            selectedManoeuvres.Remove(manoeuvreId);
+        }
+        else if(selectedManoeuvres.Count < 2){
+            selectedManoeuvres.Add(manoeuvreId);
+        }
+
+        if(selectedManoeuvres.Count > 0)
+            {
+                isSwitchWeaponPossible = true;
+            }
+        else
+            {
+                isSwitchWeaponPossible = false;
+            }
     }
 
 
