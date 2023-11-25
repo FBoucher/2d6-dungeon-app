@@ -2,11 +2,12 @@
 @using Microsoft.AspNetCore.Components.QuickGrid;
 @inject ID6Service D6Service;
 
-<h3>AdventurerCreate</h3>
+<h3>Create an Adventurer</h3>
 
 <EditForm Model="@ParentAdventurer">
 
 <div id="accordion">
+    @* == Player's name ===== *@
     <div class="card">
         <div class="card-header" id="headingOne">
             <h5 class="mb-0">
@@ -27,6 +28,7 @@
         </div>
         </div> 
     </div>
+    @* == Weapon & Manoeuvres ===== *@
     <div class="card">
         <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
@@ -99,6 +101,39 @@ else
             </div>
         </div>
     </div>
+    @* == Armour ===== *@
+    <div class="card">
+        <div class="card-header" id="headingArmour">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseArmour" aria-expanded="true" aria-controls="collapseArmour">
+                Armour
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseArmour" class="collapse" aria-labelledby="headingArmour" data-parent="#accordion">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Select ONE piece of amour</label>
+                <QuickGrid Items="@armourPiecesQueryable" class="table table-hover table-striped">
+                    <TemplateColumn Title="" Context="armourPiece">
+                        <div class="btn-group-toggle" data-toggle="buttons">
+                            <button @onclick="@(() => SelectArmourPiece(armourPiece.Id))" 
+                                    id="@armourPiece.Id"
+                                    type="button" 
+                                    class="btn btn-outline-primary" 
+                                    data-bs-toggle="button" 
+                                    autocomplete="off" >Select</button>
+                        </div>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(a => a.Name)" Sortable="true" />
+                    <PropertyColumn Property="@(a => a.DiceSet)" />
+                    <PropertyColumn Property="@(a => a.Modifier)" Sortable="true" />
+                </QuickGrid>
+            </div>
+        </div>
+        </div> 
+    </div>
 </div>
 
 
@@ -111,8 +146,10 @@ else
         
     private WeaponList? weapons;
     private int selectedWeaponId = 1;
+    private int selectedArmourId = 0;
     private string weaponName = string.Empty;
     private IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
+    private IQueryable<ArmourPiece>? armourPiecesQueryable;
     private List<int> selectedManoeuvres = new List<int>();
     private bool isSwitchWeaponPossible = false;
 
@@ -123,6 +160,9 @@ else
             ParentAdventurer = new Game.Adventurer();
             weapons = await D6Service.GetWeapons();
             WeaponSelected(weapons.value.First().Id);
+
+            armourPiecesQueryable = (await D6Service.GetArmourPieces()).value.AsQueryable();
+
         }
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
@@ -162,6 +202,11 @@ else
             {
                 isSwitchWeaponPossible = false;
             }
+    }
+
+    private async Task SelectArmourPiece(int armourPieceId)
+    {
+        selectedArmourId = armourPieceId;
     }
 
 
