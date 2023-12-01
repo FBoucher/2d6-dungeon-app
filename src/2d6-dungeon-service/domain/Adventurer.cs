@@ -16,7 +16,7 @@ public class Adventurer
     public int AppliedRunes { get; set; }
     public List<WeaponManoeuvre>? WeaponManoeuvres { get; set; }
     public List<ArmourPiece>? ArmourPieces { get; set; }
-    public List<MagicScoll>? MagicScolls { get; set; }
+    public List<MagicScroll>? MagicScrolls { get; set; }
     public int LegendStatusLevelTracker { get; set; }
     public List<MagicPotion>? MagicPotions { get; set; }
     public int Bloodied { get; set; }
@@ -28,6 +28,7 @@ public class Adventurer
     public int LiberatedPrisoners { get; set; }
     public List<string>? SideQuests { get; set; }
     public FavorOfTheGods FavorOfTheGods { get; set; }
+    public int Rations { get; set; }
     
     public Adventurer()
     {
@@ -36,7 +37,7 @@ public class Adventurer
         XP = 0;
         WeaponManoeuvres = new List<WeaponManoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
-        MagicScolls = new List<MagicScoll>();
+        MagicScrolls = new List<MagicScroll>();
         MagicPotions = new List<MagicPotion>();
         LegendStatusLevelTracker = 0;
         Fever = false;
@@ -52,6 +53,7 @@ public class Adventurer
         Discipline = 1;
         Precision = 0;
         HealthPoints = 10;
+        Rations = 3;
     }
     
     public Adventurer(string name)
@@ -61,7 +63,7 @@ public class Adventurer
         XP = 0;
         WeaponManoeuvres = new List<WeaponManoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
-        MagicScolls = new List<MagicScoll>();
+        MagicScrolls = new List<MagicScroll>();
         MagicPotions = new List<MagicPotion>();
         LegendStatusLevelTracker = 0;
         Fever = false;
@@ -77,6 +79,7 @@ public class Adventurer
         Discipline = 1;
         Precision = 0;
         HealthPoints = 10;
+        Rations = 3;
     }
 
     public Adventurer(AdventurerPreview preview){
@@ -88,7 +91,7 @@ public class Adventurer
             Level = preview.level;
             WeaponManoeuvres = new List<WeaponManoeuvre>();
             ArmourPieces = new List<ArmourPiece>();
-            MagicScolls = new List<MagicScoll>();
+            MagicScrolls = new List<MagicScroll>();
             MagicPotions = new List<MagicPotion>();
             LegendStatusLevelTracker = 0;
             Fever = false;
@@ -104,6 +107,7 @@ public class Adventurer
             Discipline = 1;
             Precision = 0;
             HealthPoints = 10;
+            Rations = 3;
         }
         else
         {
@@ -115,7 +119,7 @@ public class Adventurer
             Discipline = aComplete.Discipline;
             WeaponManoeuvres = aComplete.WeaponManoeuvres;
             ArmourPieces = aComplete.ArmourPieces;
-            MagicScolls = aComplete.MagicScolls;
+            MagicScrolls = aComplete.MagicScrolls;
             MagicPotions = aComplete.MagicPotions;
             LegendStatusLevelTracker = aComplete.LegendStatusLevelTracker;
             Fever = aComplete.Fever;
@@ -130,6 +134,7 @@ public class Adventurer
             Discipline = aComplete.Discipline;
             Precision = aComplete.Precision;
             HealthPoints = aComplete.HealthPoints;
+            Rations = aComplete.Rations;
         }
     }
 

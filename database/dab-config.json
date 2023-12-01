@@ -212,6 +212,32 @@
           ]
         }
       ]
+    },
+    "magic_scroll": {
+      "source": {
+        "object": "magic_scrolls",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "magic_scroll",
+          "plural": "magic_scrolls"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }

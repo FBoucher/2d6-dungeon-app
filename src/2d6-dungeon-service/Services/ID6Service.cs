@@ -20,6 +20,10 @@ public interface ID6Service
     Task<WeaponList> GetWeapons();
     Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(int weaponId, int level);
 
-     // WeaponManoeuvre
+     // ArmourPieces
     Task<ArmourPieceList> GetArmourPieces();
+
+
+    // MagicScroll
+    Task<MagicScrollList> GetMagicScrolls();
 }
