@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS 2d6db.body_searches (
 );
 
 
+CREATE TABLE IF NOT EXISTS 2d6db.magic_potions (
+  id int NOT NULL AUTO_INCREMENT,
+  potion_type varchar(255) NOT NULL,
+  modifier varchar(255) NOT NULL,
+  duration varchar(50) DEFAULT NULL,
+  cost varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS 2d6db.magic_scrolls (
   id int NOT NULL AUTO_INCREMENT,
   scroll_type varchar(255) NOT NULL,

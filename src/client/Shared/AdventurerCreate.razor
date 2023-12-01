@@ -1,6 +1,7 @@
 ﻿@using c5m._2d6Dungeon;
 @using Microsoft.AspNetCore.Components.QuickGrid;
 @inject ID6Service D6Service;
+@inject NavigationManager Navigation;
 
 <h3>Create an Adventurer</h3>
 
@@ -169,14 +170,14 @@ else
     </div>
 </div>
 
-
+<button @onclick="CreateAndSaveAdventurer">Save Adventurer</button>
 </EditForm>
 
 @code {
-    
+
     [Parameter] public Game.Adventurer? ParentAdventurer {get; set;}
     [Parameter] public EventCallback<Game.Adventurer> ParentAdventurerChanged { get; set; }
-        
+
     private WeaponList? weapons;
     private int selectedWeaponId = 1;
     private int selectedArmourId = 0;
@@ -231,13 +232,13 @@ else
         }
 
         if(selectedManoeuvres.Count > 0)
-            {
-                isSwitchWeaponPossible = true;
-            }
+        {
+            isSwitchWeaponPossible = true;
+        }
         else
-            {
-                isSwitchWeaponPossible = false;
-            }
+        {
+            isSwitchWeaponPossible = false;
+        }
     }
 
     private async Task SelectArmourPiece(int armourPieceId)
@@ -249,5 +250,26 @@ else
     {
         selectedMagicScrollId = magicScollId;
     }
+    private async Task CreateAndSaveAdventurer()
+    {
+        MagicPotion InitialPotion = await D6Service.GetInitialMagicPotion();
+        
+        ParentAdventurer.Weapon = weapons.value.Single<Weapon>(w => w.Id == selectedWeaponId);
+        foreach(var mID in selectedManoeuvres)
+        {
+            ParentAdventurer.WeaponManoeuvres.Add(manoeuvresQueryable.Where<WeaponManoeuvre>(m => m.Id == mID).First<WeaponManoeuvre>());
+        }
 
+        ParentAdventurer.ArmourPieces.Add(armourPiecesQueryable.Where<ArmourPiece>(a => a.Id == selectedArmourId).First<ArmourPiece>());
+        ParentAdventurer.MagicScrolls.Add(magicScollsQueryable.Where<MagicScroll>(s => s.Id == selectedMagicScrollId).First<MagicScroll>());
+
+        ParentAdventurer.MagicPotions.Add(InitialPotion);
+
+        var result = await D6Service.AdventurerCreate(ParentAdventurer);
+
+        if (result){
+             Navigation.NavigateTo("theadventure/new");
+        }
+
+    }
 }

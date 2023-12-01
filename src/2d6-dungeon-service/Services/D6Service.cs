@@ -69,6 +69,18 @@ public class D6Service : ID6Service
         return false;
     }
 
+    public async Task<bool> AdventurerCreate(Adventurer player)
+    {
+        var dbPlayer = new AdventurerPreview(player);
+
+        var response = await _httpClient.PostAsJsonAsync<AdventurerPreview>($"adventurer", dbPlayer);
+        var status = response.EnsureSuccessStatusCode();
+
+        if (status.IsSuccessStatusCode)
+            return true;
+        return false;
+    }
+
     #endregion
 
 
@@ -142,6 +154,19 @@ public class D6Service : ID6Service
     {
         var result = await _httpClient.GetFromJsonAsync<MagicScrollList>("magic_scroll", _options);
         return result ?? new MagicScrollList();
+    }
+
+    #endregion
+
+
+    #region == MagicPotion =====
+
+
+    public async Task<MagicPotion> GetInitialMagicPotion()
+    {
+        var q = $"magic_potion?$filter=potion_type eq 'HEALING'";
+        var result = await _httpClient.GetFromJsonAsync<MagicPotionlList>(q);
+        return result.value.First<MagicPotion>();
     }
 
     #endregion

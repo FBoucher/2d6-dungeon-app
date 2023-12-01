@@ -12,6 +12,8 @@ public interface ID6Service
     Task<AdventurerPreviewList?> GetAdventurerPreviews();
     Task<Adventurer> GetAdventurer(int id);
     Task<bool> SaveAdventurer(Adventurer player);
+    Task<bool> AdventurerCreate(Adventurer player);
+    
 
     // Room
     Task<Room> RollRoom(int roll, string size);
@@ -26,4 +28,7 @@ public interface ID6Service
 
     // MagicScroll
     Task<MagicScrollList> GetMagicScrolls();
+
+    // MagicPotion
+    Task<MagicPotion> GetInitialMagicPotion();
 }

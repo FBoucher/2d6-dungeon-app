@@ -1,7 +1,14 @@
-﻿namespace c5m._2d6Dungeon;
+﻿using System.Text.Json.Serialization;
+
+namespace c5m._2d6Dungeon;
 
 public class MagicPotion
 {
-    public string Name { get; set; }
-    public string EffectModifier { get; set; }
+    public int Id { get; set; }
+
+    [JsonPropertyName("potion_type")]
+    public string PotionType { get; set; }
+    public string Modifier { get; set; }
+    public string Duration { get; set; }
+    public string Cost { get; set; }
 }

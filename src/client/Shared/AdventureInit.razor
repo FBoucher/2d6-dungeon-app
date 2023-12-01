@@ -32,14 +32,14 @@ else
             <button type="button" class="btn btn-outline-primary" @onclick=RollDices>@actionLabel</button>
         </div>
     </div>
-    <div class="row">
+    <div>
         @if(primaryDice != 0)
         {
-            <img src="dices/dice@(primaryDice).jpg" />
+            <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
         }
         @if(secondaryDice != 0)
         {
-            <img src="dices/purlple-dice@(secondaryDice).jpg" />
+            <img alt="@(secondaryDice)" src="dices/purlple-dice@(secondaryDice).jpg" />
         }
     </div>
 
