@@ -1,197 +1,59 @@
 ﻿@page "/"
 @using c5m._2d6Dungeon;
 @inject ID6Service D6Service;
-@inject IJSRuntime JSRuntime 
-
+@inject NavigationManager Navigation;
 
 <PageTitle>Home</PageTitle>
+<div class="row justify-content-md-center">
+    <p>Welcome to <b>2d6 Dungeon App</b>! This is a digital adaptation of the dice & paper <a href="https://d-r-games.itch.io/2d6-dungeon-demo" target="_blank">2d6 Dungeon</a> game. You still need to buy the game to be able to play.</p>
+</div>
 
-@if (player == null)
-{
-    <AdventurerPicker @bind-ParentPlayer="player"></AdventurerPicker>
-}
-else
-{
-    <div>
-        <p><b>Name:</b> @player.Name</p>
-        <p><b>XP:</b> @player.XP.ToString()</p>
-        <p><b>Level:</b> @player.Level.ToString()</p>
-        <p><b>Copper Coins:</b> @player.Coins.CupperCoins.ToString()</p>
-    </div>
-    <div class="row">
-        <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-outline-primary" @onclick="StarGame" disabled="@isStartDisable">Start</button> | 
-            <button type="button" class="btn btn-outline-primary" @onclick="SaveGame" disabled="@isSaveDisable">Save</button> | 
-            <button type="button" class="btn btn-outline-danger" @onclick="Reset" >Reset (debug)</button>
-        </div>
-    </div>
-    <br/>
-    <div class="row">
-        @if(currentTurn != null)
-        {
-            <div class="col-md-12 text-right">
-                <p id="message">@currentTurn.Message</p>
-                <p id="message">@roomDescription</p>
-            </div>
-            <div class="col-md-12 text-right">
-                <button type="button" class="btn btn-outline-primary" @onclick=DoTurnAction>@actionLabel</button>
-            </div>
-        }
-    </div>
-    <br/>
-    <div>
-        @if(primaryDice != 0)
-        {
-            <img src="dices/dice@(primaryDice).jpg" />
-        }
-        @if(secondaryDice != 0)
-        {
-            <img src="dices/purlple-dice@(secondaryDice).jpg" />
-        }
-    </div>
-    <br/>
+<div class="row justify-content-md-center">
 
-}
-<canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
+    <p>@savedGamesTips</p>
+    <div class="row align-items-center">
+        <button type="button" class="btn btn-outline-primary" @onclick="CreateAdventure">Create a new adventure</button> 
+        @if (savedGames > 0)
+        { 
+        <button type="button" class="btn btn-outline-primary" @onclick="LoadAdventure">Load an adventure</button>
+        }
+    </div>
+</div>
+
 
 
 @code {
-    public Adventurer? player;
-    public GameTurn? currentTurn;
-    public int primaryDice = 0;
-    public int secondaryDice = 0;
-    public bool isStartDisable = false;
-    public bool isSaveDisable = true;
-    private string actionLabel = string.Empty;
-    private string roomDescription = string.Empty;
-    private bool firstRender = true;
-
-
-    private void StarGame()
+    private int savedGames;
+    private string savedGamesTips = string.Empty;
+    
+    protected override async Task OnInitializedAsync()
     {
-        if (player != null)
-        {
-            currentTurn = new GameTurn(D6Service);
-            isStartDisable = true;
-            isSaveDisable = false;
-            currentTurn.NextAction = ActionType.StartDungeonLevel;
-            SetNextActionLabel();
-        }
-    }
-
-    private void NewTurn()
-    {
-        currentTurn = new GameTurn(D6Service);
-        isStartDisable = true;
-        isSaveDisable = false;
-    }
-
-    private async Task SaveGame()
-    {
-        try
-        {
-            if (player != null)
-            {
-                player = fakeActivity(player);
-                await D6Service.SaveAdventurer(player);
+        try{
+            savedGames = await D6Service.GetSaveGameCount();
+            if(savedGames == 0){
+                savedGamesTips = "It look like you don't have any game saved. You should start by creating a new game.";
             }
+            else{
+                savedGamesTips = "It look like you already have some game(s) saved. What should you like to do?";
+            }    
         }
-        catch (Exception ex)
-        {
+        catch(Exception ex){
             Console.WriteLine("Oops! --> " + ex.Message);
+            savedGames = 0;
         }
     }
 
-    private async void SetNextActionLabel(){
-        switch(currentTurn.NextAction)
-        {
-            case(ActionType.StartDungeonLevel): 
-                actionLabel = "Roll 2D6 to determine the Entrance of the dungeon.";
-                break;
-            case(ActionType.RollForARoom): 
-                actionLabel = "Roll 2D6 to determine the size of the room.";
-                break;
-            case(ActionType.RollForExits): 
-                actionLabel = "Roll 1D6 to determine the number of exists.";
-                await DrawRoom(); 
-                break;   
-            case(ActionType.DoubleSizedRoom): 
-                actionLabel = "Roll again 2D6.";
-                break;   
-            case(ActionType.DrawRoom): 
-                actionLabel = "Roll 2D6 to see what's in that room.";
-                await DrawRoom();
-                currentTurn.NextAction = ActionType.RollRoomDefinition;
-                break; 
-            case(ActionType.RollRoomDefinition):
-                actionLabel = "Roll 2D6 to see what's in that room.";
-                break;
-            case(ActionType.Encounter): 
-                actionLabel = "Encounter??";
-                //NewTurn();
-                break;  
-            case(ActionType.DungeonStarted): 
-                actionLabel = "The lobby has 3 exits";
-                await DrawRoom();
-                currentTurn.NextAction = ActionType.RollForARoom;
-                break; 
-            case(ActionType.EndOfTurn): 
-                actionLabel = "Start a new turn";
-                //NewTurn();
-                break;  
-        }
-    }
 
-    protected async Task DrawRoom() 
-    { 
-        int cubeSize = 30;
-        int dotRay = 1;
-        int x = 2;
-        int y = 2;
-        int gidX = (cubeSize * x);
-        int gidY = (cubeSize * y);
-
-        if(currentTurn.CurrentRoom.IsCorridor == true){
-            Console.WriteLine("it's a corridor");
-        }
-        await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentTurn.CurrentRoom.Width*cubeSize, currentTurn.CurrentRoom.Height*cubeSize);
-    } 
-
-    private Adventurer fakeActivity(Adventurer adventurer){
-        // Simulate activity to help debuging ;)
-        adventurer.XP++;
-        adventurer.Coins.CupperCoins++;
-        return adventurer;
-    }
-    private async Task DoTurnAction()
+    private void CreateAdventure()
     {
-        await RenderCanvas() ;
-        var dResult = DiceResult.Roll2Dices();
-        primaryDice = dResult.PrimaryDice;
-        secondaryDice = dResult.SecondaryDice;
-        await currentTurn.ContinueTurn(dResult);
-
-        if(currentTurn.CurrentRoom != null){
-            roomDescription  = currentTurn.CurrentRoom.Description;
-        }
-        SetNextActionLabel();
+        Navigation.NavigateTo("theadventure/new");
     }
 
-    private async Task RenderCanvas() 
-    { 
-        if (firstRender) 
-        { 
-            firstRender = false;
-            await JSRuntime.InvokeVoidAsync("onResize");
-        } 
-    } 
-
-    private async Task Reset(){
-        primaryDice = secondaryDice = 0;
-        roomDescription = string.Empty;
-        await JSRuntime.InvokeVoidAsync("ClearMap");
-        StarGame();
+    private void LoadAdventure()
+    {
+        Navigation.NavigateTo("theadventure/list");
     }
+
 
 
 }

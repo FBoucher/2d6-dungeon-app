@@ -1,23 +1,30 @@
 
 -- Starting Amour
-INSERT INTO 2d6db.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO 2d6db.armour_pieces(name, dice_set, modifier)
 VALUES('Jerkin', 4, '-1 Damage');
-INSERT INTO 2d6db.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO 2d6db.armour_pieces(name, dice_set, modifier)
 VALUES('Padded Tunic', 5, '-1 Damage');
-INSERT INTO 2d6db.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO 2d6db.armour_pieces(name, dice_set, modifier)
 VALUES('Quilted Coat', 3, '-1 Damage');
-INSERT INTO 2d6db.starting_amours(armour_type, dice_set, modifier)
+INSERT INTO 2d6db.armour_pieces(name, dice_set, modifier)
 VALUES('Hide doublet', 2, '-1 Damage');
 
 -- Starting Scroll
-INSERT INTO 2d6db.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of balance', '+1 Discipline for dungeon level');
-INSERT INTO 2d6db.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of mental whip', '1 strike of 10 damage');
-INSERT INTO 2d6db.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of reflexes', '+1 Shift for 1 combat');
-INSERT INTO 2d6db.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of melt metal', 'Destroy 1 lock or peace of armour');
+INSERT INTO 2d6db.magic_scrolls(scroll_type, description, modifier)
+VALUES('Balance', 'Increses discipline and magical focus for a time', '+1 Discipline for dungeon level');
+INSERT INTO 2d6db.magic_scrolls(scroll_type, description, modifier)
+VALUES('Mental whip', 'A damaging psychic attack', '1 strike of 10 damage');
+INSERT INTO 2d6db.magic_scrolls(scroll_type, description, modifier)
+VALUES('Reflexes', 'Increases combat ability for a time', '+1 Shift for 1 combat');
+INSERT INTO 2d6db.magic_scrolls(scroll_type, description, modifier)
+VALUES('Melt metal', 'Destroys one lock or armour-related interrupt on an enemy', 'Destroy 1 lock or peace of armour');
+
+
+-- Starting Potion
+INSERT INTO 2d6db.magic_potions(potion_type, modifier, duration, cost) 
+    VALUES('HEALING', 'Heal up to 10 Health Points', 'INSTANT', '18gc');
+
+
 
 -- Body Search tables 
 INSERT INTO 2d6db.body_searches(table_number, roll, description)
@@ -59,3 +66,23 @@ VALUES (4,1,'Church', 'large','This room is lined with pews and chairs. Behind a
 -- demo adventurers
 INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Toby the Creator', 1, 100);
 INSERT INTO 2d6db.adventurers(name, level, xp) VALUES('Frank', 0, 0);
+
+
+-- weapons
+INSERT INTO 2d6db.weapons(id, name) VALUES(1, 'LONGSWORD');
+INSERT INTO 2d6db.weapons(id, name) VALUES(2, 'GREATAXE');
+INSERT INTO 2d6db.weapons(id, name) VALUES(3, 'HEAVY MACE');
+
+
+-- weapon_manoeuvres
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 1, '1-2', 'DISGUISED SWOOP', '6D +2');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 1, '5-2', 'INCISIVE CUT', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 1, '3-2', 'THRUST', '6D');
+
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 2, '1-2', 'WEIGHTED CHARGE', '6D +3');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 2, '5-2', 'LOW SWISH', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 2, '3-2', 'HACK', '6D');
+
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '1-2', 'SOLID BELTING', '6D +2');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '5-2', 'POMMEL THUMP', '6D +1');
+INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '3-2', 'CARVING HIT', '6D +1');

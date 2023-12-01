@@ -1,0 +1,98 @@
+
+
+
+CREATE TABLE dbo.armour_pieces (
+  id int NOT NULL IDENTITY,
+  name varchar(255) DEFAULT NULL,
+  dice_set int DEFAULT 0,
+  modifier varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.magic_scrolls (
+  id int NOT NULL IDENTITY,
+  scroll_type varchar(255) NOT NULL,
+  description varchar(255) NOT NULL,
+  duration varchar(50) DEFAULT NULL,
+  orbit varchar(50) DEFAULT NULL,
+  dispel_doubles varchar(50) DEFAULT NULL,
+  cost varchar(50) DEFAULT NULL,
+  fail varchar(50) DEFAULT NULL,
+  modifier varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.magic_potions (
+  id int NOT NULL IDENTITY,
+  potion_type varchar(255) NOT NULL,
+  modifier varchar(255) NOT NULL,
+  duration varchar(50) DEFAULT NULL,
+  cost varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+
+CREATE TABLE dbo.body_searches (
+  id int NOT NULL IDENTITY,
+  table_number INT DEFAULT 1,
+  roll INT DEFAULT NULL,
+  description varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.rooms (
+  id int NOT NULL IDENTITY,
+  roll int DEFAULT 0,
+  level int DEFAULT 1,
+  size varchar(10) DEFAULT NULL,
+  room_type varchar(255) DEFAULT NULL,
+  description varchar(255) DEFAULT NULL,
+  encounter varchar(255) DEFAULT NULL,
+  exits varchar(255) DEFAULT NULL,
+  is_unique bit DEFAULT 0,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.adventurers (
+  id int NOT NULL IDENTITY,
+  name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
+  xp int DEFAULT 0,
+  serialiazedObj varchar(max) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.adventures (
+  id int NOT NULL IDENTITY,
+  adventurer_name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
+  last_saved_datetime varchar(50) DEFAULT NULL,
+  serialiazedObj varchar(max) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.weapons (
+  id int NOT NULL,
+  name varchar(100) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE dbo.weapon_manoeuvres (
+  id int NOT NULL IDENTITY,
+  level int DEFAULT 0,
+  weapon_id int DEFAULT NULL,
+  dice_set varchar(5) DEFAULT '1-1',
+  description varchar(100) DEFAULT NULL,
+  modifier varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (weapon_id)
+        REFERENCES weapons(id)
+);

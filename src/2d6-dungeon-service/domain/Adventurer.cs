@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace c5m._2d6Dungeon;
+namespace c5m._2d6Dungeon.Game;
 
 public class Adventurer
 {
@@ -10,13 +10,13 @@ public class Adventurer
     public int HealthPoints { get; set; }
     public int XP { get; set; }
     public int Shift { get; set; }
-    public string Discipline { get; set; }
+    public int Discipline { get; set; }
     public int Precision { get; set; }
-    public int Weapon { get; set; }
+    public Weapon Weapon { get; set; }
     public int AppliedRunes { get; set; }
-    public List<Manoeuvre>? Manoeuvres { get; set; }
+    public List<WeaponManoeuvre>? WeaponManoeuvres { get; set; }
     public List<ArmourPiece>? ArmourPieces { get; set; }
-    public List<MagicScoll>? MagicScolls { get; set; }
+    public List<MagicScroll>? MagicScrolls { get; set; }
     public int LegendStatusLevelTracker { get; set; }
     public List<MagicPotion>? MagicPotions { get; set; }
     public int Bloodied { get; set; }
@@ -28,16 +28,16 @@ public class Adventurer
     public int LiberatedPrisoners { get; set; }
     public List<string>? SideQuests { get; set; }
     public FavorOfTheGods FavorOfTheGods { get; set; }
+    public int Rations { get; set; }
     
     public Adventurer()
     {
         Name = string.Empty;
         Level = 1;
         XP = 0;
-        Discipline = string.Empty;
-        Manoeuvres = new List<Manoeuvre>();
+        WeaponManoeuvres = new List<WeaponManoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
-        MagicScolls = new List<MagicScoll>();
+        MagicScrolls = new List<MagicScroll>();
         MagicPotions = new List<MagicPotion>();
         LegendStatusLevelTracker = 0;
         Fever = false;
@@ -47,6 +47,13 @@ public class Adventurer
         SideQuests = new List<string>();
         LiberatedPrisoners = 0;
         FavorOfTheGods = new FavorOfTheGods();
+
+        //Values from Core Rules
+        Shift = 2;
+        Discipline = 1;
+        Precision = 0;
+        HealthPoints = 10;
+        Rations = 3;
     }
     
     public Adventurer(string name)
@@ -54,10 +61,9 @@ public class Adventurer
         Name = name;
         Level = 1;
         XP = 0;
-        Discipline = string.Empty;
-        Manoeuvres = new List<Manoeuvre>();
+        WeaponManoeuvres = new List<WeaponManoeuvre>();
         ArmourPieces = new List<ArmourPiece>();
-        MagicScolls = new List<MagicScoll>();
+        MagicScrolls = new List<MagicScroll>();
         MagicPotions = new List<MagicPotion>();
         LegendStatusLevelTracker = 0;
         Fever = false;
@@ -67,6 +73,13 @@ public class Adventurer
         SideQuests = new List<string>();
         LiberatedPrisoners = 0;
         FavorOfTheGods = new FavorOfTheGods();
+
+        //Values from Core Rules
+        Shift = 2;
+        Discipline = 1;
+        Precision = 0;
+        HealthPoints = 10;
+        Rations = 3;
     }
 
     public Adventurer(AdventurerPreview preview){
@@ -76,10 +89,9 @@ public class Adventurer
             Name =  preview.name;
             XP = preview.xp;
             Level = preview.level;
-            Discipline = string.Empty;
-            Manoeuvres = new List<Manoeuvre>();
+            WeaponManoeuvres = new List<WeaponManoeuvre>();
             ArmourPieces = new List<ArmourPiece>();
-            MagicScolls = new List<MagicScoll>();
+            MagicScrolls = new List<MagicScroll>();
             MagicPotions = new List<MagicPotion>();
             LegendStatusLevelTracker = 0;
             Fever = false;
@@ -89,6 +101,13 @@ public class Adventurer
             SideQuests = new List<string>();
             LiberatedPrisoners = 0;
             FavorOfTheGods = new FavorOfTheGods();
+
+            //Values from Core Rules
+            Shift = 2;
+            Discipline = 1;
+            Precision = 0;
+            HealthPoints = 10;
+            Rations = 3;
         }
         else
         {
@@ -98,9 +117,9 @@ public class Adventurer
             Level = aComplete.Level;
             XP = aComplete.XP;
             Discipline = aComplete.Discipline;
-            Manoeuvres = aComplete.Manoeuvres;
+            WeaponManoeuvres = aComplete.WeaponManoeuvres;
             ArmourPieces = aComplete.ArmourPieces;
-            MagicScolls = aComplete.MagicScolls;
+            MagicScrolls = aComplete.MagicScrolls;
             MagicPotions = aComplete.MagicPotions;
             LegendStatusLevelTracker = aComplete.LegendStatusLevelTracker;
             Fever = aComplete.Fever;
@@ -110,6 +129,12 @@ public class Adventurer
             SideQuests = aComplete.SideQuests;
             LiberatedPrisoners = aComplete.LiberatedPrisoners;
             FavorOfTheGods = aComplete.FavorOfTheGods;
+
+            Shift = aComplete.Shift;
+            Discipline = aComplete.Discipline;
+            Precision = aComplete.Precision;
+            HealthPoints = aComplete.HealthPoints;
+            Rations = aComplete.Rations;
         }
     }
 

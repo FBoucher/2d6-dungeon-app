@@ -1,19 +1,31 @@
-
-
-CREATE TABLE IF NOT EXISTS 2d6db.starting_amours (
+CREATE TABLE IF NOT EXISTS 2d6db.adventurers (
   id int NOT NULL AUTO_INCREMENT,
-  armour_type varchar(255) DEFAULT NULL,
+  name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
+  xp int DEFAULT 0,
+  serialiazedObj longtext DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS 2d6db.adventures (
+  id int NOT NULL AUTO_INCREMENT,
+  adventurer_name varchar(255) DEFAULT NULL,
+  level int DEFAULT 0,
+  last_saved_datetime varchar(50) DEFAULT NULL,
+  serialiazedObj longtext DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS 2d6db.armour_pieces (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(255) DEFAULT NULL,
   dice_set int DEFAULT 0,
   modifier varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS 2d6db.starting_scrolls (
-  id int NOT NULL AUTO_INCREMENT,
-  scroll_type varchar(255) DEFAULT NULL,
-  modifier varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id)
-);
 
 CREATE TABLE IF NOT EXISTS 2d6db.body_searches (
   id int NOT NULL AUTO_INCREMENT,
@@ -22,6 +34,30 @@ CREATE TABLE IF NOT EXISTS 2d6db.body_searches (
   description varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
+
+
+CREATE TABLE IF NOT EXISTS 2d6db.magic_potions (
+  id int NOT NULL AUTO_INCREMENT,
+  potion_type varchar(255) NOT NULL,
+  modifier varchar(255) NOT NULL,
+  duration varchar(50) DEFAULT NULL,
+  cost varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS 2d6db.magic_scrolls (
+  id int NOT NULL AUTO_INCREMENT,
+  scroll_type varchar(255) NOT NULL,
+  description varchar(255) NOT NULL,
+  duration varchar(50) DEFAULT NULL,
+  orbit varchar(50) DEFAULT NULL,
+  dispel_doubles varchar(50) DEFAULT NULL,
+  cost varchar(50) DEFAULT NULL,
+  fail varchar(50) DEFAULT NULL,
+  modifier varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 
 CREATE TABLE IF NOT EXISTS 2d6db.rooms (
   id int NOT NULL AUTO_INCREMENT,
@@ -36,11 +72,21 @@ CREATE TABLE IF NOT EXISTS 2d6db.rooms (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS 2d6db.adventurers (
-  id int NOT NULL AUTO_INCREMENT,
-  name varchar(255) DEFAULT NULL,
-  level int DEFAULT 0,
-  xp int DEFAULT 0,
-  serialiazedObj longtext DEFAULT NULL,
+
+CREATE TABLE IF NOT EXISTS 2d6db.weapons (
+  id int NOT NULL,
+  name varchar(100) DEFAULT NULL,
   PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS 2d6db.weapon_manoeuvres (
+  id int NOT NULL AUTO_INCREMENT,
+  level int DEFAULT 0,
+  weapon_id int DEFAULT NULL,
+  dice_set varchar(5) DEFAULT '1-1',
+  description varchar(100) DEFAULT NULL,
+  modifier varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (weapon_id)
+        REFERENCES weapons(id)
 );

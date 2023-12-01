@@ -1,11 +1,13 @@
 ﻿@page "/fetchdata"
 @using c5m._2d6Dungeon;
+@using Microsoft.AspNetCore.Components.QuickGrid;
+@inject ID6Service D6Service;
 @inject HttpClient Http
 @using System.Text.Json
 
 <PageTitle>Room list</PageTitle>
 
-<h1>Room list</h1>
+@* <h1>Room list</h1>
 
 @if (rooms == null)
 {
@@ -33,11 +35,72 @@ else
                 </tr>
             }
         </tbody>
-    </table>
+    </table> 
+}  
+*@
+
+<hr/>
+
+<div class="row justify-content-md-center">
+
+    <p>Test Fetching</p>
+    <div class="row align-items-center">
+        <button type="button" class="btn btn-outline-primary" @onclick="GetWeapons">Get Weapons</button> 
+        
+@if (weapons == null)
+{
+        <p><em>no weapons loaded yet...</em></p>
 }
+else
+{       
+        <InputSelect Value="selectedWeaponId" 
+                     ValueExpression = "@( () => selectedWeaponId)"
+                     ValueChanged = "@( (int weaponId) => ValueChanged(weaponId))"
+                     class="form-control" 
+                     id ="selectedWeapon">
+            @if (selectedWeaponId == 0)
+            {
+                <option value="0" selected> - Select a Weapon - </option>
+            }
+            @foreach (var w in weapons.value)
+            {
+                <option value="@w.Id"> @w.Name </option>
+            }
+        </InputSelect>
+}
+    </div>
+
+
+
+
+
+@if (manoeuvres == null)
+{
+    <p><em>No manoeuvres yet...</em></p>
+}
+else
+{
+    <div class="grid">
+        <QuickGrid Items="@manoeuvresQueryable">
+            <PropertyColumn Title="Weapon" Property="@(m => weaponName)" />
+            <PropertyColumn Property="@(m => m.Description)" Sortable="true" />
+            <PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
+            <PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
+        </QuickGrid>
+    </div>
+}
+    
+</div>
+
 
 @code {
     private RoomList? rooms;
+    private string weaponName = "a weapon...";
+    private WeaponList? weapons;
+    private WeaponManoeuvreList? manoeuvres;
+    private int selectedWeaponId = 1;
+
+    IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,6 +112,31 @@ else
         catch(Exception ex){
             Console.WriteLine("Oops1 --> " + ex.Message);
             rooms = new RoomList();
+        }
+    }
+
+    private async Task GetWeapons()
+    {
+        try{
+            weapons = await D6Service.GetWeapons();
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+        }
+    }
+
+    private async Task ValueChanged(int weaponId)
+    {
+        try{
+            selectedWeaponId = weaponId;
+            if(selectedWeaponId > 0){
+                weaponName = weapons.value.Where(w => w.Id == selectedWeaponId).Select(w => w.Name).FirstOrDefault();
+                manoeuvres = await D6Service.GetWeaponManoeuvreList(selectedWeaponId, 1);
+                manoeuvresQueryable = manoeuvres.value.AsQueryable();
+            }
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
         }
     }
 }

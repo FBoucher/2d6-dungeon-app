@@ -12,4 +12,13 @@ public class MappedRoom
     public int Height { get; set; }
     public string Description { get; set; }
 
+
+    public static MappedRoom DraftCurrentRoom(DiceResult dResult){
+        return new MappedRoom{
+            Width = dResult.PrimaryDice,
+            Height = dResult.SecondaryDice,
+            IsCorridor = dResult.IsOneDiceOne
+        };
+    }
+
 }
