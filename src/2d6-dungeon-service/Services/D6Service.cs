@@ -111,7 +111,7 @@ public class D6Service : ID6Service
         //                 .Select(w => w.First().weapon)
         //                 .ToList();
         // return weapons;
-        return result;
+        return result ?? new WeaponList();
     }
 
 
@@ -130,11 +130,19 @@ public class D6Service : ID6Service
     public async Task<ArmourPieceList> GetArmourPieces()
     {
         var result = await _httpClient.GetFromJsonAsync<ArmourPieceList>("armour_piece", _options);
-        return result;
+        return result ?? new ArmourPieceList();
     }
 
+    #endregion
 
+
+    #region == MagicScroll =====
+
+    public async Task<MagicScrollList> GetMagicScrolls()
+    {
+        var result = await _httpClient.GetFromJsonAsync<MagicScrollList>("magic_scroll", _options);
+        return result ?? new MagicScrollList();
+    }
 
     #endregion
 }
-

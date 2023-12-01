@@ -10,12 +10,20 @@ CREATE TABLE dbo.armour_pieces (
 );
 
 
-CREATE TABLE dbo.starting_scrolls (
+CREATE TABLE dbo.magic_scrolls (
   id int NOT NULL IDENTITY,
-  scroll_type varchar(255) DEFAULT NULL,
-  modifier varchar(255) DEFAULT NULL,
+  scroll_type varchar(255) NOT NULL,
+  description varchar(255) NOT NULL,
+  duration varchar(50) DEFAULT NULL,
+  orbit varchar(50) DEFAULT NULL,
+  dispel_doubles varchar(50) DEFAULT NULL,
+  cost varchar(50) DEFAULT NULL,
+  fail varchar(50) DEFAULT NULL,
+  modifier varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
+
+
 
 
 CREATE TABLE dbo.body_searches (

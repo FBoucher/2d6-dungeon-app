@@ -134,6 +134,39 @@ else
         </div>
         </div> 
     </div>
+
+    @* == Scrolls ===== *@
+    <div class="card">
+        <div class="card-header" id="headingScrolls">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseScrolls" aria-expanded="true" aria-controls="collapseScrolls">
+                Scrolls
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseScrolls" class="collapse" aria-labelledby="headingScrolls" data-parent="#accordion">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Select ONE Magic Scroll</label>
+                <QuickGrid Items="@magicScollsQueryable" class="table table-hover table-striped">
+                    <TemplateColumn Title="" Context="magicScoll">
+                        <div class="btn-group-toggle" data-toggle="buttons">
+                            <button @onclick="@(() => SelectMagicScroll(magicScoll.Id))" 
+                                    id="@magicScoll.Id"
+                                    type="button" 
+                                    class="btn btn-outline-primary" 
+                                    data-bs-toggle="button" 
+                                    autocomplete="off" >Select</button>
+                        </div>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(a => a.ScrollType)" Sortable="true" />
+                    <PropertyColumn Property="@(a => a.Description)" />
+                </QuickGrid>
+            </div>
+        </div>
+        </div> 
+    </div>
 </div>
 
 
@@ -147,9 +180,11 @@ else
     private WeaponList? weapons;
     private int selectedWeaponId = 1;
     private int selectedArmourId = 0;
+    private int selectedMagicScrollId = 0;
     private string weaponName = string.Empty;
     private IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
     private IQueryable<ArmourPiece>? armourPiecesQueryable;
+    private IQueryable<MagicScroll>? magicScollsQueryable;
     private List<int> selectedManoeuvres = new List<int>();
     private bool isSwitchWeaponPossible = false;
 
@@ -162,6 +197,7 @@ else
             WeaponSelected(weapons.value.First().Id);
 
             armourPiecesQueryable = (await D6Service.GetArmourPieces()).value.AsQueryable();
+            magicScollsQueryable = (await D6Service.GetMagicScrolls()).value.AsQueryable();
 
         }
         catch(Exception ex){
@@ -209,5 +245,9 @@ else
         selectedArmourId = armourPieceId;
     }
 
+    private async Task SelectMagicScroll(int magicScollId)
+    {
+        selectedMagicScrollId = magicScollId;
+    }
 
 }

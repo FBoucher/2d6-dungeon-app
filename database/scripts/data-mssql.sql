@@ -10,14 +10,14 @@ INSERT INTO dbo.armour_pieces(name, dice_set, modifier)
 VALUES('Hide doublet', 2, '-1 Damage');
 
 -- Starting Scroll
-INSERT INTO dbo.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of balance', '+1 Discipline for dungeon level');
-INSERT INTO dbo.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of mental whip', '1 strike of 10 damage');
-INSERT INTO dbo.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of reflexes', '+1 Shift for 1 combat');
-INSERT INTO dbo.starting_scrolls(scroll_type, modifier)
-VALUES('Scroll of melt metal', 'Destroy 1 lock or peace of armour');
+INSERT INTO dbo.magic_scrolls(scroll_type, description, modifier)
+VALUES('Balance', 'Increses discipline and magical focus for a time', '+1 Discipline for dungeon level');
+INSERT INTO dbo.magic_scrolls(scroll_type, description, modifier)
+VALUES('Mental whip', 'A damaging psychic attack', '1 strike of 10 damage');
+INSERT INTO dbo.magic_scrolls(scroll_type, description, modifier)
+VALUES('Reflexes', 'Increases combat ability for a time', '+1 Shift for 1 combat');
+INSERT INTO dbo.magic_scrolls(scroll_type, description, modifier)
+VALUES('Melt metal', 'Destroys one lock or armour-related interrupt on an enemy', 'Destroy 1 lock or peace of armour');
 
 -- Body Search tables 
 INSERT INTO dbo.body_searches(table_number, roll, description)
