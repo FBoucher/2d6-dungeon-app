@@ -19,6 +19,13 @@ VALUES('Reflexes', 'Increases combat ability for a time', '+1 Shift for 1 combat
 INSERT INTO 2d6db.magic_scrolls(scroll_type, description, modifier)
 VALUES('Melt metal', 'Destroys one lock or armour-related interrupt on an enemy', 'Destroy 1 lock or peace of armour');
 
+
+-- Starting Potion
+INSERT INTO 2d6db.magic_potions(potion_type, modifier, duration, cost) 
+    VALUES('HEALING', 'Heal up to 10 Health Points', 'INSTANT', '18gc');
+
+
+
 -- Body Search tables 
 INSERT INTO 2d6db.body_searches(table_number, roll, description)
 VALUES(1, 2, 'The body stinks, and a cloud of spores erupts. Lose 1 HP.');

@@ -12,7 +12,7 @@ public class Adventurer
     public int Shift { get; set; }
     public int Discipline { get; set; }
     public int Precision { get; set; }
-    public int Weapon { get; set; }
+    public Weapon Weapon { get; set; }
     public int AppliedRunes { get; set; }
     public List<WeaponManoeuvre>? WeaponManoeuvres { get; set; }
     public List<ArmourPiece>? ArmourPieces { get; set; }

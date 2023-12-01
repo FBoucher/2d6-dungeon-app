@@ -238,6 +238,32 @@
           ]
         }
       ]
+    },
+    "magic_potion": {
+      "source": {
+        "object": "magic_potions",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "magic_potion",
+          "plural": "magic_potions"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }
