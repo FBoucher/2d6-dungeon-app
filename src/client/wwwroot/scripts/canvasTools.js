@@ -2,6 +2,7 @@
 var canvas;
 var context;
 var vw,vh;
+let cubeSize = 30;
 
 // resize the canvas to fill the browser window
 window.addEventListener('resize', onResize, false);
@@ -36,8 +37,8 @@ function resizeCanvas() {
 function drawDots() {
 
   var r = 1,
-      cw = 30,
-      ch = 30;
+      cw = cubeSize,
+      ch = cubeSize;
   
   for (var x = 0; x < vw; x+=cw) {
     for (var y = 0; y < vh; y+=ch) {
@@ -48,12 +49,48 @@ function drawDots() {
 }
 
 function DrawRoom(posX, posY, width, height){
+
+  posX = posX * cubeSize;
+  posY = posY * cubeSize;
+  width = width * cubeSize;
+  height = height * cubeSize;
+
   context.fillStyle = '#000000'; 
   context.fillRect(posX, posY, width, height);
   context.stroke();
   context.fillStyle = '#ffffff';
   context.fillRect(posX+1, posY+1, width-2, height-2);
   context.stroke();
+}
+
+function DrawDoor(posX, posY, orientation){
+
+  if(orientation == "H"){
+    let doorWith = 30; // one square
+    let doorHeight = 10;
+    posX = (posX - 1) * cubeSize;
+    posY = (posY * cubeSize) - 5;
+
+    context.fillStyle = '#000000'; 
+    context.fillRect(posX, posY, doorWith, doorHeight);
+    context.stroke();
+    context.fillStyle = '#e6f2ff';
+    context.fillRect(posX+1, posY+1, doorWith-2, doorHeight-2);
+    context.stroke();
+  }
+  else{
+    let doorWith = 10; 
+    let doorHeight = 30;// one square
+    posX = (posX * cubeSize) - 5;
+    posY = (posY - 1) * cubeSize;
+
+    context.fillStyle = '#000000'; 
+    context.fillRect(posX, posY, doorWith, doorHeight);
+    context.stroke();
+    context.fillStyle = '#e6f2ff';
+    context.fillRect(posX+1, posY+1, doorWith-2, doorHeight-2);
+    context.stroke();
+  }
 }
 
 function ClearMap(){

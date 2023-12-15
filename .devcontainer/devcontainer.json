@@ -21,11 +21,6 @@
 		}
 	}
 
-	// , "remoteEnv": {
-	// 	"ASPNETCORE_Kestrel__Certificates__Default__Password": "SecurePwdGoesHere",
-	// 	"ASPNETCORE_Kestrel__Certificates__Default__Path": "${containerEnv:HOME}/.aspnet/https/aspnetapp.pfx"
-	// }
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	, "forwardPorts": [5000, 5001, 3306]
 	, "portsAttributes": {
@@ -35,7 +30,6 @@
 	}
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    // , "postCreateCommand": "dotnet tool install --global Microsoft.DataApiBuilder "
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	, "remoteUser": "root"
