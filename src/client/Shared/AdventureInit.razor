@@ -32,7 +32,7 @@ else
             <button type="button" class="btn btn-outline-primary" @onclick=RollDices>@actionLabel</button>
         </div>
     </div>
-    <div>
+    <div style="padding:20px;">
         @if(primaryDice != 0)
         {
             <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
@@ -43,7 +43,7 @@ else
         }
     </div>
 
-    <canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
+    <canvas id="dotCanvas" style="width: 800px; height: 800px; padding:10px;"></canvas> 
 </div>  
 
 <div class="row">
@@ -98,10 +98,11 @@ else
 
         //hardcoded temporary
         entryRoom.CoordX = 2;
-        entryRoom.CoordY = 2;
+        entryRoom.CoordY = 5;
 
         SetDungeonEntranceDoor(entryRoom);
-        await DrawRoom(entryRoom);
+        AssignExits(entryRoom, "S");
+        await DrawRoom(entryRoom, true);
         
         actionLabel = "The lobby has 3 exits";
     }
@@ -115,34 +116,30 @@ else
         } 
     }
 
-    protected async Task DrawRoom(MappedRoom currentRoom) 
+    protected async Task DrawRoom(MappedRoom currentRoom, bool isLobby) 
     { 
-        //int cubeSize = 30;
-
         int gidX = (currentRoom.CoordX);
         int gidY = (currentRoom.CoordY);
 
         await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentRoom.Width, currentRoom.Height);
 
-        await DrawDoors(currentRoom);
+        await DrawDoors(currentRoom, isLobby);
     }
 
-    protected async Task DrawDoors(MappedRoom currentRoom) 
+    protected async Task DrawDoors(MappedRoom currentRoom, bool isLobby) 
     { 
-        @* int cubeSize = 30; *@
-
-
         foreach(var door in currentRoom.Exits)
         {
             string orientation = GetDoorOrientation(door.onWall);
             int x = 0;
             int y = 0;
+            bool isMain = false;
 
             switch(door.onWall)
             {
                 case "N":
-                    x = currentRoom.CoordX;
-                    y = currentRoom.CoordY + door.PositionOnWall;
+                    x = currentRoom.CoordX + door.PositionOnWall;
+                    y = currentRoom.CoordY;
                     break;
                 case "E":
                     x = currentRoom.CoordX + currentRoom.Width;
@@ -151,17 +148,15 @@ else
                 case "S":
                     x = currentRoom.CoordX + door.PositionOnWall;
                     y = currentRoom.CoordY + currentRoom.Height;
+                    isMain = isLobby;
                     break;
                 case "W":
-                    x = currentRoom.CoordX + door.PositionOnWall;
-                    y = currentRoom.CoordY;
+                    x = currentRoom.CoordX;
+                    y = currentRoom.CoordY + door.PositionOnWall;
                     break;
             }
 
-            int gidX = x;
-            int gidY = y;
-
-            await JSRuntime.InvokeVoidAsync("DrawDoor",gidX, gidY, orientation);
+            await JSRuntime.InvokeVoidAsync("DrawDoor",x, y, orientation, isMain);
         }
 
         
@@ -188,9 +183,25 @@ else
         currentRoom.Exits.Add( mainDoor);
     }
 
-    @* protected async Task AssignExits(MappedRoom currentRoom, string entrance, int nbExits)
+    protected void AssignExits(MappedRoom currentRoom, string entrance)
     {
+        Random rnd = new Random(currentRoom.Width * currentRoom.Height);
+        var walls = new List<string>(){"N", "E", "S", "W"};
+        walls.Remove(entrance);
+        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<string>(currentRoom.ExitsCount);
 
-    } *@
+        if(currentRoom.Exits == null)
+                currentRoom.Exits = new List<Exit>();
+
+        foreach(var wall in wallsWithExits)
+        {
+            var aDoor = new Exit();
+            aDoor.onWall = wall;
+            aDoor.PositionOnWall = rnd.Next(1, currentRoom.Height);
+            aDoor.Lockable = false;
+            
+            currentRoom.Exits.Add(aDoor); 
+        }
+    }
 
 }

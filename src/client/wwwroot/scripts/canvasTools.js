@@ -63,7 +63,13 @@ function DrawRoom(posX, posY, width, height){
   context.stroke();
 }
 
-function DrawDoor(posX, posY, orientation){
+function DrawDoor(posX, posY, orientation, isMain=false){
+
+  let doorColor = '#B3D2D3'
+  if(isMain == false){
+    doorColor = '#DEC5C0'
+  }
+
 
   if(orientation == "H"){
     let doorWith = 30; // one square
@@ -74,7 +80,7 @@ function DrawDoor(posX, posY, orientation){
     context.fillStyle = '#000000'; 
     context.fillRect(posX, posY, doorWith, doorHeight);
     context.stroke();
-    context.fillStyle = '#e6f2ff';
+    context.fillStyle = doorColor;
     context.fillRect(posX+1, posY+1, doorWith-2, doorHeight-2);
     context.stroke();
   }
@@ -87,7 +93,7 @@ function DrawDoor(posX, posY, orientation){
     context.fillStyle = '#000000'; 
     context.fillRect(posX, posY, doorWith, doorHeight);
     context.stroke();
-    context.fillStyle = '#e6f2ff';
+    context.fillStyle = doorColor;
     context.fillRect(posX+1, posY+1, doorWith-2, doorHeight-2);
     context.stroke();
   }
