@@ -32,7 +32,7 @@ else
             <button type="button" class="btn btn-outline-primary" @onclick=RollDices>@actionLabel</button>
         </div>
     </div>
-    <div>
+    <div style="padding:20px;">
         @if(primaryDice != 0)
         {
             <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
@@ -43,7 +43,7 @@ else
         }
     </div>
 
-    <canvas id="dotCanvas" style="width: 800px; height: 500px;"></canvas> 
+    <canvas id="dotCanvas" style="width: 800px; height: 800px; padding:10px;"></canvas> 
 </div>  
 
 <div class="row">
@@ -74,6 +74,9 @@ else
     {
         betaAdventure = new Adventure();
         betaAdventure.Adventurer = selectedAdventurer;
+
+        
+
         betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
         throw new NotImplementedException();
         //todo: save the adventure
@@ -92,7 +95,14 @@ else
         primaryDice = dResult.PrimaryDice;
         secondaryDice = dResult.SecondaryDice;
         entryRoom = Dungeon.StartDungeonLevel(dResult);
-        await DrawRoom(entryRoom);
+
+        //hardcoded temporary
+        entryRoom.CoordX = 2;
+        entryRoom.CoordY = 5;
+
+        SetDungeonEntranceDoor(entryRoom);
+        AssignExits(entryRoom, "S");
+        await DrawRoom(entryRoom, true);
         
         actionLabel = "The lobby has 3 exits";
     }
@@ -106,16 +116,92 @@ else
         } 
     }
 
-    protected async Task DrawRoom(MappedRoom currentRoom) 
+    protected async Task DrawRoom(MappedRoom currentRoom, bool isLobby) 
     { 
-        int cubeSize = 30;
-        int dotRay = 1;
-        int x = 2;
-        int y = 2;
-        int gidX = (cubeSize * x);
-        int gidY = (cubeSize * y);
+        int gidX = (currentRoom.CoordX);
+        int gidY = (currentRoom.CoordY);
 
-        await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentRoom.Width*cubeSize, currentRoom.Height*cubeSize);
+        await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentRoom.Width, currentRoom.Height);
+
+        await DrawDoors(currentRoom, isLobby);
+    }
+
+    protected async Task DrawDoors(MappedRoom currentRoom, bool isLobby) 
+    { 
+        foreach(var door in currentRoom.Exits)
+        {
+            string orientation = GetDoorOrientation(door.onWall);
+            int x = 0;
+            int y = 0;
+            bool isMain = false;
+
+            switch(door.onWall)
+            {
+                case "N":
+                    x = currentRoom.CoordX + door.PositionOnWall;
+                    y = currentRoom.CoordY;
+                    break;
+                case "E":
+                    x = currentRoom.CoordX + currentRoom.Width;
+                    y = currentRoom.CoordY + door.PositionOnWall;
+                    break;
+                case "S":
+                    x = currentRoom.CoordX + door.PositionOnWall;
+                    y = currentRoom.CoordY + currentRoom.Height;
+                    isMain = isLobby;
+                    break;
+                case "W":
+                    x = currentRoom.CoordX;
+                    y = currentRoom.CoordY + door.PositionOnWall;
+                    break;
+            }
+
+            await JSRuntime.InvokeVoidAsync("DrawDoor",x, y, orientation, isMain);
+        }
+
+        
+    }
+
+    protected string GetDoorOrientation(string onWall)
+    {
+        if(onWall == "S" || onWall == "N")
+        {
+            return "H";
+        }
+        return "V";
+    }
+
+    protected void SetDungeonEntranceDoor(MappedRoom currentRoom)
+    {
+        var mainDoor = new Exit();
+        mainDoor.onWall = "S";
+        mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
+        mainDoor.Lockable = false;
+
+        if(currentRoom.Exits == null)
+            currentRoom.Exits = new List<Exit>();
+        currentRoom.Exits.Add( mainDoor);
+    }
+
+    protected void AssignExits(MappedRoom currentRoom, string entrance)
+    {
+        Random rnd = new Random(currentRoom.Width * currentRoom.Height);
+        var walls = new List<string>(){"N", "E", "S", "W"};
+        walls.Remove(entrance);
+        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<string>(currentRoom.ExitsCount);
+
+        if(currentRoom.Exits == null)
+                currentRoom.Exits = new List<Exit>();
+
+        foreach(var wall in wallsWithExits)
+        {
+            var aDoor = new Exit();
+            aDoor.onWall = wall;
+            aDoor.PositionOnWall = rnd.Next(1, currentRoom.Height);
+            aDoor.Lockable = false;
+            
+            currentRoom.Exits.Add(aDoor); 
+        }
     }
 
 }
