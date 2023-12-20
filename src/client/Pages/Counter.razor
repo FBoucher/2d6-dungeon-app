@@ -1,14 +1,14 @@
 ﻿@page "/counter"
 @inject ID6Service d6Sercice;
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Dices</PageTitle>
 
-<h1>Dices</h1>
+<FluentLabel Typo="Typography.PageTitle">Dices</FluentLabel>
 
 <img src="dices/dice@(dice1).jpg" />
 <img src="dices/purlple-dice@(dice2).jpg" />
-
-<button class="btn btn-primary" @onclick="Roll2Dices">Roll</button>
+<br/>
+<FluentButton Appearance="Appearance.Accent" OnClick="Roll2Dices">Roll</FluentButton>
 
 @code {
     public int dice1 = 1;

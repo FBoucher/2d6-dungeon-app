@@ -81,7 +81,7 @@ else
                     <div class="col-sm-10">
                         <div class="grid">
                             <QuickGrid Items="@manoeuvresQueryable">
-                                <TemplateColumn Title="" Context="manoeuvre">
+                                <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="" Context="manoeuvre">
                                     <div class="btn-group-toggle" data-toggle="buttons">
                                     <button @onclick="@(() => SelectManoeuvre(manoeuvre.Id))" 
                                             id="@manoeuvre.Id"
@@ -90,10 +90,10 @@ else
                                             data-bs-toggle="button" 
                                             autocomplete="off" >Select</button>
                                     </div>
-                                </TemplateColumn>
-                                <PropertyColumn Property="@(m => m.Description)" Sortable="true" />
-                                <PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
-                                <PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
+                                </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
+                                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(m => m.Description)" Sortable="true" />
+                                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
+                                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
                             </QuickGrid>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ else
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Select ONE piece of amour</label>
                 <QuickGrid Items="@armourPiecesQueryable" class="table table-hover table-striped">
-                    <TemplateColumn Title="" Context="armourPiece">
+                    <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="" Context="armourPiece">
                         <div class="btn-group-toggle" data-toggle="buttons">
                             <button @onclick="@(() => SelectArmourPiece(armourPiece.Id))" 
                                     id="@armourPiece.Id"
@@ -126,10 +126,10 @@ else
                                     data-bs-toggle="button" 
                                     autocomplete="off" >Select</button>
                         </div>
-                    </TemplateColumn>
-                    <PropertyColumn Property="@(a => a.Name)" Sortable="true" />
-                    <PropertyColumn Property="@(a => a.DiceSet)" />
-                    <PropertyColumn Property="@(a => a.Modifier)" Sortable="true" />
+                    </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
+                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.Name)" Sortable="true" />
+                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.DiceSet)" />
+                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.Modifier)" Sortable="true" />
                 </QuickGrid>
             </div>
         </div>
@@ -151,7 +151,7 @@ else
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Select ONE Magic Scroll</label>
                 <QuickGrid Items="@magicScollsQueryable" class="table table-hover table-striped">
-                    <TemplateColumn Title="" Context="magicScoll">
+                    <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="" Context="magicScoll">
                         <div class="btn-group-toggle" data-toggle="buttons">
                             <button @onclick="@(() => SelectMagicScroll(magicScoll.Id))" 
                                     id="@magicScoll.Id"
@@ -160,9 +160,9 @@ else
                                     data-bs-toggle="button" 
                                     autocomplete="off" >Select</button>
                         </div>
-                    </TemplateColumn>
-                    <PropertyColumn Property="@(a => a.ScrollType)" Sortable="true" />
-                    <PropertyColumn Property="@(a => a.Description)" />
+                    </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
+                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.ScrollType)" Sortable="true" />
+                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.Description)" />
                 </QuickGrid>
             </div>
         </div>

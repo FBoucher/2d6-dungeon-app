@@ -13,12 +13,12 @@ else
 {
     <div class="grid">
         <QuickGrid Items="@adventurersQueryable" class="table table-hover table-striped">
-            <TemplateColumn Title="">
+            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="">
                 <button @onclick="@(() => SelectPlayer(context.id))" class="btn btn-outline-secondary btn-sm" >Select</button>
-            </TemplateColumn>
-            <PropertyColumn Property="@(c => c.name)" Sortable="true" />
-            <PropertyColumn Property="@(c => c.xp.ToString())" />
-            <PropertyColumn Property="@(c => c.level.ToString())" Sortable="true" />
+            </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
+            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(c => c.name)" Sortable="true" />
+            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(c => c.xp.ToString())" />
+            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(c => c.level.ToString())" Sortable="true" />
         </QuickGrid>
     </div>
     <div class="row">
