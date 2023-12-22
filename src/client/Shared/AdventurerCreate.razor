@@ -7,31 +7,59 @@
 
 <EditForm Model="@ParentAdventurer">
 
-<div id="accordion">
-    @* == Player's name ===== *@
-    <div class="card">
-        <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Adventurer Details
-                </button>
-            </h5>
-        </div>
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentCard>
+        <FluentHeader>Adventurer Details</FluentHeader>
+        <FluentTextField    Label="Name: "
+                            Required
+                            @bind-Value="ParentAdventurer.Name"></FluentTextField>
+    </FluentCard>
 
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-        <div class="card-body">
-            <div class="form-group row">
-                <label for="ParentAdventurer.Name" class="col-sm-2 col-form-label">Name</label>
-                <div class="col-sm-10">
-                    <InputText id="Name" class="form-control" placeholder="Adventurer Full Name" @bind-Value="ParentAdventurer.Name" />
-                </div>
-            </div>
-        </div>
-        </div> 
-    </div>
+    <FluentCard Height="400px">
+        <FluentHeader>Weapon & Manoeuvres</FluentHeader>
+        @if (weapons == null)
+        {
+                        <p><em>no weapons loaded yet...</em></p>
+        }
+        else
+        { 
+            <FluentSelect   Items=@weapons.value
+                            Label="Weapons: "
+                            Multiple=false
+                            Required
+                            OptionText="@(w => w.Name)"
+                            OptionValue="@(w => w.Id.ToString())"
+                            SelectedOptionChanged = "@( (Weapon w) => WeaponSelected(w.Id))"
+                            Disabled="@isSwitchWeaponPossible"
+                            />
+        }
+
+        @if (manoeuvresQueryable == null)
+        {
+            <p><em>Select a wepon first</em></p>
+        }
+        else
+        {
+            <FluentSelect   Items=@weapons.value
+                            Label="Weapons: "
+                            Multiple=false
+                            Required
+                            OptionText="@(w => w.Name)"
+                            OptionValue="@(w => w.Id.ToString())"
+                            SelectedOptionChanged = "@( (Weapon w) => WeaponSelected(w.Id))"
+                            Disabled="@isSwitchWeaponPossible"
+                            />
+        }
+    </FluentCard>
+
+</FluentStack>
+
+
+<div id="accordion">
+
     @* == Weapon & Manoeuvres ===== *@
     <div class="card">
-        <div class="card-header" id="headingTwo">
+        @* <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                 Weapon & Manoeuvres
@@ -67,7 +95,7 @@ else
                         </InputSelect>
                     </div>
                 </div>
-}
+} *@
 
 @if (manoeuvresQueryable == null)
 {
@@ -99,7 +127,6 @@ else
                     </div>
     </div>
 }
-            </div>
         </div>
     </div>
     @* == Armour ===== *@
