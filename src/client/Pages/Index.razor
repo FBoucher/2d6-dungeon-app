@@ -4,21 +4,21 @@
 @inject NavigationManager Navigation;
 
 <PageTitle>Home</PageTitle>
-<div class="row justify-content-md-center">
-    <p>Welcome to <b>2d6 Dungeon App</b>! This is a digital adaptation of the dice & paper <a href="https://d-r-games.itch.io/2d6-dungeon-demo" target="_blank">2d6 Dungeon</a> game. You still need to buy the game to be able to play.</p>
-</div>
 
-<div class="row justify-content-md-center">
+<FluentLabel Style="margin:16px 0px; padding: 16px 0px; width: 600px;">
+    Welcome to <b>2d6 Dungeon App</b>! This is a digital adaptation of the dice & paper <a href="https://d-r-games.itch.io/2d6-dungeon-demo" target="_blank">2d6 Dungeon</a> game. You still need to buy the game to be able to play.
+</FluentLabel>
 
-    <p>@savedGamesTips</p>
-    <div class="row align-items-center">
-        <button type="button" class="btn btn-outline-primary" @onclick="CreateAdventure">Create a new adventure</button> 
-        @if (savedGames > 0)
-        { 
-        <button type="button" class="btn btn-outline-primary" @onclick="LoadAdventure">Load an adventure</button>
-        }
-    </div>
-</div>
+<FluentLabel>@savedGamesTips</FluentLabel>
+
+<FluentStack Orientation="Orientation.Horizontal">
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" OnClick="CreateAdventure">Create a new adventure</FluentButton> 
+@if (savedGames > 0)
+{ 
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.ArrowCircleUpRight())" OnClick="LoadAdventure">Load an adventure</FluentButton>
+}
+</FluentStack>
+
 
 
 

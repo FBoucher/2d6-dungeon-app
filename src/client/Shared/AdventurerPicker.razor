@@ -1,31 +1,29 @@
 ﻿@using c5m._2d6Dungeon;
-@using Microsoft.AspNetCore.Components.QuickGrid;
 @using System.Text.Json;
 @inject ID6Service D6Service;
 @inject NavigationManager Navigation;
 
-<h3>Select a Adventurer</h3>
 @if (adventurers == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <div class="grid">
-        <QuickGrid Items="@adventurersQueryable" class="table table-hover table-striped">
+    <FluentStack Orientation="Orientation.Vertical">
+
+        <FluentDataGrid Items="@adventurersQueryable">
             <TemplateColumn Title="">
-                <button @onclick="@(() => SelectPlayer(context.id))" class="btn btn-outline-secondary btn-sm" >Select</button>
+                <FluentButton @onclick="@(() => SelectPlayer(context.id))" Appearance="Appearance.Lightweight">Select</FluentButton>
             </TemplateColumn>
-            <PropertyColumn Property="@(c => c.name)" Sortable="true" />
-            <PropertyColumn Property="@(c => c.xp.ToString())" />
-            <PropertyColumn Property="@(c => c.level.ToString())" Sortable="true" />
-        </QuickGrid>
-    </div>
-    <div class="row">
-        <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-outline-primary" @onclick=CreateNewAdventurer>New</button>
-        </div>
-    </div>
+            <PropertyColumn Title="Name" Property="@(c => c.name)" Sortable="true" />
+            <PropertyColumn Title="XP" Property="@(c => c.xp.ToString())" Sortable="true"/>
+            <PropertyColumn Title="Level" Property="@(c => c.level.ToString())" Sortable="true" />
+        </FluentDataGrid>
+    
+
+        <FluentButton @onclick=CreateNewAdventurer Appearance="Appearance.Accent">New</FluentButton>
+    
+    </FluentStack>
 }
 
 @code {

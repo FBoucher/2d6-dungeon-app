@@ -1,59 +1,58 @@
 ﻿@using c5m._2d6Dungeon;
 @inject IJSRuntime JSRuntime 
 
-<h3>Adventure Initialization</h3>
-<div>To create a new adventure you will need: </div>
+<FluentLabel Typo="Typography.PageTitle">Adventure Initialization</FluentLabel>
 
-<div class="jumbotron">
-    @* <h3>Create or select an Adventurer</h3> *@
-@if (selectedAdventurer == null)
-{
-    <AdventurerPicker @bind-ParentPlayer="selectedAdventurer"></AdventurerPicker>
-}
-else
-{
-    <div>
-        <p><b>Name:</b> @selectedAdventurer.Name</p>
-        <p><b>XP:</b> @selectedAdventurer.XP.ToString()</p>
-        <p><b>Level:</b> @selectedAdventurer.Level.ToString()</p>
-        <p><b>Copper Coins:</b> @selectedAdventurer.Coins.CupperCoins.ToString()</p>
-    </div>
-}  
-</div> 
+<FluentLabel>To create a new adventure you will need: </FluentLabel>
 
-<div class="row">
-    <h3>Create a new Dungeon</h3>
-
-    <div class="row">
-        <div class="col-md-12 text-right">
-                <p id="message"></p>
-        </div>
-        <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-outline-primary" @onclick=RollDices>@actionLabel</button>
-        </div>
-    </div>
-    <div style="padding:20px;">
-        @if(primaryDice != 0)
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentCard >
+        <FluentHeader>Select or Create an Adventurer</FluentHeader>
+        @if (selectedAdventurer == null)
         {
-            <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
+            <AdventurerPicker @bind-ParentPlayer="selectedAdventurer"></AdventurerPicker>
         }
-        @if(secondaryDice != 0)
+        else
         {
-            <img alt="@(secondaryDice)" src="dices/purlple-dice@(secondaryDice).jpg" />
-        }
-    </div>
+            <FluentPersona  Name="@(selectedAdventurer.Name)"
+                            ImageSize="50px"
+                            Status="PresenceStatus.Available"
+                            StatusSize="PresenceBadgeSize.Small">
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
+                        <FluentLabel Typo="Typography.H3">@selectedAdventurer.Name</FluentLabel>
+                        <FluentLabel Typo="Typography.Body"><b>XP:</b> @selectedAdventurer.XP.ToString()</FluentLabel>
+                        <FluentLabel Typo="Typography.Body"><b>Level:</b> @selectedAdventurer.Level.ToString()</FluentLabel>
+                    </FluentStack>
+            </FluentPersona>
+        }  
+    </FluentCard> 
 
-    <canvas id="dotCanvas" style="width: 800px; height: 800px; padding:10px;"></canvas> 
-</div>  
+    <FluentCard >
+        <FluentHeader>Create a new Dungeon</FluentHeader>
+        <FluentStack Orientation="Orientation.Vertical">
+            <p id="message"></p>
+            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" >@actionLabel</FluentButton>
+        </FluentStack>
+        <div style="padding:20px;">
+            @if(primaryDice != 0)
+            {
+                <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
+            }
+            @if(secondaryDice != 0)
+            {
+                <img alt="@(secondaryDice)" src="dices/purlple-dice@(secondaryDice).jpg" />
+            }
+        </div>
 
-<div class="row">
-    <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-outline-primary" @onclick="Generate">Generate</button>
-        <button type="button" class="btn btn-outline-primary" @onclick="StarGame" disabled="@isStartDisable">Start</button>
-    </div>
-</div>
+        <canvas id="dotCanvas" style="width: 800px; height: 800px; padding:10px;"></canvas> 
+    </FluentCard>  
+</FluentStack>
 
 
+<FluentStack Orientation="Orientation.Horizontal">
+        <FluentButton Appearance="Appearance.Accent" @onclick="Generate">Generate</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" @onclick="StarGame" disabled="@isStartDisable">Start</FluentButton>
+</FluentStack>
 
 @code {
 
@@ -63,7 +62,7 @@ else
 
     private Adventure? betaAdventure;
     public Game.Adventurer? selectedAdventurer;
-    private bool isStartDisable = false;
+    private bool isStartDisable = true;
     private bool firstRender = true;
     public int primaryDice = 0;
     public int secondaryDice = 0;
@@ -88,13 +87,19 @@ else
         isStartDisable = true;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        //await JSRuntime.InvokeVoidAsync("resizeCanvas");
+    }
+
+
     private async Task RollDices()
     {
         await RenderCanvas() ;
         var dResult = DiceResult.Roll2Dices();
+
+        entryRoom = Dungeon.StartDungeonLevel(ref dResult);
         primaryDice = dResult.PrimaryDice;
         secondaryDice = dResult.SecondaryDice;
-        entryRoom = Dungeon.StartDungeonLevel(dResult);
 
         //hardcoded temporary
         entryRoom.CoordX = 2;

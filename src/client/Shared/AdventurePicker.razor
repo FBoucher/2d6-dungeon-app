@@ -2,44 +2,28 @@
 @using System.Text.Json;
 @inject ID6Service D6Service;
 
-<h3>Select the Adventure you would like to continue.</h3>
+<FluentLabel Typo="Typography.H3">Select the Adventure you would like to continue.</FluentLabel>
 @if (AdventurePreviews == null)
 {
-    <p><em>Loading...</em></p>
+    <FluentProgressRing>Loading...</FluentProgressRing>
 }
 else
 {
-    <table class="table table-hover table-striped">
-        <thead>
-            <tr>
-                <!--th> </th-->
-                <th>Adventurer Name</th>
-                <th>Level</th>
-                <th>Last Saved Datetime</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var a in AdventurePreviews.value)
-            {
-                <tr style="cursor:pointer" @onclick="() => SelectAdventure(a.id)">
-                    <!--button type="button" class="btn btn-outline-primary btn-sm" >Select</button-->
-                    <td>@a.adventurer_name</td>
-                    <td>@a.level.ToString()</td>
-                    <td>@a.last_saved_datetime.ToString()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="row">
-        <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-outline-primary" @onclick=CreateNewAdventure>New</button>
-        </div>
-    </div>
+    <FluentDataGrid Items="@AdventurePreviews" ResizableColumns=true>
+        <TemplateColumn Title="">
+            <FluentButton @OnClick="() => SelectAdventure(a.id))" IconStart="@(new Icons.Filled.Size20.ArrowCircleRight())">Select</FluentButton>
+        </TemplateColumn>
+        <PropertyColumn Property="@(a => a.adventurer_name)" Title="Adventurer Name" Sortable="true"/>
+        <PropertyColumn Property="@(a => a.level)" Title="Level" Sortable="true"/>
+        <PropertyColumn Property="@(a => a.last_saved_datetime)" Title="Saved Date" Sortable="true"/>
+    </FluentDataGrid>
+
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" @onclick=CreateNewAdventure>New</FluentButton>
 }
 
 @code {
 
-    private AdventurePreviewList? AdventurePreviews;
+    private IQueryable<AdventurePreview>? AdventurePreviews;
 
     [Parameter] public Adventure? ParentAdventure {get; set;}
 
@@ -48,7 +32,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         try{
-            AdventurePreviews = await D6Service.GetAdventurePreviews();    
+            var result  = await D6Service.GetAdventurePreviews();    
+            if(result != null)
+                AdventurePreviews = result.value.AsQueryable();
         }
         catch(Exception ex){
             Console.WriteLine("Oops! --> " + ex.Message);

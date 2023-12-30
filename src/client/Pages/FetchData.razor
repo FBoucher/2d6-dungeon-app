@@ -1,96 +1,51 @@
 ﻿@page "/fetchdata"
 @using c5m._2d6Dungeon;
-@using Microsoft.AspNetCore.Components.QuickGrid;
+@* @using Microsoft.AspNetCore.Components.QuickGrid; *@
 @inject ID6Service D6Service;
 @inject HttpClient Http
 @using System.Text.Json
 
-<PageTitle>Room list</PageTitle>
+<PageTitle>Database test</PageTitle>
 
-@* <h1>Room list</h1>
-
-@if (rooms == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Roll</th>
-                <th>RoomType</th>
-                <th>Description</th>
-                <th>Encounter</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var room in rooms.value)
-            {
-                <tr>
-                    <td>@room.roll.ToString()</td>
-                    <td>@room.room_type</td>
-                    <td>@room.description</td>
-                    <td>@room.encounter</td>
-                </tr>
-            }
-        </tbody>
-    </table> 
-}  
-*@
-
-<hr/>
-
-<div class="row justify-content-md-center">
-
-    <p>Test Fetching</p>
-    <div class="row align-items-center">
-        <button type="button" class="btn btn-outline-primary" @onclick="GetWeapons">Get Weapons</button> 
-        
+<FluentLabel Typo="Typography.PageTitle">Test Fetching</FluentLabel>
+<FluentButton Appearance="Appearance.Accent" OnClick="GetWeapons">Get Weapons</FluentButton> 
+    
 @if (weapons == null)
 {
-        <p><em>no weapons loaded yet...</em></p>
+    <FluentProgressRing>no weapons loaded yet...</FluentProgressRing>
 }
 else
 {       
-        <InputSelect Value="selectedWeaponId" 
-                     ValueExpression = "@( () => selectedWeaponId)"
-                     ValueChanged = "@( (int weaponId) => ValueChanged(weaponId))"
-                     class="form-control" 
-                     id ="selectedWeapon">
-            @if (selectedWeaponId == 0)
-            {
-                <option value="0" selected> - Select a Weapon - </option>
-            }
-            @foreach (var w in weapons.value)
-            {
-                <option value="@w.Id"> @w.Name </option>
-            }
-        </InputSelect>
-}
-    </div>
-
-
-
-
-
-@if (manoeuvres == null)
-{
-    <p><em>No manoeuvres yet...</em></p>
-}
-else
-{
-    <div class="grid">
-        <QuickGrid Items="@manoeuvresQueryable">
-            <PropertyColumn Title="Weapon" Property="@(m => weaponName)" />
-            <PropertyColumn Property="@(m => m.Description)" Sortable="true" />
-            <PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
-            <PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
-        </QuickGrid>
-    </div>
-}
     
-</div>
+    <InputSelect Value="selectedWeaponId" 
+                    ValueExpression = "@( () => selectedWeaponId)"
+                    ValueChanged = "@( (int weaponId) => ValueChanged(weaponId))"
+                    class="form-control" 
+                    id ="selectedWeapon">
+        @if (selectedWeaponId == 0)
+        {
+            <option value="0" selected> - Select a Weapon - </option>
+        }
+        @foreach (var w in weapons.value)
+        {
+            <option value="@w.Id"> @w.Name </option>
+        }
+    </InputSelect>
+
+    @if (manoeuvres == null)
+    {
+        <FluentProgressRing>No manoeuvres yet...</FluentProgressRing>
+    }
+    else
+    {
+        <FluentDataGrid Items="@manoeuvresQueryable" ResizableColumns="true">
+            <PropertyColumn Title="Weapon" Property="@(m => weaponName)" Sortable="true"/>
+            <PropertyColumn Title="Description" Property="@(m => m.Description)" Sortable="true"/>
+            <PropertyColumn Title="Modifier" Property="@(m => m.Modifier)" Sortable="true"/>
+            <PropertyColumn Title="DiceSet" Property="@(m => m.DiceSet)" Sortable="true"/>
+        </FluentDataGrid>
+    }
+}
 
 
 @code {

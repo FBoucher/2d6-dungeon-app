@@ -1,44 +1,15 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">2d6 dungeon</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Dice
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="dungeonmap">
-                <span class="oi oi-map" aria-hidden="true"></span> Map
-            </NavLink>
-        </div>
+﻿<div class="navmenu">
+    <input type="checkbox" id="navmenu-toggle" />
+    <nav class="sitenav" aria-labelledby="main-menu" onclick="document.getElementById('navmenu-toggle').click();">
+        <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded">
+            <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.HomePerson())">Home</FluentNavLink>
+            <FluentNavLink Href="/Counter" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.AppFolder())">Dice Test</FluentNavLink>
+            <FluentNavLink Href="/fetchdata" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Database())">Database Test</FluentNavLink>
+            <FluentNavLink Href="/dungeonmap" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Map())">Map Test</FluentNavLink>
+            <FluentNavLink Href="/settings" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TextBulletListSquareSettings())">Settings</FluentNavLink>
+        </FluentNavMenu>
     </nav>
 </div>
-
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    private bool expanded = true;
 }
