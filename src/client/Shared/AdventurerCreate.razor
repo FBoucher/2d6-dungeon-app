@@ -2,202 +2,110 @@
 @using Microsoft.AspNetCore.Components.QuickGrid;
 @inject ID6Service D6Service;
 @inject NavigationManager Navigation;
+@inject IDialogService DialogService
 
 <h3>Create an Adventurer</h3>
 
 <EditForm Model="@ParentAdventurer">
+@* TODO: Add Validation  *@
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentCard>
-        <FluentHeader>Adventurer Details</FluentHeader>
-        <FluentTextField    Label="Name: "
+        <FluentHeader Height="18">Adventurer Details</FluentHeader>
+        <FluentTextField    Label="Name"
                             Required
                             @bind-Value="ParentAdventurer.Name"></FluentTextField>
     </FluentCard>
 
-    <FluentCard Height="400px">
-        <FluentHeader>Weapon & Manoeuvres</FluentHeader>
+
+    <FluentCard AreaRestricted=false>
+        <FluentHeader Height="18">Weapon</FluentHeader>
         @if (weapons == null)
         {
-                        <p><em>no weapons loaded yet...</em></p>
+            <p><em>no weapons loaded yet...</em></p>
         }
         else
         { 
-            <FluentSelect   Items=@weapons.value
-                            Label="Weapons: "
+            <FluentCombobox Items=@weapons.value
+                            Appearance="Appearance.Filled"
+                            Label="Weapons"
                             Multiple=false
                             Required
                             OptionText="@(w => w.Name)"
                             OptionValue="@(w => w.Id.ToString())"
                             SelectedOptionChanged = "@( (Weapon w) => WeaponSelected(w.Id))"
                             Disabled="@isSwitchWeaponPossible"
+                            Placeholder="Select a Weapon"
                             />
-        }
+    }
+    </FluentCard>
 
-        @if (manoeuvresQueryable == null)
+
+     <FluentCard Height="200px">
+        <FluentHeader Height="18">Manoeuvres</FluentHeader>
+        @if (manoeuvresQueryable != null)
         {
-            <p><em>Select a wepon first</em></p>
+            <FluentSelect   Items=@manoeuvresQueryable
+                            Label="Manoeuvres (description | modifier | dice set)"
+                            Multiple=true
+                            Height="100px"
+                            Width="400px"
+                            Open=@selectManoeuvreOpen
+                            Required
+                            OptionText="@(m => m.Description + " | " + m.Modifier  + " | " + m.DiceSet)"
+                            OptionValue="@(m => m.Id.ToString())"
+                            SelectedOptionsChanged = "@( (IEnumerable<WeaponManoeuvre> selMans) => SelectManoeuvre(selMans))"
+                            Id="selManoeuvres"
+                            />
         }
         else
         {
-            <FluentSelect   Items=@weapons.value
-                            Label="Weapons: "
-                            Multiple=false
-                            Required
-                            OptionText="@(w => w.Name)"
-                            OptionValue="@(w => w.Id.ToString())"
-                            SelectedOptionChanged = "@( (Weapon w) => WeaponSelected(w.Id))"
-                            Disabled="@isSwitchWeaponPossible"
-                            />
+            <p><em>Select a wepon first</em></p>     
         }
     </FluentCard>
+
+
+    <FluentCard AreaRestricted=false>
+        <FluentHeader Height="18">Armour Piece</FluentHeader>
+        <FluentCombobox Items=@armourPiecesQueryable
+                        Appearance="Appearance.Filled"
+                        @bind-Value=@selectedArmourId
+                        @bind-SelectedOption=@selectedArmour
+                        Label="Armour Piece (name | modifier | dice set)"
+                        Multiple=false
+                        Required
+                        Width="100%"
+                        Open=false
+                        OptionText="@(a => a.Name + " | " + a.Modifier  + " | " + a.DiceSet)"
+                        OptionValue="@(a => a.Id.ToString())"
+                        Placeholder="Select an Armour Piece"
+                        />
+    </FluentCard>
+
+
+    <FluentCard AreaRestricted=false>
+        <FluentHeader Height="18">Magic Scroll</FluentHeader>
+        <FluentCombobox     Items=@magicScollsQueryable
+                            Label="Magic Scroll (type | description)"
+                            Placeholder="Select a Magic Scroll"
+                            Appearance="Appearance.Filled"
+                            Multiple=false
+                            Required
+                            Width="100%"
+                            Open=false
+                            OptionText="@(s => s.ScrollType + " | " + s.Description)"
+                            OptionValue="@(s => s.Id.ToString())"
+                            SelectedOptionChanged = "@( (MagicScroll s) => SelectMagicScroll(s.Id))"
+                            />
+    </FluentCard>
+
+
+    <FluentButton @onclick="CreateAndSaveAdventurer" Appearance="Appearance.Accent">Save Adventurer</FluentButton> 
 
 </FluentStack>
 
 
-<div id="accordion">
 
-    @* == Weapon & Manoeuvres ===== *@
-    <div class="card">
-        @* <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                Weapon & Manoeuvres
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
-@if (weapons == null)
-{
-                <p><em>no weapons loaded yet...</em></p>
-}
-else
-{       
-                <div class="form-group row">
-                    <label for="WeaponId" class="col-sm-2 col-form-label">Weapon</label>
-                    <div class="col-sm-10">
-                        <InputSelect Value="selectedWeaponId" 
-                                    ValueExpression = "@( () => selectedWeaponId)"
-                                    ValueChanged = "@( (int weaponId) => WeaponSelected(weaponId))"
-                                    class="form-control dropdown" 
-                                    id ="selectedWeapon"
-                                    disabled="@isSwitchWeaponPossible" >
-                            @if (selectedWeaponId == 0)
-                            {
-                                <option value="0" selected> - Select a Weapon - </option>
-                            }
-                            @foreach (var w in weapons.value)
-                            {
-                                <option value="@w.Id"> @w.Name </option>
-                            }
-                        </InputSelect>
-                    </div>
-                </div>
-} *@
-
-@if (manoeuvresQueryable == null)
-{
-    <p><em>Select a wepon first</em></p>
-}
-else
-{
-    <div class="form-group row">
-                    <p>Pick two Starting Manoeuvres</p>
-                    <label for="WeaponId" class="col-sm-2 col-form-label">Manoeuvres</label>
-                    <div class="col-sm-10">
-                        <div class="grid">
-                            <QuickGrid Items="@manoeuvresQueryable">
-                                <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="" Context="manoeuvre">
-                                    <div class="btn-group-toggle" data-toggle="buttons">
-                                    <button @onclick="@(() => SelectManoeuvre(manoeuvre.Id))" 
-                                            id="@manoeuvre.Id"
-                                            type="button" 
-                                            class="btn btn-outline-primary" 
-                                            data-bs-toggle="button" 
-                                            autocomplete="off" >Select</button>
-                                    </div>
-                                </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
-                                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(m => m.Description)" Sortable="true" />
-                                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(m => m.Modifier)" Sortable="true" />
-                                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(m => m.DiceSet)" Sortable="true" />
-                            </QuickGrid>
-                        </div>
-                    </div>
-    </div>
-}
-        </div>
-    </div>
-    @* == Armour ===== *@
-    <div class="card">
-        <div class="card-header" id="headingArmour">
-            <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseArmour" aria-expanded="true" aria-controls="collapseArmour">
-                Armour
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseArmour" class="collapse" aria-labelledby="headingArmour" data-parent="#accordion">
-        <div class="card-body">
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Select ONE piece of amour</label>
-                <QuickGrid Items="@armourPiecesQueryable" class="table table-hover table-striped">
-                    <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="" Context="armourPiece">
-                        <div class="btn-group-toggle" data-toggle="buttons">
-                            <button @onclick="@(() => SelectArmourPiece(armourPiece.Id))" 
-                                    id="@armourPiece.Id"
-                                    type="button" 
-                                    class="btn btn-outline-primary" 
-                                    data-bs-toggle="button" 
-                                    autocomplete="off" >Select</button>
-                        </div>
-                    </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
-                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.Name)" Sortable="true" />
-                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.DiceSet)" />
-                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.Modifier)" Sortable="true" />
-                </QuickGrid>
-            </div>
-        </div>
-        </div> 
-    </div>
-
-    @* == Scrolls ===== *@
-    <div class="card">
-        <div class="card-header" id="headingScrolls">
-            <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseScrolls" aria-expanded="true" aria-controls="collapseScrolls">
-                Scrolls
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseScrolls" class="collapse" aria-labelledby="headingScrolls" data-parent="#accordion">
-        <div class="card-body">
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Select ONE Magic Scroll</label>
-                <QuickGrid Items="@magicScollsQueryable" class="table table-hover table-striped">
-                    <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="" Context="magicScoll">
-                        <div class="btn-group-toggle" data-toggle="buttons">
-                            <button @onclick="@(() => SelectMagicScroll(magicScoll.Id))" 
-                                    id="@magicScoll.Id"
-                                    type="button" 
-                                    class="btn btn-outline-primary" 
-                                    data-bs-toggle="button" 
-                                    autocomplete="off" >Select</button>
-                        </div>
-                    </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
-                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.ScrollType)" Sortable="true" />
-                    <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(a => a.Description)" />
-                </QuickGrid>
-            </div>
-        </div>
-        </div> 
-    </div>
-</div>
-
-<button @onclick="CreateAndSaveAdventurer">Save Adventurer</button>
 </EditForm>
 
 @code {
@@ -207,13 +115,15 @@ else
 
     private WeaponList? weapons;
     private int selectedWeaponId = 1;
-    private int selectedArmourId = 0;
+    protected string? selectedArmourId;
+    protected ArmourPiece selectedArmour = default!;
     private int selectedMagicScrollId = 0;
     private string weaponName = string.Empty;
     private IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
-    private IQueryable<ArmourPiece>? armourPiecesQueryable;
-    private IQueryable<MagicScroll>? magicScollsQueryable;
-    private List<int> selectedManoeuvres = new List<int>();
+    private List<ArmourPiece>? armourPiecesQueryable;
+    private List<MagicScroll>? magicScollsQueryable;
+    private bool selectManoeuvreOpen = true;
+    private IEnumerable<WeaponManoeuvre>? selectedManoeuvres;
     private bool isSwitchWeaponPossible = false;
 
     protected override async Task OnInitializedAsync()
@@ -222,10 +132,9 @@ else
         try{
             ParentAdventurer = new Game.Adventurer();
             weapons = await D6Service.GetWeapons();
-            WeaponSelected(weapons.value.First().Id);
 
-            armourPiecesQueryable = (await D6Service.GetArmourPieces()).value.AsQueryable();
-            magicScollsQueryable = (await D6Service.GetMagicScrolls()).value.AsQueryable();
+            armourPiecesQueryable = (await D6Service.GetArmourPieces()).value;
+            magicScollsQueryable = (await D6Service.GetMagicScrolls()).value;
 
         }
         catch(Exception ex){
@@ -249,18 +158,17 @@ else
         }
     }
 
-    private async Task SelectManoeuvre(int manoeuvreId)
+    private async Task SelectManoeuvre(IEnumerable<WeaponManoeuvre> selManoeuvres)
     {
-        if(selectedManoeuvres.Contains(manoeuvreId) ){
-            selectedManoeuvres.Remove(manoeuvreId);
-        }
-        else if(selectedManoeuvres.Count < 2){
-            selectedManoeuvres.Add(manoeuvreId);
-        }
-
-        if(selectedManoeuvres.Count > 0)
-        {
+        selectedManoeuvres = selManoeuvres.ToList();
+        if(selManoeuvres != null && selManoeuvres.Count() > 0){
             isSwitchWeaponPossible = true;
+            if(selManoeuvres.Count() == 2){
+                selectManoeuvreOpen = false;
+            }
+            if(selManoeuvres.Count() > 2){
+                await ShowMaxManoeuvresReached();
+            }
         }
         else
         {
@@ -268,9 +176,17 @@ else
         }
     }
 
+    private async Task ShowMaxManoeuvresReached()
+    {
+        var dialog = await DialogService.ShowErrorAsync("Maximum of two weapon manoeuvres");
+        var result = await dialog.Result;
+        var canceled = result.Cancelled;
+    }
+
+
     private async Task SelectArmourPiece(int armourPieceId)
     {
-        selectedArmourId = armourPieceId;
+        selectedArmourId = armourPieceId.ToString();
     }
 
     private async Task SelectMagicScroll(int magicScollId)
@@ -282,12 +198,11 @@ else
         MagicPotion InitialPotion = await D6Service.GetInitialMagicPotion();
         
         ParentAdventurer.Weapon = weapons.value.Single<Weapon>(w => w.Id == selectedWeaponId);
-        foreach(var mID in selectedManoeuvres)
-        {
-            ParentAdventurer.WeaponManoeuvres.Add(manoeuvresQueryable.Where<WeaponManoeuvre>(m => m.Id == mID).First<WeaponManoeuvre>());
-        }
+        
+        ParentAdventurer.WeaponManoeuvres.AddRange(selectedManoeuvres);
 
-        ParentAdventurer.ArmourPieces.Add(armourPiecesQueryable.Where<ArmourPiece>(a => a.Id == selectedArmourId).First<ArmourPiece>());
+        ParentAdventurer.ArmourPieces.Add(selectedArmour);
+
         ParentAdventurer.MagicScrolls.Add(magicScollsQueryable.Where<MagicScroll>(s => s.Id == selectedMagicScrollId).First<MagicScroll>());
 
         ParentAdventurer.MagicPotions.Add(InitialPotion);
@@ -295,7 +210,7 @@ else
         var result = await D6Service.AdventurerCreate(ParentAdventurer);
 
         if (result){
-             Navigation.NavigateTo("theadventure/new");
+            Navigation.NavigateTo("theadventure/new");
         }
 
     }

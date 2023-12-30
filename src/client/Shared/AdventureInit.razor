@@ -7,6 +7,7 @@
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentCard >
+        <FluentHeader>Select or Create an Adventurer</FluentHeader>
         @if (selectedAdventurer == null)
         {
             <AdventurerPicker @bind-ParentPlayer="selectedAdventurer"></AdventurerPicker>
@@ -27,16 +28,11 @@
     </FluentCard> 
 
     <FluentCard >
-        <h3>Create a new Dungeon</h3>
-
-        <div class="row">
-            <div class="col-md-12 text-right">
-                    <p id="message"></p>
-            </div>
-            <div class="col-md-12 text-right">
-                <button type="button" class="btn btn-outline-primary" @onclick=RollDices>@actionLabel</button>
-            </div>
-        </div>
+        <FluentHeader>Create a new Dungeon</FluentHeader>
+        <FluentStack Orientation="Orientation.Vertical">
+            <p id="message"></p>
+            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" >@actionLabel</FluentButton>
+        </FluentStack>
         <div style="padding:20px;">
             @if(primaryDice != 0)
             {
@@ -51,12 +47,12 @@
         <canvas id="dotCanvas" style="width: 800px; height: 800px; padding:10px;"></canvas> 
     </FluentCard>  
 </FluentStack>
-<div class="row">
-    <div class="col-md-12 text-right">
+
+
+<FluentStack Orientation="Orientation.Horizontal">
         <FluentButton Appearance="Appearance.Accent" @onclick="Generate">Generate</FluentButton>
         <FluentButton Appearance="Appearance.Accent" @onclick="StarGame" disabled="@isStartDisable">Start</FluentButton>
-    </div>
-</div>
+</FluentStack>
 
 @code {
 
@@ -66,7 +62,7 @@
 
     private Adventure? betaAdventure;
     public Game.Adventurer? selectedAdventurer;
-    private bool isStartDisable = false;
+    private bool isStartDisable = true;
     private bool firstRender = true;
     public int primaryDice = 0;
     public int secondaryDice = 0;
@@ -100,9 +96,10 @@
     {
         await RenderCanvas() ;
         var dResult = DiceResult.Roll2Dices();
+
+        entryRoom = Dungeon.StartDungeonLevel(ref dResult);
         primaryDice = dResult.PrimaryDice;
         secondaryDice = dResult.SecondaryDice;
-        entryRoom = Dungeon.StartDungeonLevel(dResult);
 
         //hardcoded temporary
         entryRoom.CoordX = 2;

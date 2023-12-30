@@ -4,7 +4,7 @@ public class Dungeon
 {
     public List<MappedRoom> MappedRooms { get; set; } = new List<MappedRoom>();
 
-    public static MappedRoom StartDungeonLevel(DiceResult dResult)
+    public static MappedRoom StartDungeonLevel(ref DiceResult dResult)
     {
         int area = dResult.PrimaryDice * dResult.SecondaryDice;
         if(area > 12){

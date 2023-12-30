@@ -11,11 +11,14 @@
 
 <FluentLabel>@savedGamesTips</FluentLabel>
 
-<FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" OnClick="CreateAdventure">Create a new adventure</FluentButton> 
+<FluentStack Orientation="Orientation.Horizontal">
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" OnClick="CreateAdventure">Create a new adventure</FluentButton> 
 @if (savedGames > 0)
 { 
     <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.ArrowCircleUpRight())" OnClick="LoadAdventure">Load an adventure</FluentButton>
 }
+</FluentStack>
+
 
 
 
