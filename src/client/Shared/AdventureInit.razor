@@ -31,7 +31,7 @@
         <FluentHeader>Create a new Dungeon</FluentHeader>
         <FluentStack Orientation="Orientation.Vertical">
             <p id="message"></p>
-            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" >@actionLabel</FluentButton>
+            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel</FluentButton>
         </FluentStack>
         <div style="padding:20px;">
             @if(primaryDice != 0)
@@ -44,13 +44,12 @@
             }
         </div>
 
-        <canvas id="dotCanvas" style="width: 800px; height: 800px; padding:10px;"></canvas> 
+        <canvas id="dotCanvas" style="width: 300px; height: 300px;" ></canvas> 
     </FluentCard>  
 </FluentStack>
 
 
 <FluentStack Orientation="Orientation.Horizontal">
-        <FluentButton Appearance="Appearance.Accent" @onclick="Generate">Generate</FluentButton>
         <FluentButton Appearance="Appearance.Accent" @onclick="StarGame" disabled="@isStartDisable">Start</FluentButton>
 </FluentStack>
 
@@ -73,52 +72,41 @@
     {
         betaAdventure = new Adventure();
         betaAdventure.Adventurer = selectedAdventurer;
-
-        
-
         betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
-        throw new NotImplementedException();
+
         //todo: save the adventure
     }
 
-    private void Generate()
-    {
-        betaAdventure = new Adventure();
-        isStartDisable = true;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender){
-        //await JSRuntime.InvokeVoidAsync("resizeCanvas");
+        if (firstRender) 
+        { 
+            await JSRuntime.InvokeVoidAsync("onResize");
+        } 
     }
 
 
     private async Task RollDices()
     {
-        await RenderCanvas() ;
+        await RenderCanvas();
         var dResult = DiceResult.Roll2Dices();
 
         entryRoom = Dungeon.StartDungeonLevel(ref dResult);
-        primaryDice = dResult.PrimaryDice;
-        secondaryDice = dResult.SecondaryDice;
 
-        //hardcoded temporary
-        entryRoom.CoordX = 2;
-        entryRoom.CoordY = 5;
+        //TODO: hardcoded temporary
+        entryRoom.CoordX = 1;
+        entryRoom.CoordY = 2;
 
         SetDungeonEntranceDoor(entryRoom);
         AssignExits(entryRoom, "S");
         await DrawRoom(entryRoom, true);
         
-        actionLabel = "The lobby has 3 exits";
+        actionLabel = "Press the Start button to begin your adventure";
+        isStartDisable = false;
     }
 
     private async Task RenderCanvas() 
     { 
-        if (firstRender) 
-        { 
-            firstRender = false;
-            await JSRuntime.InvokeVoidAsync("onResize");
-        } 
+        await JSRuntime.InvokeVoidAsync("onResize");
     }
 
     protected async Task DrawRoom(MappedRoom currentRoom, bool isLobby) 
@@ -190,7 +178,9 @@
 
     protected void AssignExits(MappedRoom currentRoom, string entrance)
     {
-        Random rnd = new Random(currentRoom.Width * currentRoom.Height);
+        int seed = DateTime.UtcNow.Millisecond;
+        Random rnd = new Random(seed);
+        
         var walls = new List<string>(){"N", "E", "S", "W"};
         walls.Remove(entrance);
         var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<string>(currentRoom.ExitsCount);
@@ -201,10 +191,16 @@
         foreach(var wall in wallsWithExits)
         {
             var aDoor = new Exit();
+            int maxPos = 0;
             aDoor.onWall = wall;
-            aDoor.PositionOnWall = rnd.Next(1, currentRoom.Height);
+            if("EW".Contains(wall)){
+                maxPos =  (currentRoom.Height +1);
+            }
+            else{
+                maxPos =  (currentRoom.Width +1);
+            }
+            aDoor.PositionOnWall = rnd.Next(1, maxPos);
             aDoor.Lockable = false;
-            
             currentRoom.Exits.Add(aDoor); 
         }
     }

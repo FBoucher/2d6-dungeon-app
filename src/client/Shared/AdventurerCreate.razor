@@ -126,6 +126,8 @@
     private IEnumerable<WeaponManoeuvre>? selectedManoeuvres;
     private bool isSwitchWeaponPossible = false;
 
+    private bool warningShowed = false;
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -178,9 +180,13 @@
 
     private async Task ShowMaxManoeuvresReached()
     {
-        var dialog = await DialogService.ShowErrorAsync("Maximum of two weapon manoeuvres");
-        var result = await dialog.Result;
-        var canceled = result.Cancelled;
+        if(!warningShowed){
+            warningShowed = true;
+            var dialog = await DialogService.ShowErrorAsync("Maximum of two weapon manoeuvres");
+            var result = await dialog.Result;
+            var canceled = result.Cancelled;
+        }
+
     }
 
 
