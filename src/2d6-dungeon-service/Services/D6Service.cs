@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using Bogus;
+using Bogus.DataSets;
 using c5m._2d6Dungeon;
 using c5m._2d6Dungeon.Game;
 
@@ -38,6 +40,22 @@ public class D6Service : ID6Service
         var adventurePrev = result.value.First<AdventurePreview>();
 
         return new Adventure(adventurePrev);
+    }
+
+    public async Task<Adventure> SaveNewAdventure(Adventure game)
+    {
+        var serializedGame = new AdventurePreview(game);
+        serializedGame.last_saved_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+
+        var response = await _httpClient.PostAsJsonAsync<AdventurePreview>($"adventure", serializedGame);
+        var status = response.EnsureSuccessStatusCode();
+
+        if (!status.IsSuccessStatusCode)
+            Console.WriteLine($"Problem while saving: code {status.StatusCode}");
+        
+        var returnedList = await response.Content.ReadFromJsonAsync<AdventurePreviewList>();
+        game.Id = returnedList.value.First<AdventurePreview>().id;
+        return game;
     }
 
     #endregion

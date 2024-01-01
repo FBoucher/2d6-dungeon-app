@@ -1,5 +1,6 @@
 ﻿@using c5m._2d6Dungeon;
 @inject IJSRuntime JSRuntime 
+@inject ID6Service D6Service;
 
 <FluentLabel Typo="Typography.PageTitle">Adventure Initialization</FluentLabel>
 
@@ -68,13 +69,14 @@
     private string actionLabel = "Roll 2D6 to determine the Entrance of the dungeon";
     private MappedRoom entryRoom;
 
-    private void StarGame()
+    private async Task StarGame()
     {
         betaAdventure = new Adventure();
         betaAdventure.Adventurer = selectedAdventurer;
         betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
 
         //todo: save the adventure
+        betaAdventure = await D6Service.SaveNewAdventure(betaAdventure);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
