@@ -39,7 +39,11 @@ public class D6Service : ID6Service
         var result = await _httpClient.GetFromJsonAsync<AdventurePreviewList>($"adventure/id/{id.ToString()}");
         var adventurePrev = result.value.First<AdventurePreview>();
 
-        return new Adventure(adventurePrev);
+        Adventure loadedGame = new Adventure(adventurePrev);
+        if(loadedGame.Id == 0)
+            loadedGame.Id = id;
+
+        return loadedGame;
     }
 
     public async Task<Adventure> SaveNewAdventure(Adventure game)

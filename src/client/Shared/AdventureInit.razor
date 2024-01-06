@@ -94,6 +94,10 @@
 
         entryRoom = Dungeon.StartDungeonLevel(ref dResult);
 
+        // Update the UI
+        primaryDice = dResult.PrimaryDice; 
+        secondaryDice = dResult.SecondaryDice; 
+
         //TODO: hardcoded temporary
         entryRoom.CoordX = 1;
         entryRoom.CoordY = 2;
