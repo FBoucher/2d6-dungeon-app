@@ -18,7 +18,8 @@ public class AdventurePreview
     public AdventurePreview(Adventure a)
     {
         id = 0;
-
+        adventurer_name = a.Adventurer.Name;
+        level = a.Dungeon.FloorLevel;
         serialiazedObj = DatabaseEncode(a);
     }
 

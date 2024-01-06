@@ -3,6 +3,7 @@
 public class Dungeon
 {
     public List<MappedRoom> MappedRooms { get; set; } = new List<MappedRoom>();
+    public int FloorLevel { get; set; } = 1;
 
     public static MappedRoom StartDungeonLevel(ref DiceResult dResult)
     {

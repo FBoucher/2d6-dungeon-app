@@ -1,6 +1,7 @@
 ﻿@using c5m._2d6Dungeon;
 @using System.Text.Json;
 @inject ID6Service D6Service;
+@inject NavigationManager Navigation;
 
 <FluentLabel Typo="Typography.H3">Select the Adventure you would like to continue.</FluentLabel>
 @if (AdventurePreviews == null)
@@ -11,14 +12,14 @@ else
 {
     <FluentDataGrid Items="@AdventurePreviews" ResizableColumns=true>
         <TemplateColumn Title="">
-            <FluentButton @OnClick="() => SelectAdventure(a.id))" IconStart="@(new Icons.Filled.Size20.ArrowCircleRight())">Select</FluentButton>
+            <FluentButton @onclick="@(() => SelectAdventure(context.id))" IconStart="@(new Icons.Filled.Size20.ArrowCircleRight())">Select</FluentButton>
         </TemplateColumn>
         <PropertyColumn Property="@(a => a.adventurer_name)" Title="Adventurer Name" Sortable="true"/>
         <PropertyColumn Property="@(a => a.level)" Title="Level" Sortable="true"/>
         <PropertyColumn Property="@(a => a.last_saved_datetime)" Title="Saved Date" Sortable="true"/>
     </FluentDataGrid>
 
-    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" @onclick=CreateNewAdventure>New</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" OnClick="CreateNewAdventure">Create a new adventure</FluentButton>
 }
 
 @code {
@@ -44,8 +45,9 @@ else
     
     private void CreateNewAdventure(MouseEventArgs e)
     {
-        throw new NotImplementedException();
+        Navigation.NavigateTo("theadventure/new");
     }
+
     private async Task SelectAdventure(int adventureId)
     {
         try{
@@ -55,5 +57,7 @@ else
         catch(Exception ex){
             Console.WriteLine("Oops! --> " + ex.Message);
         }
+
+        //TODO: Loaded so what's next??
     }
 }
