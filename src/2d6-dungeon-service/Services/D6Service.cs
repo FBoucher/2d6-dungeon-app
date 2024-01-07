@@ -46,19 +46,37 @@ public class D6Service : ID6Service
         return loadedGame;
     }
 
-    public async Task<Adventure> SaveNewAdventure(Adventure game)
+    private async Task<int> AdventureCreate(Adventure game)
     {
+        AdventurePreview draftSavedGame = new AdventurePreview();
+        draftSavedGame.adventurer_name = game.Adventurer.Name;
+        draftSavedGame.last_saved_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+
+        var response = await _httpClient.PostAsJsonAsync<AdventurePreview>($"adventure", draftSavedGame);
+        var status = response.EnsureSuccessStatusCode();
+
+        if (!status.IsSuccessStatusCode)
+            throw new Exception("Problem Saving the Game");
+        
+        var returnedList = await response.Content.ReadFromJsonAsync<AdventurePreviewList>();
+        return returnedList.value.First<AdventurePreview>().id;
+    }
+
+    public async Task<Adventure> AdventureSave(Adventure game)
+    {
+        if(game.Id == 0){
+            game.Id = await AdventureCreate(game);
+        }
+
         var serializedGame = new AdventurePreview(game);
         serializedGame.last_saved_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
-        var response = await _httpClient.PostAsJsonAsync<AdventurePreview>($"adventure", serializedGame);
+        var response = await _httpClient.PutAsJsonAsync<AdventurePreview>($"adventure/id/{game.Id.ToString()}", serializedGame);
         var status = response.EnsureSuccessStatusCode();
 
         if (!status.IsSuccessStatusCode)
             Console.WriteLine($"Problem while saving: code {status.StatusCode}");
         
-        var returnedList = await response.Content.ReadFromJsonAsync<AdventurePreviewList>();
-        game.Id = returnedList.value.First<AdventurePreview>().id;
         return game;
     }
 

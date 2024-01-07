@@ -1,6 +1,7 @@
 ﻿@using c5m._2d6Dungeon;
 @inject IJSRuntime JSRuntime 
 @inject ID6Service D6Service;
+@inject NavigationManager Navigation;
 
 <FluentLabel Typo="Typography.PageTitle">Adventure Initialization</FluentLabel>
 
@@ -15,16 +16,7 @@
         }
         else
         {
-            <FluentPersona  Name="@(selectedAdventurer.Name)"
-                            ImageSize="50px"
-                            Status="PresenceStatus.Available"
-                            StatusSize="PresenceBadgeSize.Small">
-                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
-                        <FluentLabel Typo="Typography.H3">@selectedAdventurer.Name</FluentLabel>
-                        <FluentLabel Typo="Typography.Body"><b>XP:</b> @selectedAdventurer.XP.ToString()</FluentLabel>
-                        <FluentLabel Typo="Typography.Body"><b>Level:</b> @selectedAdventurer.Level.ToString()</FluentLabel>
-                    </FluentStack>
-            </FluentPersona>
+            <AdventurerCard @bind-Player="@(selectedAdventurer)"></AdventurerCard>
         }  
     </FluentCard> 
 
@@ -61,7 +53,7 @@
     [Parameter] public EventCallback<Adventure> ParentAdventureChanged { get; set; }
 
     private Adventure? betaAdventure;
-    public Game.Adventurer? selectedAdventurer;
+    public Game.Adventurer? selectedAdventurer;    
     private bool isStartDisable = true;
     private bool firstRender = true;
     public int primaryDice = 0;
@@ -73,10 +65,15 @@
     {
         betaAdventure = new Adventure();
         betaAdventure.Adventurer = selectedAdventurer;
+
+        // TODO: Improve reposition bottom center
+        entryRoom.CoordX = 14;
+        entryRoom.CoordY = 20;
+
         betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
 
-        //todo: save the adventure
-        betaAdventure = await D6Service.SaveNewAdventure(betaAdventure);
+        betaAdventure = await D6Service.AdventureSave(betaAdventure);
+        Navigation.NavigateTo($"play/{betaAdventure.Id}");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
@@ -89,10 +86,11 @@
 
     private async Task RollDices()
     {
-        await RenderCanvas();
+        await MapTools.RefreshCanvas(JSRuntime);
         var dResult = DiceResult.Roll2Dices();
 
         entryRoom = Dungeon.StartDungeonLevel(ref dResult);
+        entryRoom.IsLobby = true;
 
         // Update the UI
         primaryDice = dResult.PrimaryDice; 
@@ -101,10 +99,10 @@
         //TODO: hardcoded temporary
         entryRoom.CoordX = 1;
         entryRoom.CoordY = 2;
-
+        
         SetDungeonEntranceDoor(entryRoom);
         AssignExits(entryRoom, "S");
-        await DrawRoom(entryRoom, true);
+        await MapTools.DrawRoom(JSRuntime, entryRoom);
         
         actionLabel = "Press the Start button to begin your adventure";
         isStartDisable = false;
@@ -113,61 +111,6 @@
     private async Task RenderCanvas() 
     { 
         await JSRuntime.InvokeVoidAsync("onResize");
-    }
-
-    protected async Task DrawRoom(MappedRoom currentRoom, bool isLobby) 
-    { 
-        int gidX = (currentRoom.CoordX);
-        int gidY = (currentRoom.CoordY);
-
-        await JSRuntime.InvokeVoidAsync("DrawRoom",gidX, gidY, currentRoom.Width, currentRoom.Height);
-
-        await DrawDoors(currentRoom, isLobby);
-    }
-
-    protected async Task DrawDoors(MappedRoom currentRoom, bool isLobby) 
-    { 
-        foreach(var door in currentRoom.Exits)
-        {
-            string orientation = GetDoorOrientation(door.onWall);
-            int x = 0;
-            int y = 0;
-            bool isMain = false;
-
-            switch(door.onWall)
-            {
-                case "N":
-                    x = currentRoom.CoordX + door.PositionOnWall;
-                    y = currentRoom.CoordY;
-                    break;
-                case "E":
-                    x = currentRoom.CoordX + currentRoom.Width;
-                    y = currentRoom.CoordY + door.PositionOnWall;
-                    break;
-                case "S":
-                    x = currentRoom.CoordX + door.PositionOnWall;
-                    y = currentRoom.CoordY + currentRoom.Height;
-                    isMain = isLobby;
-                    break;
-                case "W":
-                    x = currentRoom.CoordX;
-                    y = currentRoom.CoordY + door.PositionOnWall;
-                    break;
-            }
-
-            await JSRuntime.InvokeVoidAsync("DrawDoor",x, y, orientation, isMain);
-        }
-
-        
-    }
-
-    protected string GetDoorOrientation(string onWall)
-    {
-        if(onWall == "S" || onWall == "N")
-        {
-            return "H";
-        }
-        return "V";
     }
 
     protected void SetDungeonEntranceDoor(MappedRoom currentRoom)

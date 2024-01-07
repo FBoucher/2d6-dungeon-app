@@ -7,7 +7,7 @@ public interface ID6Service
     Task<int> GetSaveGameCount();
     Task<AdventurePreviewList?> GetAdventurePreviews();
     Task<Adventure> GetAdventure(int id);
-    Task<Adventure> SaveNewAdventure(Adventure game);
+    Task<Adventure> AdventureSave(Adventure game);
 
     // Adventurer
     Task<AdventurerPreviewList?> GetAdventurerPreviews();

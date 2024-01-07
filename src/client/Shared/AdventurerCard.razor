@@ -1,0 +1,21 @@
+﻿@using c5m._2d6Dungeon;
+@inject ID6Service D6Service;
+
+<FluentPersona  Name="@(Player.Name)"
+                ImageSize="50px"
+                Status="PresenceStatus.Available"
+                StatusSize="PresenceBadgeSize.Small">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
+            <FluentLabel Typo="Typography.H3">@Player.Name</FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>XP:</b> @Player.XP.ToString()</FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>Level:</b> @Player.Level.ToString()</FluentLabel>
+        </FluentStack>
+</FluentPersona>
+
+@code {
+    [Parameter]
+    public Game.Adventurer Player { get; set; }
+
+    [Parameter] 
+    public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
+}
