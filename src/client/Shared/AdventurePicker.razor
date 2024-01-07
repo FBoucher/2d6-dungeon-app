@@ -50,14 +50,6 @@ else
 
     private async Task SelectAdventure(int adventureId)
     {
-        try{
-            ParentAdventure = await D6Service.GetAdventure(adventureId);
-            await ParentAdventureChanged.InvokeAsync(ParentAdventure);
-        }
-        catch(Exception ex){
-            Console.WriteLine("Oops! --> " + ex.Message);
-        }
-
-        //TODO: Loaded so what's next??
+        Navigation.NavigateTo($"play/{adventureId}");
     }
 }

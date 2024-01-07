@@ -4,7 +4,7 @@ using System.Text.Json;
 
 public class Adventure
 {
-    public int Id { get; set; }
+    public int Id { get; set; } = 0;
     public Adventurer Adventurer { get; set; }
     public Dungeon Dungeon { get; set; }
     GameTurn GameTurn { get; set; }

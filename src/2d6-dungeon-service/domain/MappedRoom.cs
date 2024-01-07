@@ -10,6 +10,7 @@ public class MappedRoom
     public int CoordY { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    public bool IsLobby { get; set; } = false;
     public string Description { get; set; }
 
 
