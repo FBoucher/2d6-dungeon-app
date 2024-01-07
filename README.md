@@ -4,7 +4,7 @@
 
 This project is a digital version of the game, with creator's approval. It's a web application that allows you to play the game on your computer or mobile device. It's a work in progress. I progress by iteration improuving the code, the struture at each passes.
 
-![Adventure Initialization](medias/adventure_init.png)
+![Adventure Initialization](medias/new_adventure.png)
 
 📅 Details on the progress of the project can be found on the [project's board](https://github.com/users/FBoucher/projects/13).
 
@@ -12,7 +12,7 @@ This project is a digital version of the game, with creator's approval. It's a w
 
 - [X] Help with the construction of your adventurer.
 - [X] Save and load adventurers.
-- [ ] Save and load adventures.
+- [X] Save and load adventures.
 - [X] Help with the rules when creating a new room.
 - [X] No need of physical dices.
 - [ ] Help drawing the map.
