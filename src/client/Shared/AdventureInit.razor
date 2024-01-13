@@ -101,7 +101,7 @@
         entryRoom.CoordY = 2;
         
         SetDungeonEntranceDoor(entryRoom);
-        AssignExits(entryRoom, "S");
+        AssignExits(entryRoom, 'S');
         await MapTools.DrawRoom(JSRuntime, entryRoom);
         
         actionLabel = "Press the Start button to begin your adventure";
@@ -116,32 +116,32 @@
     protected void SetDungeonEntranceDoor(MappedRoom currentRoom)
     {
         var mainDoor = new Exit();
-        mainDoor.onWall = "S";
+        //mainDoor.onWall = 'S';
         mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
         mainDoor.Lockable = false;
 
         if(currentRoom.Exits == null)
-            currentRoom.Exits = new List<Exit>();
-        currentRoom.Exits.Add( mainDoor);
+            currentRoom.Exits = new Dictionary<char,Exit>();
+        currentRoom.Exits.Add('S', mainDoor);
     }
 
-    protected void AssignExits(MappedRoom currentRoom, string entrance)
+    protected void AssignExits(MappedRoom currentRoom, char entrance)
     {
         int seed = DateTime.UtcNow.Millisecond;
         Random rnd = new Random(seed);
         
-        var walls = new List<string>(){"N", "E", "S", "W"};
+        var walls = new List<char>(){'N', 'E', 'S', 'W'};
         walls.Remove(entrance);
-        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<string>(currentRoom.ExitsCount);
+        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<char>(currentRoom.ExitsCount);
 
         if(currentRoom.Exits == null)
-                currentRoom.Exits = new List<Exit>();
+                currentRoom.Exits = new Dictionary<char,Exit>();
 
-        foreach(var wall in wallsWithExits)
+        foreach(var wall in wallsWithExits.ToList())
         {
             var aDoor = new Exit();
             int maxPos = 0;
-            aDoor.onWall = wall;
+            //aDoor.onWall = wall;
             if("EW".Contains(wall)){
                 maxPos =  (currentRoom.Height +1);
             }
@@ -150,7 +150,7 @@
             }
             aDoor.PositionOnWall = rnd.Next(1, maxPos);
             aDoor.Lockable = false;
-            currentRoom.Exits.Add(aDoor); 
+            currentRoom.Exits.Add(wall, aDoor); 
         }
     }
 
