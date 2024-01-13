@@ -1,0 +1,32 @@
+﻿@implements IDialogContentComponent<DoorSelections>
+
+<FluentMessageBarProvider Section="Test" MaxMessageCount="1" />
+
+@if (Dialog != null)
+{
+    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center">
+        <span>Which door do you want to open?</span>
+        <FluentButton OnClick="@(() => ToggleDialogPrimaryActionButton(true))">Door to the North</FluentButton>
+        <FluentStack Orientation="Orientation.Horizontal"  HorizontalAlignment="HorizontalAlignment.Center">
+            <FluentButton OnClick="@(() => ToggleDialogPrimaryActionButton(true))">Door to the West</FluentButton>
+            <FluentIcon Value="@(new Icons.Regular.Size32.Globe())" />
+            <FluentButton OnClick="@(() => ToggleDialogPrimaryActionButton(false))">Door to the East</FluentButton>
+        </FluentStack>
+        <FluentButton OnClick="@(() => ToggleDialogPrimaryActionButton(false))">Door to the South</FluentButton>
+    </FluentStack>
+}
+
+@code {
+
+    [Parameter]
+    public DoorSelections Content { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; }
+
+    private void ToggleDialogPrimaryActionButton(bool enable)
+    {
+
+        Dialog!.TogglePrimaryActionButton(enable);
+    }
+}

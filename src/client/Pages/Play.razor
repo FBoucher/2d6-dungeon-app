@@ -1,7 +1,8 @@
 @page "/play/{adventureId:int}"
 @using c5m._2d6Dungeon;
 @inject ID6Service D6Service;
-@inject IJSRuntime JSRuntime 
+@inject IJSRuntime JSRuntime;
+@inject IDialogService DialogService;
 
 <PageTitle>Play</PageTitle>
 
@@ -11,7 +12,11 @@
     <FluentTab Id="tab-map" Label="Dungeon Map" Icon="@(new Icons.Regular.Size24.Map())" >
         <FluentStack Orientation="Orientation.Vertical">
             <p id="message"></p>
-            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isRollDicesDisable)">Roll Dices</FluentButton>
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isRollDicesDisable)">Roll Dices</FluentButton>
+                <FluentButton @onclick=PickADoor Appearance="Appearance.Accent">Pick a Door</FluentButton> 
+            </FluentStack>
+            
             <div style="padding:20px;">
                 @if(primaryDice != 0)
                 {
@@ -48,6 +53,7 @@
     [Parameter]
     public int adventureId { get; set; }
     private Adventure? currentAdventure;
+    MappedRoom? currentRoom;
 
     int primaryDice = 0;
     int secondaryDice = 0;
@@ -60,6 +66,7 @@
     {
         try{
             currentAdventure = await D6Service.GetAdventure(adventureId);
+            currentRoom = currentAdventure.Dungeon.MappedRooms.Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
             await FillCanvas();
         }
         catch(Exception ex){
@@ -101,6 +108,39 @@
         
         actionLabel = "Press the Start button to begin your adventure";
         isStartDisable = false; *@
+    }
+
+    private async Task PickADoor(){
+        OpenDialogAsync();
+    }
+    private async Task OpenDialogAsync()
+    {
+        DialogParameters parameters = new()
+        {
+            Title = $"To get out of the current room you have {currentRoom.ExitsCount} options.",
+            PrimaryAction = "Open",
+            PrimaryActionEnabled = false,
+            SecondaryAction = "Cancel",
+            Width = "500px",
+            TrapFocus = true,
+            Modal = true,
+            PreventScroll = true 
+        };
+
+        DoorSelections dSelect = new DoorSelections(currentRoom.Exits);
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<SelectDoorDialog>(dSelect, parameters);
+        DialogResult? result = await dialog.Result;
+        
+        
+        if (result.Data is not null)
+        {
+            DoorSelections? doorSelection = result.Data as DoorSelections;
+        }
+        else
+        {
+
+        }
     }
 
     private async Task RenderCanvas() 
