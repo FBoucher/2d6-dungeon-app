@@ -9,8 +9,6 @@ public class Exit
     public string ExitType { get; set; }
     public bool Lockable { get; set; }
     public bool IsLocked { get; set; }
-
-    public string onWall { get; set; }
     public int PositionOnWall { get; set; }
 
     public static string GetDirection(Direction value)
