@@ -1,4 +1,4 @@
-﻿using Microsoft.JSInterop;
+using Microsoft.JSInterop;
 
 namespace c5m._2d6Dungeon.web;
 
@@ -24,29 +24,29 @@ public static class MapTools
     {
         foreach (var door in currentRoom.Exits)
         {
-            string orientation = GetDoorOrientation(door.onWall);
+            string orientation = GetDoorOrientation(door.Key);
             int x = 0;
             int y = 0;
             bool isMain = false;
 
-            switch (door.onWall)
+            switch (door.Key)
             {
-                case "N":
-                    x = currentRoom.CoordX + door.PositionOnWall;
+                case 'N':
+                    x = currentRoom.CoordX + door.Value.PositionOnWall;
                     y = currentRoom.CoordY;
                     break;
-                case "E":
+                case 'E':
                     x = currentRoom.CoordX + currentRoom.Width;
-                    y = currentRoom.CoordY + door.PositionOnWall;
+                    y = currentRoom.CoordY + door.Value.PositionOnWall;
                     break;
-                case "S":
-                    x = currentRoom.CoordX + door.PositionOnWall;
+                case 'S':
+                    x = currentRoom.CoordX + door.Value.PositionOnWall;
                     y = currentRoom.CoordY + currentRoom.Height;
                     isMain = currentRoom.IsLobby;
                     break;
-                case "W":
+                case 'W':
                     x = currentRoom.CoordX;
-                    y = currentRoom.CoordY + door.PositionOnWall;
+                    y = currentRoom.CoordY + door.Value.PositionOnWall;
                     break;
             }
 
@@ -56,9 +56,9 @@ public static class MapTools
 
     }
 
-    private static string GetDoorOrientation(string onWall)
+    private static string GetDoorOrientation(char onWall)
     {
-        if (onWall == "S" || onWall == "N")
+        if (onWall == 'S' || onWall == 'N')
         {
             return "H";
         }
