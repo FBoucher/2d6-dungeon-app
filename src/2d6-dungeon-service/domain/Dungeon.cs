@@ -19,6 +19,7 @@ public class Dungeon
         }
         var entryRoom = MappedRoom.DraftCurrentRoom(dResult);
         entryRoom.ExitsCount = 3;
+        entryRoom.Description = "This is the entrance of the dungeon. The room is empty.";
         return entryRoom;
     }
 }
