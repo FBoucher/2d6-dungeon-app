@@ -1,77 +1,98 @@
 @page "/play/{adventureId:int}"
 @using c5m._2d6Dungeon;
 @inject ID6Service D6Service;
-@inject IJSRuntime JSRuntime 
+@inject IJSRuntime JSRuntime;
+@inject IDialogService DialogService;
 
 <PageTitle>Play</PageTitle>
 
-<FluentTabs @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange" >
+<FluentTabs @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange">
 
 
-    <FluentTab Id="tab-map" Label="Dungeon Map" Icon="@(new Icons.Regular.Size24.Map())" >
+    <FluentTab Id="tab-map" Label="Dungeon Map" Icon="@(new Icons.Regular.Size24.Map())">
         <FluentStack Orientation="Orientation.Vertical">
-            <p id="message"></p>
-            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isRollDicesDisable)">Roll Dices</FluentButton>
+
+            <FluentAccordion  OnAccordionItemChange="HandleOnAccordionItemChange" Style="width: 100%;">
+                <FluentAccordionItem Heading="Current Room Details" Expanded="true">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.ConferenceRoom())" Color="@Color.Neutral"
+                        Slot="start" />
+                    <FluentLabel Typo="Typography.H4">Room:</FluentLabel> @currentRoom.Description
+                </FluentAccordionItem>
+            </FluentAccordion>
+
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isRollDicesDisable)">Roll
+                    Dices</FluentButton>
+                <FluentButton @onclick=PickADoor Appearance="Appearance.Accent">Pick a Door</FluentButton>
+            </FluentStack>
+
             <div style="padding:20px;">
-                @if(primaryDice != 0)
+                @if (primaryDice != 0)
                 {
                     <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
                 }
-                @if(secondaryDice != 0)
+                @if (secondaryDice != 0)
                 {
                     <img alt="@(secondaryDice)" src="dices/purlple-dice@(secondaryDice).jpg" />
                 }
             </div>
 
-            <canvas id="dotCanvas" style="width: 800px; height: 800px;" ></canvas> 
+            <canvas id="dotCanvas" style="width: 800px; height: 800px;"></canvas>
 
             <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
         </FluentStack>
-        
+
     </FluentTab>
 
 
-    <FluentTab Id="tab-adventurer" Label="Adventurer" Icon="@(new Icons.Regular.Size24.NotepadPerson())" DeferredLoading=true>
+    <FluentTab Id="tab-adventurer" Label="Adventurer" Icon="@(new Icons.Regular.Size24.NotepadPerson())"
+        DeferredLoading=true>
         <AdventurerCard @bind-Player="currentAdventure.Adventurer"></AdventurerCard>
     </FluentTab>
 
 
-    <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())" DeferredLoading=true>
+    <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
+        DeferredLoading=true>
         Tab three content. This is for testing.
     </FluentTab>
 
 </FluentTabs>
 
 
-@code{
+@code {
 
     [Parameter]
     public int adventureId { get; set; }
     private Adventure? currentAdventure;
+    MappedRoom? currentRoom = new MappedRoom();
 
     int primaryDice = 0;
     int secondaryDice = 0;
     bool isRollDicesDisable = true;
     string? activeid = "tab-map";
     FluentTab? changedto;
-    
+
 
     protected override async Task OnInitializedAsync()
     {
-        try{
+        try
+        {
             currentAdventure = await D6Service.GetAdventure(adventureId);
+            currentRoom = currentAdventure.Dungeon.MappedRooms.Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
             await FillCanvas();
         }
-        catch(Exception ex){
+        catch (Exception ex)
+        {
             Console.WriteLine("Oops! --> " + ex.Message);
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender){
-        if (firstRender) 
-        { 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
             await MapTools.RefreshCanvas(JSRuntime);
-        } 
+        }
     }
 
     private void HandleOnTabChange(FluentTab tab)
@@ -83,44 +104,82 @@
     private async Task RollDices()
     {
         @* await MapTools.RefreshCanvas(JSRuntime);
-        var dResult = DiceResult.Roll2Dices();
+var dResult = DiceResult.Roll2Dices();
 
-        entryRoom = Dungeon.StartDungeonLevel(ref dResult);
+entryRoom = Dungeon.StartDungeonLevel(ref dResult);
 
-        // Update the UI
-        primaryDice = dResult.PrimaryDice; 
-        secondaryDice = dResult.SecondaryDice; 
+// Update the UI
+primaryDice = dResult.PrimaryDice;
+secondaryDice = dResult.SecondaryDice;
 
-        //TODO: hardcoded temporary
-        entryRoom.CoordX = 1;
-        entryRoom.CoordY = 2;
+//TODO: hardcoded temporary
+entryRoom.CoordX = 1;
+entryRoom.CoordY = 2;
 
-        SetDungeonEntranceDoor(entryRoom);
-        AssignExits(entryRoom, "S");
-        await DrawRoom(entryRoom, true);
-        
-        actionLabel = "Press the Start button to begin your adventure";
-        isStartDisable = false; *@
+SetDungeonEntranceDoor(entryRoom);
+AssignExits(entryRoom, "S");
+await DrawRoom(entryRoom, true);
+
+actionLabel = "Press the Start button to begin your adventure";
+isStartDisable = false; *@
     }
 
-    private async Task RenderCanvas() 
-    { 
-        await MapTools.RefreshCanvas(JSRuntime);
+    private async Task PickADoor()
+    {
+        OpenDialogAsync();
     }
+    private async Task OpenDialogAsync()
+    {
+        DialogParameters parameters = new()
+            {
+                Title = $"To get out of the current room you have {currentRoom.ExitsCount} options.",
+                PrimaryAction = "Open",
+                PrimaryActionEnabled = false,
+                SecondaryAction = "Cancel",
+                Width = "500px",
+                TrapFocus = true,
+                Modal = true,
+                PreventScroll = true
+            };
 
-    private async Task RefreshCanvas() 
-    { 
-        await FillCanvas();
-    }
+        DoorSelections dSelect = new DoorSelections(currentRoom.Exits);
 
-    private async Task FillCanvas() 
-    { 
-        await RenderCanvas();
-        foreach(var room in currentAdventure.Dungeon.MappedRooms){
-            await MapTools.DrawRoom(JSRuntime, room);
+        IDialogReference dialog = await DialogService.ShowDialogAsync<SelectDoorDialog>(dSelect, parameters);
+        DialogResult? result = await dialog.Result;
+
+
+        if (result.Data is not null)
+        {
+            DoorSelections? doorSelection = result.Data as DoorSelections;
+        }
+        else
+        {
+            var test = "test";
         }
     }
 
+    private async Task RenderCanvas()
+    {
+        await MapTools.RefreshCanvas(JSRuntime);
+    }
 
+    private async Task RefreshCanvas()
+    {
+        await FillCanvas();
+    }
+
+    private async Task FillCanvas()
+    {
+        await RenderCanvas();
+        foreach (var room in currentAdventure.Dungeon.MappedRooms)
+        {
+            await MapTools.DrawRoom(JSRuntime, room);
+        }
+    }
+    FluentAccordionItem? changed;
+    private void HandleOnAccordionItemChange(FluentAccordionItem item)
+    {
+        changed = item;
+    }
 
 }
