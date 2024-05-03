@@ -239,16 +239,16 @@
         }
       ]
     },
-    "magic_potion": {
+    "creature": {
       "source": {
-        "object": "magic_potions",
+        "object": "creatures",
         "type": "table"
       },
       "graphql": {
         "enabled": true,
         "type": {
-          "singular": "magic_potion",
-          "plural": "magic_potions"
+          "singular": "creature",
+          "plural": "creatures"
         }
       },
       "rest": {

@@ -86,3 +86,8 @@ INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, mod
 INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '1-2', 'SOLID BELTING', '6D +2');
 INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '5-2', 'POMMEL THUMP', '6D +1');
 INSERT INTO 2d6db.weapon_manoeuvres(level, weapon_id ,dice_set, description, modifier) VALUES(1, 3, '3-2', 'CARVING HIT', '6D +1');
+
+
+-- creatures
+INSERT INTO 2d6db.creatures(name, level, creature_type, health_points, experience, shift_points, treasure, interrupt1, interrupt2, manoeuvre1, manoeuvre2, description, prime_attack_rolls, mishap_attack_rolls)
+VALUES('THUG', 1, 'Humanoid', 3, 6, 1, 'None', 'Forearm block on Secondary|4s|-1 damage', '', '3-2|PUNCH|D6 -3 damage', '', 'This rough looking brute has few skill...', 'The thud tries a combo of swing... Gain 1 extra attack', 'The thud manages to grip you.... take D3 damage.');

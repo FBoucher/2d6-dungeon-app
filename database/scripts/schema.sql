@@ -90,3 +90,23 @@ CREATE TABLE IF NOT EXISTS 2d6db.weapon_manoeuvres (
   FOREIGN KEY (weapon_id)
         REFERENCES weapons(id)
 );
+
+
+CREATE TABLE IF NOT EXISTS 2d6db.creatures (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(100) NOT NULL,
+  level int DEFAULT 1,
+  creature_type varchar(25) NOT NULL,
+  health_points int DEFAULT 1,
+  experience int DEFAULT 0,
+  shift_points int DEFAULT 0,
+  treasure varchar(100),
+  interrupt1 varchar(100),
+  interrupt2 varchar(100),
+  manoeuvre1 varchar(100),
+  manoeuvre2 varchar(100),
+  description varchar(255),
+  prime_attack_rolls varchar(100),
+  mishap_attack_rolls varchar(100),
+  PRIMARY KEY (id)
+);
