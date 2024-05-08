@@ -2,11 +2,12 @@
 services:
   
   apibox:
+    container_name: apibox
     image: "mcr.microsoft.com/azure-databases/data-api-builder:latest"
 
     restart: on-failure
     depends_on:
-      - 2d6server
+      - 2d6database
 
     volumes:
       - "../database/dab-config.json:/App/dab-config.json"
@@ -14,8 +15,9 @@ services:
     ports:
       - "5000:5000"
 
-  2d6server:
+  2d6database:
     image: mysql
+    container_name: 2d6database
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: "2d6db"

@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS 2d6db.creatures (
   manoeuvre1 varchar(100),
   manoeuvre2 varchar(100),
   description varchar(255),
-  prime_attack_rolls varchar(100),
-  mishap_attack_rolls varchar(100),
+  prime_attack_rolls varchar(150),
+  mishap_attack_rolls varchar(150),
   PRIMARY KEY (id)
 );
