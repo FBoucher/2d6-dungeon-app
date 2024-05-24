@@ -4,7 +4,9 @@ services:
   apibox:
     container_name: apibox
     image: "mcr.microsoft.com/azure-databases/data-api-builder:latest"
-
+    env_file:
+      - .env
+    profiles: [all]
     restart: on-failure
     depends_on:
       - 2d6database
@@ -18,12 +20,15 @@ services:
   2d6database:
     image: mysql
     container_name: 2d6database
+    profiles: [all, db]
+    env_file:
+      - .env
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: "2d6db"
       MYSQL_USER: "frank"
-      MYSQL_PASSWORD: "myPassword"
-      MYSQL_ROOT_PASSWORD: "rootPassword"
+      MYSQL_PASSWORD: ${MYSQL_PWD}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PWD}
     ports:
       - "3306:3306"
     volumes:
