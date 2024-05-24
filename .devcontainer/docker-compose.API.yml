@@ -27,7 +27,7 @@ services:
     environment:
       MYSQL_DATABASE: "2d6db"
       MYSQL_USER: "frank"
-      MYSQL_PASSWORD: ${MYSQL_PWD}
+      MYSQL_PASSWORD: ${USER_PWD}
       MYSQL_ROOT_PASSWORD: ${ROOT_PWD}
     ports:
       - "3306:3306"
