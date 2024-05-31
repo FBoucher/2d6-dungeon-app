@@ -264,6 +264,32 @@
           ]
         }
       ]
+    },
+    "creature": {
+      "source": {
+        "object": "creatures",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "creature",
+          "plural": "creatures"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
     }
   }
 }

@@ -37,11 +37,13 @@ services:
   2d6server:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - dev.env
     environment:
       MYSQL_DATABASE: '2d6db'
       MYSQL_USER: 'frank'
-      MYSQL_PASSWORD: myPassword
-      MYSQL_ROOT_PASSWORD: rootPassword
+      MYSQL_PASSWORD: ${MYSQL_PWD}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PWD}
     # ports:
     #   - "3306:3306"
     volumes:
