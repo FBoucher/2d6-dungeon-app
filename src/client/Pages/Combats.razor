@@ -1,0 +1,12 @@
+﻿@using c5m._2d6Dungeon;
+<h3>Combats</h3>
+
+<FluentStack Orientation="Orientation.Horizontal">
+    <AdventurerCard @bind-Player="player"></AdventurerCard>
+    <QuickReferenceCombatCard></QuickReferenceCombatCard>
+    <CreatureCard></CreatureCard>
+</FluentStack>
+
+@code {
+    Game.Adventurer player = new Game.Adventurer();
+}
