@@ -51,6 +51,12 @@
     </FluentTab>
 
 
+    <FluentTab Id="tab-combat" Label="Combat Screen" Icon="@(new Icons.Regular.Size24.Shield())"
+        DeferredLoading=true>
+        <Combat @bind-Player="currentAdventure.Adventurer"></Combat>
+    </FluentTab>
+
+
     <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
         DeferredLoading=true>
         Tab three content. This is for testing.

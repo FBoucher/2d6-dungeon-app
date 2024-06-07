@@ -1,0 +1,39 @@
+﻿@using c5m._2d6Dungeon;
+@inject ID6Service D6Service;
+
+
+<FluentPersona  Name="@(creature.name)"
+                ImageSize="50px"
+                Status="PresenceStatus.Available"
+                StatusSize="PresenceBadgeSize.Small">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0">
+            <FluentLabel Typo="Typography.H3">@creature.name</FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>Level:</b> @creature.level.ToString()</FluentLabel>
+        </FluentStack>
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0">
+            <FluentLabel Typo="Typography.Body"><b>HP:</b> @creature.health_points</FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>XP:</b> @creature.experience.ToString()</FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>SH:</b> @creature.shift_points.ToString()</FluentLabel>
+        </FluentStack>
+        <FluentLabel Typo="Typography.Body"><b>Treasure:</b> @creature.treasure</FluentLabel>
+        <FluentLabel Typo="Typography.Body"><b>Interrupt:</b> @creature.interrupt1</FluentLabel>
+        <FluentLabel Typo="Typography.Body">@creature.interrupt2</FluentLabel>
+        <FluentLabel Typo="Typography.Body"><b>Manoeuvre:</b> @creature.manoeuvre1</FluentLabel>
+        <FluentLabel Typo="Typography.Body">@creature.manoeuvre2</FluentLabel>
+        <FluentLabel Typo="Typography.Body">@creature.description</FluentLabel>
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0">
+            <FluentLabel Typo="Typography.Body">@creature.mishap_attack_rolls</FluentLabel>
+            <FluentLabel Typo="Typography.Body">@creature.prime_attack_rolls</FluentLabel>
+        </FluentStack>
+    </FluentStack>
+</FluentPersona>
+
+
+@code {
+    [Parameter]
+    public Creature creature { get; set; }
+
+    [Parameter] 
+    public EventCallback<Creature> creatureChanged { get; set; }
+}

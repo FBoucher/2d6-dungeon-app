@@ -1,0 +1,53 @@
+﻿@using c5m._2d6Dungeon;
+@using System.Text.Json;
+@inject ID6Service D6Service;
+
+@if (creaturesQueryable == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h2>Select a creature</h2>
+
+    <FluentStack Orientation="Orientation.Vertical">
+
+        <FluentDataGrid Items="@creaturesQueryable">
+            <TemplateColumn Title="">
+                <FluentButton @onclick="@(() => SelectCreature(context))" Appearance="Appearance.Accent">Select</FluentButton>
+            </TemplateColumn>
+            <PropertyColumn Title="Name" Property="@(c => c.name)" Sortable="true" />
+            <PropertyColumn Title="HP" Property="@(c => c.health_points.ToString())" Sortable="true"/>
+            <PropertyColumn Title="Level" Property="@(c => c.level.ToString())" Sortable="false" />
+        </FluentDataGrid>
+    </FluentStack>
+}
+
+@code {
+    [Parameter] public Creature? ParentCreature {get; set;}
+
+    [Parameter] public EventCallback<Creature> ParentCreatureChanged { get; set; }
+
+    IQueryable<Creature>? creaturesQueryable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try{
+            creaturesQueryable = await D6Service.GetCreatures();  
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    private async Task SelectCreature(Creature selectedCreature)
+    {
+        try{
+            ParentCreature = selectedCreature;
+            await ParentCreatureChanged.InvokeAsync(ParentCreature);
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+}

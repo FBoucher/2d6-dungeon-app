@@ -1,0 +1,28 @@
+﻿@using c5m._2d6Dungeon;
+<h3>Combat Screen</h3>
+
+@if(creature == null)
+{
+    <CreaturePicker @bind-ParentCreature="creature"></CreaturePicker>
+}
+else{
+    <FluentStack Orientation="Orientation.Horizontal">
+        <AdventurerCard @bind-Player="player"></AdventurerCard>
+        <FluentSpacer></FluentSpacer>
+        @* <QuickReferenceCombatCard></QuickReferenceCombatCard> *@
+        <CreatureCard @bind-creature="creature"></CreatureCard>
+    </FluentStack>
+}
+
+
+@code {
+    [Parameter]
+    public Game.Adventurer player { get; set; }
+
+    [Parameter] 
+    public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
+
+    public IEnumerable<Creature>? creatures { get; set; }
+    public Creature? creature { get; set; }
+
+}

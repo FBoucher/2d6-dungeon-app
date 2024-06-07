@@ -6,7 +6,7 @@ services:
     image: "mcr.microsoft.com/azure-databases/data-api-builder:latest"
     env_file:
       - .env
-    profiles: [all]
+    profiles: [all,'']
     restart: on-failure
     depends_on:
       - 2d6database
@@ -20,7 +20,7 @@ services:
   2d6database:
     image: mysql
     container_name: 2d6database
-    profiles: [all, db]
+    profiles: [all, db,'']
     env_file:
       - .env
     command: --default-authentication-plugin=mysql_native_password
