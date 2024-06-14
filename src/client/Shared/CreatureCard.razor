@@ -2,32 +2,42 @@
 @inject ID6Service D6Service;
 
 
-<FluentPersona  Name="@(creature.name)"
+<FluentCard>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="5" Width="500px">
+        <FluentPersona  Name="@(creature.name)"
                 ImageSize="50px"
                 Status="PresenceStatus.Available"
                 StatusSize="PresenceBadgeSize.Small">
-    <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0">
-            <FluentLabel Typo="Typography.H3">@creature.name</FluentLabel>
-            <FluentLabel Typo="Typography.Body"><b>Level:</b> @creature.level.ToString()</FluentLabel>
+        </FluentPersona>
+        
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+            <div><b>Level:</b> @creature.level.ToString()</div>
         </FluentStack>
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0">
-            <FluentLabel Typo="Typography.Body"><b>HP:</b> @creature.health_points</FluentLabel>
-            <FluentLabel Typo="Typography.Body"><b>XP:</b> @creature.experience.ToString()</FluentLabel>
-            <FluentLabel Typo="Typography.Body"><b>SH:</b> @creature.shift_points.ToString()</FluentLabel>
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+            <span><b>HP:</b> @creature.health_points</span>
+            <span><b>XP:</b> @creature.experience.ToString()</span>
+            <span><b>SH:</b> @creature.shift_points.ToString()</span>
         </FluentStack>
-        <FluentLabel Typo="Typography.Body"><b>Treasure:</b> @creature.treasure</FluentLabel>
-        <FluentLabel Typo="Typography.Body"><b>Interrupt:</b> @creature.interrupt1</FluentLabel>
-        <FluentLabel Typo="Typography.Body">@creature.interrupt2</FluentLabel>
-        <FluentLabel Typo="Typography.Body"><b>Manoeuvre:</b> @creature.manoeuvre1</FluentLabel>
-        <FluentLabel Typo="Typography.Body">@creature.manoeuvre2</FluentLabel>
-        <FluentLabel Typo="Typography.Body">@creature.description</FluentLabel>
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="0">
-            <FluentLabel Typo="Typography.Body">@creature.mishap_attack_rolls</FluentLabel>
-            <FluentLabel Typo="Typography.Body">@creature.prime_attack_rolls</FluentLabel>
+        <div><b>Treasure:</b> @creature.treasure</div>
+        <div><b>Interrupt:</b> @creature.interrupt1</div>
+        <div>@creature.interrupt2</div>
+        <div><b>Manoeuvre:</b> @creature.manoeuvre1</div>
+        <div>@creature.manoeuvre2</div>
+        <div style="word-wrap: break-word; background-color: lightgray">
+            @creature.description
+        </div>
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"  >
+            <div style="width=50%; background-color: rgb(183, 211, 218)">
+                <div>1-1 <b>Prime Attack Roll:</b></div>
+                <div>@creature.prime_attack_rolls</div>
+            </div>
+            <div style="width=50%; background-color: rgb(248, 183, 193)">
+                <div>6-6 <b>Mishap Attack Roll:</b></div>
+                <div>@creature.mishap_attack_rolls</div>
+            </div>
         </FluentStack>
     </FluentStack>
-</FluentPersona>
+</FluentCard>
 
 
 @code {
