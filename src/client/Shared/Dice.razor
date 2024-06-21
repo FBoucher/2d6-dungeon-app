@@ -1,0 +1,26 @@
+﻿
+<img style="height: @((int)size)em;width: @((int)size)em;"  src="dices/@(color.ToString())-dice@(face).png" />
+
+@code {
+    [Parameter]
+    public int face {get; set;}
+    
+    [Parameter]
+    public DiceColor color {get; set;}
+
+    [Parameter]
+    public DiceSize size {get; set;}
+
+    public enum DiceColor
+    {
+        red,
+        purple,
+        white
+    }
+
+    public enum DiceSize
+    {
+        regular = 5,
+        tiny = 1
+    }
+}

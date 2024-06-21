@@ -28,11 +28,19 @@
         </div>
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"  >
             <div style="width=50%; background-color: rgb(183, 211, 218)">
-                <div>1-1 <b>Prime Attack Roll:</b></div>
+                <div>
+                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="1" />
+                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="1" />
+                    <b>Prime Attack Roll:</b>
+                </div>
                 <div>@creature.prime_attack_rolls</div>
             </div>
             <div style="width=50%; background-color: rgb(248, 183, 193)">
-                <div>6-6 <b>Mishap Attack Roll:</b></div>
+                <div>
+                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="6" />
+                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="6" />
+                    <b>Mishap Attack Roll:</b>
+                    </div>
                 <div>@creature.mishap_attack_rolls</div>
             </div>
         </FluentStack>
@@ -46,4 +54,13 @@
 
     [Parameter] 
     public EventCallback<Creature> creatureChanged { get; set; }
+
+
+    private void manoeuvreParser(string rawInfo)
+    {
+        string[] parts = rawInfo.Split("|");
+
+    }
+
+
 }
