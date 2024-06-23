@@ -4,41 +4,41 @@
 
 <FluentCard>
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="5" Width="500px">
-        <FluentPersona  Name="@(creature.name)"
-                ImageSize="50px"
-                Status="PresenceStatus.Available"
-                StatusSize="PresenceBadgeSize.Small">
-        </FluentPersona>
-        
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
-            <div><b>Level:</b> @creature.level.ToString()</div>
+            <div><b>Name:</b> @creature.name</div>
+            <div>L@(creature.level.ToString())</div>
+            <FluentBadge Circular="true" Fill="lowlight" BackgroundColor="#000" Color="#fff" >@creature.creature_type.Substring(0,1)</FluentBadge>
         </FluentStack>
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
-            <span><b>HP:</b> @creature.health_points</span>
-            <span><b>XP:</b> @creature.experience.ToString()</span>
-            <span><b>SH:</b> @creature.shift_points.ToString()</span>
+            <div>
+                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+                    <span><b>HP:</b> @creature.health_points</span>
+                    <span><b>XP:</b> @creature.experience.ToString()</span>
+                    <span><b>SH:</b> @creature.shift_points.ToString()</span>
+                </FluentStack>
+                <div><b>Treasure:</b> @creature.treasure</div>
+            </div>
+            <img src="images/monster/gendo-creature.jpeg" style="width: 50px; height: 50px" />
         </FluentStack>
-        <div><b>Treasure:</b> @creature.treasure</div>
-        <div><b>Interrupt:</b> @creature.interrupt1</div>
-        <div>@creature.interrupt2</div>
-        <div><b>Manoeuvre:</b> @creature.manoeuvre1</div>
-        <div>@creature.manoeuvre2</div>
+        <div><b>Interrupt:</b> @creature.interrupt1.Replace('|',' ')</div>
+        <div>@creature.interrupt2.Replace('|',' ')</div>
+        <div style="text-align: right;"><b>Manoeuvre:</b> </div>
+        <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre1)" /></div>
+        <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre2)" /></div>
         <div style="word-wrap: break-word; background-color: lightgray">
             @creature.description
         </div>
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"  >
             <div style="width=50%; background-color: rgb(183, 211, 218)">
                 <div>
-                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="1" />
-                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="1" />
+                    <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="1-1" />
                     <b>Prime Attack Roll:</b>
                 </div>
                 <div>@creature.prime_attack_rolls</div>
             </div>
             <div style="width=50%; background-color: rgb(248, 183, 193)">
                 <div>
-                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="6" />
-                    <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" face="6" />
+                    <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="6-6" />
                     <b>Mishap Attack Roll:</b>
                     </div>
                 <div>@creature.mishap_attack_rolls</div>
@@ -56,11 +56,9 @@
     public EventCallback<Creature> creatureChanged { get; set; }
 
 
-    private void manoeuvreParser(string rawInfo)
-    {
-        string[] parts = rawInfo.Split("|");
 
-    }
 
 
 }
+
+

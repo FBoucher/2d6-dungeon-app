@@ -1,0 +1,12 @@
+﻿@if(manoeuvre != null){
+    <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="@(manoeuvre.DiceSet)" />  
+    @:&nbsp;@(manoeuvre.Description)<span> = </span>@(manoeuvre.Modifier)
+}
+
+@code {
+
+    [Parameter]
+    public WeaponManoeuvre? manoeuvre { get; set; }
+
+}
+

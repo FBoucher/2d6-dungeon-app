@@ -18,4 +18,9 @@
     <ProjectReference Include="..\2d6-dungeon-service\2d6-dungeon-service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot/images/" />
+    <Folder Include="wwwroot/images/monster/" />
+  </ItemGroup>
+
 </Project>

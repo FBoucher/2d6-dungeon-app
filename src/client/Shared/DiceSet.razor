@@ -1,0 +1,55 @@
+﻿
+<img style="height: @((int)size)em;width: @((int)size)em;"  src="dices/@(color.ToString())-dice@(faceA).png" />
+@if(diceset != null)
+{
+    <img style="height: @((int)size)em;width: @((int)size)em;"  src="dices/@(color.ToString())-dice@(faceB).png" />
+}
+
+
+@code {
+    [Parameter]
+    public string diceset {get; set;} = string.Empty;
+
+    [Parameter]
+    public int face {get; set;} = 0;
+    
+    [Parameter]
+    public DiceColor color {get; set;}
+
+    [Parameter]
+    public DiceSize size {get; set;}
+
+    private int faceA = 1;
+    private int faceB = 1;
+
+    public enum DiceColor
+    {
+        red,
+        purple,
+        white
+    }
+
+    public enum DiceSize
+    {
+        regular = 5,
+        tiny = 1
+    }
+
+    private void Parse()
+    {
+        string[] parts = diceset.Split("-");
+        faceA = int.Parse(parts[0]);
+        faceB = int.Parse(parts[1]);
+    }
+
+    protected override void OnInitialized()
+    {
+        if(diceset != null){
+            Parse();
+        }
+        else
+        {
+            faceA = face;
+        }
+    }
+}

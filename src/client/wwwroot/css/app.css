@@ -166,11 +166,11 @@ code {
         background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' style='width: 20px; fill: white;' focusable='false' viewBox='0 0 20 20'><path d='M2 4.5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0 5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm.5 4.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-15Z'></path></svg>");
     }
 
-        #navmenu-toggle ~ nav {
-            display: none;
-        }
+    #navmenu-toggle ~ nav {
+        display: none;
+    }
 
-        #navmenu-toggle:checked ~ nav {
-            display: block;
-        }
+    #navmenu-toggle:checked ~ nav {
+        display: block;
+    }
 }
