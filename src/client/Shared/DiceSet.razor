@@ -44,6 +44,18 @@
 
     protected override void OnInitialized()
     {
+        SetDiceFaces();
+    }
+
+
+
+    protected override void OnParametersSet()
+    {
+        SetDiceFaces();
+    }
+
+    private void SetDiceFaces()
+    {
         if(diceset != string.Empty){
             Parse();
         }
