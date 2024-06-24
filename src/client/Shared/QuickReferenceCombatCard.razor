@@ -1,0 +1,53 @@
+﻿
+<FluentTabs @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange">
+
+    @* Fatigue and Shift *@
+    <FluentTab Id="tab-fat" Label="Fatigue and Shift" Icon="@(new Icons.Regular.Size24.BinderTriangle())">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
+            <span class="sheetTitle">Combat FATIGUE and SHIFT adjustment platform</span>
+            <div>Combat Fatigue</div>
+            <FluentStack Orientation="Orientation.Horizontal" VerticalGap="5">
+                <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.regular" face="1" />
+                <div>
+                    Start the dice at 1. Every time you finish a turn the fatigue dice up 1 number. When you reach 4 +1 Shift, 5 +2 Shift and 6 +3 Shift. Shift remains +3 until the combat is over.
+                </div>
+            </FluentStack>
+            <div>Shift Adjustment</div>
+            <FluentStack Orientation="Orientation.Horizontal" VerticalGap="5">
+                <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.regular" face="0" />
+                <div>
+                    When the fatigue dices reaches 4 put the Shift adjustment starts. This modifier applies to the player and the foe. Both benefit from the Shift bonus.
+                </div>
+            </FluentStack>
+        </FluentStack>
+    </FluentTab>
+
+    @* Roll to Hit Shifting the dices *@
+    <FluentTab Id="tab-card1" Label="Hit  and Shifting" Icon="@(new Icons.Regular.Size24.TargetEdit())">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
+            <div>Roll to Hit</div>
+            <div>
+                Roll a D66 and compare the numbers to your Manoeuvres. If...
+            </div>
+            <br /><br />
+            <div>Shifting the Dice</div>
+            <div>
+                If you roll a combination that does not match one of your manoeuvres you can  use your Shift points to turn the dice up or down in the direction you need to match one of your manoeuvre. You can use your shift points modifier for each combat round.
+            </div>
+        </FluentStack>
+    </FluentTab>
+
+</FluentTabs>
+
+
+
+@code {
+    string? activeid = "tab-fat";
+    FluentTab? changedto;
+
+    private void HandleOnTabChange(FluentTab tab)
+    {
+        changedto = tab;
+    }
+
+}

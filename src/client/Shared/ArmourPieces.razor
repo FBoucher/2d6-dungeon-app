@@ -1,0 +1,25 @@
+﻿
+@if(armourPiece != null){
+    <FluentDataGrid Items="@pieces" style="width: 100%;">
+        <PropertyColumn Title="ARMOUR PIECE" Property="@(a => a.Name)" Sortable="false" />
+        <TemplateColumn Title="DICESET" >
+            <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" face="@context.DiceSet" />
+        </TemplateColumn>
+        <PropertyColumn Title="MODIFIER" Property="@(a => a.Modifier)" Sortable="false"/>
+    </FluentDataGrid>
+
+}
+
+@code {
+
+    [Parameter]
+    public List<ArmourPiece>? armourPiece { get; set; }
+    
+    IQueryable<ArmourPiece>? pieces;
+    
+    protected override void OnInitialized()
+    {
+        pieces = armourPiece?.AsQueryable();
+    }
+
+}

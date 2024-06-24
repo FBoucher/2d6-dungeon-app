@@ -11,6 +11,28 @@
             <FluentLabel Typo="Typography.Body"><b>Level:</b> @Player.Level.ToString()</FluentLabel>
         </FluentStack>
 </FluentPersona>
+@if(Extented)
+{
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="5" Width="100%">
+        <div>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5" Width="100%">
+                <span class="sheetTitle">HP</span> @Player.HealthPoints.ToString()
+                <span class="sheetTitle">SH </span> @Player.Shift.ToString()
+                <span><span class="sheetTitle">Precision</span> @Player.Precision.ToString()</span>
+            </FluentStack>
+        </div>
+        @* <div class="sheetTitle"><b>WEAPON</b> @Player.Weapon?.Name ?? ""</div>*@
+        <div class="sheetTitle"><b>APPLIED RUNES</b> @Player.AppliedRunes.ToString()</div> 
+        <div class="sheetTitle">Manoeuvre</div>
+        @foreach(var weaponManoeuvre in Player.WeaponManoeuvres)
+        {
+            <div><Manoeuvre manoeuvre="@weaponManoeuvre" /></div>
+        }
+        <ArmourPieces armourPiece="@Player.ArmourPieces" />
+        <MagicScrolls magicScrolls="@Player.MagicScrolls" />
+        <MagicPotions magicPotions="@Player.MagicPotions" />
+    </FluentStack>
+}
 
 @code {
     [Parameter]
@@ -18,4 +40,7 @@
 
     [Parameter] 
     public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
+
+    [Parameter]
+    public bool Extented { get; set; } = false;
 }

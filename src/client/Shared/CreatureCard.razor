@@ -2,50 +2,49 @@
 @inject ID6Service D6Service;
 
 
-<FluentCard>
-    <FluentStack Orientation="Orientation.Vertical" VerticalGap="5" Width="500px">
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
-            <div><b>Name:</b> @creature.name</div>
-            <div>L@(creature.level.ToString())</div>
-            <FluentBadge Circular="true" Fill="lowlight" BackgroundColor="#000" Color="#fff" >@creature.creature_type.Substring(0,1)</FluentBadge>
-        </FluentStack>
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
-            <div>
-                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
-                    <span><b>HP:</b> @creature.health_points</span>
-                    <span><b>XP:</b> @creature.experience.ToString()</span>
-                    <span><b>SH:</b> @creature.shift_points.ToString()</span>
-                </FluentStack>
-                <div><b>Treasure:</b> @creature.treasure</div>
-            </div>
-            <img src="images/monster/gendo-creature.jpeg" style="width: 50px; height: 50px" />
-        </FluentStack>
-        <div><b>Interrupt:</b> @creature.interrupt1.Replace('|',' ')</div>
-        <div>@creature.interrupt2.Replace('|',' ')</div>
-        <div style="text-align: right;"><b>Manoeuvre:</b> </div>
-        <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre1)" /></div>
-        <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre2)" /></div>
-        <div style="word-wrap: break-word; background-color: lightgray">
-            @creature.description
-        </div>
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"  >
-            <div style="width=50%; background-color: rgb(183, 211, 218)">
-                <div>
-                    <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="1-1" />
-                    <b>Prime Attack Roll:</b>
-                </div>
-                <div>@creature.prime_attack_rolls</div>
-            </div>
-            <div style="width=50%; background-color: rgb(248, 183, 193)">
-                <div>
-                    <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="6-6" />
-                    <b>Mishap Attack Roll:</b>
-                    </div>
-                <div>@creature.mishap_attack_rolls</div>
-            </div>
-        </FluentStack>
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+        <div><b>Name:</b> @creature.name</div>
+        <div>L@(creature.level.ToString())</div>
+        <FluentBadge Circular="true" Fill="lowlight" BackgroundColor="#000" Color="#fff" >@creature.creature_type.Substring(0,1)</FluentBadge>
     </FluentStack>
-</FluentCard>
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+        <div>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+                <span><b>HP:</b> @creature.health_points</span>
+                <span><b>XP:</b> @creature.experience.ToString()</span>
+                <span><b>SH:</b> @creature.shift_points.ToString()</span>
+            </FluentStack>
+            <div><b>Treasure:</b> @creature.treasure</div>
+        </div>
+        <img src="images/monster/gendo-creature.jpeg" style="width: 50px; height: 50px" />
+    </FluentStack>
+    <div><b>Interrupt:</b> @creature.interrupt1.Replace('|',' ')</div>
+    <div>@creature.interrupt2.Replace('|',' ')</div>
+    <div style="text-align: right;"><b>Manoeuvre:</b> </div>
+    <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre1)" /></div>
+    <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre2)" /></div>
+    <div style="word-wrap: break-word; background-color: lightgray">
+        @creature.description
+    </div>
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"  >
+        <div style="width=50%; background-color: rgb(183, 211, 218)">
+            <div>
+                <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="1-1" />
+                <b>Prime Attack Roll:</b>
+            </div>
+            <div>@creature.prime_attack_rolls</div>
+        </div>
+        <div style="width=50%; background-color: rgb(248, 183, 193)">
+            <div>
+                <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" diceset="6-6" />
+                <b>Mishap Attack Roll:</b>
+                </div>
+            <div>@creature.mishap_attack_rolls</div>
+        </div>
+    </FluentStack>
+</FluentStack>
+
 
 
 @code {
