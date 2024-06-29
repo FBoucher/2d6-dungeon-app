@@ -29,11 +29,12 @@
             <div style="padding:20px;">
                 @if (primaryDice != 0)
                 {
-                    <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
+                    <DiceSet color="DiceSet.DiceColor.red" size="DiceSet.DiceSize.regular" face="@primaryDice" />
+
                 }
                 @if (secondaryDice != 0)
                 {
-                    <img alt="@(secondaryDice)" src="dices/purlple-dice@(secondaryDice).jpg" />
+                    <DiceSet color="DiceSet.DiceColor.purple" size="DiceSet.DiceSize.regular" face="@secondaryDice" />
                 }
             </div>
 

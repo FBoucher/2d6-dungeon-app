@@ -1,0 +1,53 @@
+﻿<FluentStack Orientation="Orientation.Vertical" Width="40">
+    <FluentButton   IconEnd="@(new Icons.Regular.Size16.CaretUp())" 
+                    @onclick=GoUp Appearance="Appearance.Accent" 
+                    disabled="@(isUpDisable)"></FluentButton>
+    <FluentButton   IconEnd="@(new Icons.Regular.Size16.CaretDown())"
+                    @onclick=GoDown Appearance="Appearance.Accent" 
+                    disabled="@(isDownDisable)"></FluentButton>
+</FluentStack>
+
+@code {
+
+    [Parameter]
+    public int startingValue { get; set; }
+
+    [Parameter]
+    public int maxShift { get; set; }
+
+    public int currentValue { get; set; }
+
+    
+
+    protected override void OnInitialized()
+    {
+        currentValue = startingValue;
+    }
+
+    [Parameter] 
+    public EventCallback<ShiftDirection> DiceShifted { get; set; }
+
+    
+    private bool isUpDisable = false;
+    private bool isDownDisable  = false;
+
+    ShiftDirection shift;
+
+    private async Task GoUp()
+    {
+        shift = ShiftDirection.Up;
+        await DiceShifted.InvokeAsync(shift);
+    }
+
+    private async Task GoDown()
+    {
+        shift = ShiftDirection.Down;
+        await DiceShifted.InvokeAsync(shift);
+    }
+
+    public enum  ShiftDirection
+    {
+        Up,
+        Down
+    }
+}

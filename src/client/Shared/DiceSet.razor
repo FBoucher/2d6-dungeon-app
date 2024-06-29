@@ -1,8 +1,12 @@
 ﻿
-<img style="height: @((int)size)em;width: @((int)size)em;"  src="dices/@(color.ToString())-dice@(faceA).png" />
+<img    style="height: @((int)size)em;width: @((int)size)em;"  
+        src="dices/@(color.ToString())-dice@(faceA).png" 
+        alt="@faceA"/>
 @if(diceset != string.Empty)
 {
-    <img style="height: @((int)size)em;width: @((int)size)em;"  src="dices/@(color.ToString())-dice@(faceB).png" />
+    <img    style="height: @((int)size)em;width: @((int)size)em;"  
+            src="dices/@(color.ToString())-dice@(faceB).png" 
+            alt="@faceB"/>
 }
 
 

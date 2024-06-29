@@ -26,7 +26,7 @@
 
     <FluentDataGrid Items="@scrolls">
         <PropertyColumn Title="Magic scrolls" Property="@(a => a.Description)" Sortable="false" Class="multiline-text" />
-        <PropertyColumn Title="Orbit" Property="@(a => a.Orbit ?? "")" Sortable="false"/>
+        <PropertyColumn Title="Orbit" Property="@(a => a.Orbit ?? "")" Sortable="false"  Class="multiline-text"/>
         <PropertyColumn Title="Displel doubles" Property="@(a => a.DispelDoubles ?? "")" Sortable="false" Class="multiline-text" />
         <PropertyColumn Title="Effect modifier" Property="@(a => a.Modifier)" Sortable="false"  Class="multiline-text" />
     </FluentDataGrid>

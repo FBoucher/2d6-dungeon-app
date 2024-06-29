@@ -1,0 +1,34 @@
+﻿<h3>Combat Journal</h3>
+
+<FluentListbox Items="@journalEntries">
+</FluentListbox>
+<FluentButton IconEnd="@(new Icons.Regular.Size20.ArrowRepeatAllOff())"
+                @onclick=Refresh Appearance="Appearance.Accent"></FluentButton>
+
+@code {
+
+    [Parameter]
+    public List<string> actions { get; set; }
+
+    [Parameter]
+    public EventCallback<List<string>> ActionsChanged { get; set; }
+
+    private List<string> journalEntries = new();
+
+    protected override void OnParametersSet()
+    {
+        journalEntries = actions;
+    }
+
+    protected override void OnInitialized()
+    {
+        actions.Add($"Journal Initialized");
+    }
+
+    private void Refresh()
+    {
+        journalEntries = actions;
+        StateHasChanged();
+    }
+
+}
