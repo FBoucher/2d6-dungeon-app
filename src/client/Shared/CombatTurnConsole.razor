@@ -1,17 +1,26 @@
 ﻿<h3>Turn @turnCounter</h3>
 <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="2" >
-    <ShiftButtons startingValue="@primaryDice" maxShift="2" DiceShifted="PrimaryDiceShifted"></ShiftButtons>
-    <FluentStack Orientation="Orientation.Vertical" VerticalGap="2" HorizontalGap="2">
-        <div>
-            <DiceSet color="DiceSet.DiceColor.red" size="DiceSet.DiceSize.regular" face="@primaryDice" />
-            <DiceSet color="DiceSet.DiceColor.purple" size="DiceSet.DiceSize.regular" face="@secondaryDice" />
-        </div>
+    <ShiftButtons   rolledValue="@primaryDice"
+                    shitedValue="@primaryShiftedDice"  
+                    shiftLeft="@shiftLeft" 
+                    DiceShifted="PrimaryDiceShifted"></ShiftButtons>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="2" HorizontalGap="0" Width="145">
+        <span>
+            <DiceSet color="DiceSet.DiceColor.red" size="DiceSet.DiceSize.regular" face="@primaryShiftedDice" />
+            <DiceSet color="DiceSet.DiceColor.purple" size="DiceSet.DiceSize.regular" face="@secondaryShiftedDice" />
+        </span>
+        @shiftLeft shift left
         <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dices IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
     </FluentStack>
-    <ShiftButtons startingValue="@primaryDice" maxShift="2" DiceShifted="SecondaryDiceShifted"></ShiftButtons>
+    <ShiftButtons   rolledValue="@secondaryDice" 
+                    shitedValue="@secondaryShiftedDice" 
+                    shiftLeft="@shiftLeft" 
+                    DiceShifted="SecondaryDiceShifted"></ShiftButtons>
     <FluentSpacer Width="200"></FluentSpacer>
     <FluentButton Appearance="Appearance.Accent" @onclick=NextTurn IconStart="@(new Icons.Regular.Size16.ArrowNext())">End Turn</FluentButton>
 </FluentStack>
+
+
 
 
 @code {
@@ -24,17 +33,21 @@
 
     private int turnCounter = 0;
     private int primaryDice = 0;
+    private int primaryShiftedDice = 0;
     private int secondaryDice = 0;
-   
+    private int secondaryShiftedDice = 0;
+
+    private int shift = 0;
+    private int shiftLeft = 0;
     protected override void OnInitialized()
     {
-        actions.Add($"Console Initialized");
+        shift = shiftLeft = 2;
     }
     private void Roll2Dices()
     {
         var dices = DiceResult.Roll2Dices();
-        primaryDice = dices.PrimaryDice;
-        secondaryDice = dices.SecondaryDice;
+        primaryDice = primaryShiftedDice = dices.PrimaryDice;
+        secondaryDice = secondaryShiftedDice = dices.SecondaryDice;
 
         actions.Add($"Rolled {primaryDice} and {secondaryDice}");
         ActionsChanged.InvokeAsync(actions);
@@ -46,8 +59,9 @@
     {
         actions.Add($"End Turn {turnCounter}");
         turnCounter++;
-        primaryDice = 0;
-        secondaryDice = 0;
+        primaryDice = primaryShiftedDice = 0;
+        secondaryDice = secondaryShiftedDice = 0;
+        shift = shiftLeft = 2;
         actions.Add($"Start Turn {turnCounter}");
         ActionsChanged.InvokeAsync(actions);
         StateHasChanged();
@@ -55,33 +69,39 @@
 
     private async Task PrimaryDiceShifted(ShiftButtons.ShiftDirection shift)
     {
-        int preValue = primaryDice;
+        int preValue = primaryShiftedDice;
         if (shift == ShiftButtons.ShiftDirection.Up)
         {
-            primaryDice++;
+            primaryShiftedDice++;
         }
         else
         {
-            primaryDice--;
+            primaryShiftedDice--;
         }
         actions.Add($"Primary dice Shifted from {preValue} to {primaryDice}");
         await ActionsChanged.InvokeAsync(actions);
+        shiftLeft = GetShiftLeftValue();
         StateHasChanged();
     }
 
     private async Task SecondaryDiceShifted(ShiftButtons.ShiftDirection shift)
     {
-        int preValue = secondaryDice;
+        int preValue = secondaryShiftedDice;
         if (shift == ShiftButtons.ShiftDirection.Up)
         {
-            secondaryDice++;
+            secondaryShiftedDice++;
         }
         else
         {
-            secondaryDice--;
+            secondaryShiftedDice--;
         }
         actions.Add($"Secondary dice Shifted from {preValue} to {secondaryDice}");
         await ActionsChanged.InvokeAsync(actions);
+        shiftLeft = GetShiftLeftValue();
         StateHasChanged();
+    }
+
+    private int GetShiftLeftValue(){
+        return shift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
     }
 }
