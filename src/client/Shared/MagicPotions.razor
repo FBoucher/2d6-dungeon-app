@@ -2,7 +2,7 @@
 @if(magicPotions != null){
 
     <FluentDataGrid Items="@potions" style="width: 100%;">
-        <PropertyColumn Title="Magic scrolls" Property="@(a => a.PotionType)" Sortable="false" Class="multiline-text" />
+        <PropertyColumn Title="Magic Potions" Property="@(a => a.PotionType)" Sortable="false" Class="multiline-text" />
         <PropertyColumn Title="Orbit" Property="@(a => a.Modifier ?? "")" Sortable="false"  Class="multiline-text"/>
         <PropertyColumn Title="Displel doubles" Property="@(a => a.Duration ?? "")" Sortable="false" Class="multiline-text" />
     </FluentDataGrid>
