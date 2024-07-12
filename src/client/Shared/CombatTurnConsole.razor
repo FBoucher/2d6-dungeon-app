@@ -1,4 +1,4 @@
-﻿<h3>Turn @turnCounter</h3>
+﻿<h3>Turn @TurnCounter</h3>
 <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="2" >
     <ShiftButtons   rolledValue="@primaryDice"
                     shitedValue="@primaryShiftedDice"  
@@ -31,17 +31,29 @@
     [Parameter]
     public EventCallback<List<string>> ActionsChanged { get; set; }
 
-    private int turnCounter = 0;
+    [Parameter]
+    public int TurnCounter { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> TurnCounterChanged { get; set; }
+
+    [Parameter]
+    public int Shift { get; set; } = 0;
+
+    [Parameter]
+    public EventCallback<int> ShiftChanged { get; set; }
+
+
     private int primaryDice = 0;
     private int primaryShiftedDice = 0;
     private int secondaryDice = 0;
     private int secondaryShiftedDice = 0;
 
-    private int shift = 0;
+    //private int shift = 0;
     private int shiftLeft = 0;
     protected override void OnInitialized()
     {
-        shift = shiftLeft = 2;
+        shiftLeft = Shift;
     }
     private void Roll2Dices()
     {
@@ -57,12 +69,13 @@
 
     private void NextTurn()
     {
-        actions.Add($"End Turn {turnCounter}");
-        turnCounter++;
+        actions.Add($"End Turn {TurnCounter}");
+        TurnCounter++;
+        TurnCounterChanged.InvokeAsync(TurnCounter);
         primaryDice = primaryShiftedDice = 0;
         secondaryDice = secondaryShiftedDice = 0;
-        shift = shiftLeft = 2;
-        actions.Add($"Start Turn {turnCounter}");
+        shiftLeft = Shift;
+        actions.Add($"Start Turn {TurnCounter}");
         ActionsChanged.InvokeAsync(actions);
         StateHasChanged();
     }
@@ -102,6 +115,6 @@
     }
 
     private int GetShiftLeftValue(){
-        return shift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
+        return Shift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
     }
 }
