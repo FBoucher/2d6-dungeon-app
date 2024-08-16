@@ -3,7 +3,7 @@
     <FluentDataGrid Items="@pieces" style="width: 100%;">
         <PropertyColumn Title="ARMOUR PIECE" Property="@(a => a.Name)" Sortable="false" />
         <TemplateColumn Title="DICESET" >
-            <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.tiny" face="@context.DiceSet" />
+            <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.tiny" face="@context.DiceSet" />
         </TemplateColumn>
         <PropertyColumn Title="MODIFIER" Property="@(a => a.Modifier)" Sortable="false"/>
     </FluentDataGrid>

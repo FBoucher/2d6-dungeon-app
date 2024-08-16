@@ -1,4 +1,4 @@
-﻿<h3>Turn @TurnCounter</h3>
+﻿<h3>Turn @turnCounter</h3>
 <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="2" >
     <ShiftButtons   rolledValue="@primaryDice"
                     shitedValue="@primaryShiftedDice"  
@@ -6,8 +6,8 @@
                     DiceShifted="PrimaryDiceShifted"></ShiftButtons>
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="2" HorizontalGap="0" Width="145">
         <span>
-            <DiceSet color="DiceSet.DiceColor.red" size="DiceSet.DiceSize.regular" face="@primaryShiftedDice" />
-            <DiceSet color="DiceSet.DiceColor.purple" size="DiceSet.DiceSize.regular" face="@secondaryShiftedDice" />
+            <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="primaryShiftedDice" />
+            <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="secondaryShiftedDice" />
         </span>
         @shiftLeft shift left
         <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dices IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
@@ -17,6 +17,7 @@
                     shiftLeft="@shiftLeft" 
                     DiceShifted="SecondaryDiceShifted"></ShiftButtons>
     <FluentSpacer Width="200"></FluentSpacer>
+    <FluentButton Appearance="Appearance.Accent" @onclick=ResetDices IconStart="@(new Icons.Regular.Size16.ArrowCircleLeft())">Reset Dice</FluentButton>
     <FluentButton Appearance="Appearance.Accent" @onclick=NextTurn IconStart="@(new Icons.Regular.Size16.ArrowNext())">End Turn</FluentButton>
 </FluentStack>
 
@@ -31,8 +32,8 @@
     [Parameter]
     public EventCallback<List<string>> ActionsChanged { get; set; }
 
-    [Parameter]
-    public int TurnCounter { get; set; } = 1;
+    
+    private int turnCounter { get; set; } = 1;
 
     [Parameter]
     public EventCallback<int> TurnCounterChanged { get; set; }
@@ -49,15 +50,23 @@
     private int secondaryDice = 0;
     private int secondaryShiftedDice = 0;
 
+    private DiceResult? originalDices;
+
     //private int shift = 0;
     private int shiftLeft = 0;
     protected override void OnInitialized()
     {
+        
+    }
+
+    protected override void OnParametersSet()
+    {
         shiftLeft = Shift;
     }
+
     private void Roll2Dices()
     {
-        var dices = DiceResult.Roll2Dices();
+        var dices = originalDices = DiceResult.Roll2Dices();
         primaryDice = primaryShiftedDice = dices.PrimaryDice;
         secondaryDice = secondaryShiftedDice = dices.SecondaryDice;
 
@@ -69,13 +78,13 @@
 
     private void NextTurn()
     {
-        actions.Add($"End Turn {TurnCounter}");
-        TurnCounter++;
-        TurnCounterChanged.InvokeAsync(TurnCounter);
+        actions.Add($"End Turn {turnCounter}");
+        turnCounter++;
+        TurnCounterChanged.InvokeAsync(turnCounter);
         primaryDice = primaryShiftedDice = 0;
         secondaryDice = secondaryShiftedDice = 0;
         shiftLeft = Shift;
-        actions.Add($"Start Turn {TurnCounter}");
+        actions.Add($"Start Turn {turnCounter}");
         ActionsChanged.InvokeAsync(actions);
         StateHasChanged();
     }
@@ -116,5 +125,15 @@
 
     private int GetShiftLeftValue(){
         return Shift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
+    }
+
+    private void ResetDices()
+    {
+        primaryDice = primaryShiftedDice = originalDices?.PrimaryDice ?? 0;
+        secondaryDice = secondaryShiftedDice = originalDices?.SecondaryDice ?? 0;
+        shiftLeft = Shift;
+        actions.Add($"Reset Dices");
+        ActionsChanged.InvokeAsync(actions);
+        StateHasChanged();
     }
 }

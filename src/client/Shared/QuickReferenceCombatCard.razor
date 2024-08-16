@@ -7,14 +7,14 @@
             <span class="sheetTitle">Combat FATIGUE and SHIFT adjustment platform</span>
             <div>Combat Fatigue</div>
             <FluentStack Orientation="Orientation.Horizontal" VerticalGap="5">
-                <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.regular" face="@fatigue" />
+                <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.regular" face="@fatigue" />
                 <div>
                     Start the dice at 1. Every time you finish a turn the fatigue dice up 1 number. When you reach 4 +1 Shift, 5 +2 Shift and 6 +3 Shift. Shift remains +3 until the combat is over.
                 </div>
             </FluentStack>
             <div>Shift Adjustment</div>
             <FluentStack Orientation="Orientation.Horizontal" VerticalGap="5">
-                <DiceSet color="DiceSet.DiceColor.white" size="DiceSet.DiceSize.regular" face="0" />
+                <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.regular" face="@shiftAdjustment" />
                 <div>
                     When the fatigue dices reaches 4 put the Shift adjustment starts. This modifier applies to the player and the foe. Both benefit from the Shift bonus.
                 </div>
@@ -48,6 +48,14 @@
     [Parameter]
     public EventCallback<int> TurnCounterChanged { get; set; }
 
+    [Parameter]
+    public int ShiftAdjustment { get; set; } = 0;
+
+    [Parameter]
+    public EventCallback<int> ShiftAdjustmentChanged { get; set; }
+
+
+    private int shiftAdjustment = 0;
 
     string? activeid = "tab-fat";
     FluentTab? changedto;
@@ -56,8 +64,28 @@
 
     protected override void OnParametersSet()
     {
+        shiftAdjustment = ShiftAdjustment;
+
         if(TurnCounter <= 6)
             fatigue = TurnCounter;
+        
+        
+        /*switch(fatigue)
+        {
+            case 4:
+                //ShiftAdjustment = 1;
+                //ShiftAdjustmentChanged.InvokeAsync(1);
+                break;
+            case 5:
+                //ShiftAdjustment = 2;
+                //ShiftAdjustmentChanged.InvokeAsync(2);
+                break;
+            case 6:
+                //ShiftAdjustment = 3;
+                //ShiftAdjustmentChanged.InvokeAsync(3);
+                break; 
+
+        }*/
     }
 
     private void HandleOnTabChange(FluentTab tab)
