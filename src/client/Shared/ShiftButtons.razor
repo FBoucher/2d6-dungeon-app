@@ -13,10 +13,10 @@
     public int rolledValue { get; set; }
 
     [Parameter]
-    public int shitedValue { get; set; }
+    public int shiftedValue { get; set; }
 
     [Parameter]
-    public int shiftLeft { get; set; }
+    public int ShiftLeft { get; set; }
 
     [Parameter] 
     public EventCallback<ShiftDirection> DiceShifted { get; set; }
@@ -25,16 +25,22 @@
 
     private bool isUpDisable = false;
     private bool isDownDisable  = false;
+    private int shiftLeft ;
 
     ShiftDirection shift;
 
     protected override void OnInitialized()
     {
-        currentValue = shitedValue;
+        shiftLeft = 0;
+        currentValue = shiftedValue;
     }
 
     protected override void OnParametersSet()
     {
+        if (shiftLeft != ShiftLeft)
+        {
+            shiftLeft = ShiftLeft;
+        }
         UpdateButtonStatus();
     }
 
@@ -63,13 +69,18 @@
         if(rolledValue != 0)
         {
             bool moreShift = shiftLeft > 0;
-            bool moveUpPossible = shitedValue < 6;
-            bool moveDownPossible = shitedValue > 1;
-            bool moveBackUp = (rolledValue > shitedValue);
-            bool moveBackDown = (rolledValue < shitedValue);
+            bool moveUpPossible = shiftedValue < 6;
+            bool moveDownPossible = shiftedValue > 1;
+            bool moveBackUp = (rolledValue > shiftedValue);
+            bool moveBackDown = (rolledValue < shiftedValue);
 
             isUpDisable = !moveUpPossible || (!moreShift && !moveBackUp);
             isDownDisable = !moveDownPossible || (!moreShift && !moveBackDown);
+        }
+        else
+        {
+            isUpDisable = true;
+            isDownDisable = true;
         }
     }
 }

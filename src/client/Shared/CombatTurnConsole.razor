@@ -1,8 +1,8 @@
 ﻿<h3>Turn @turnCounter</h3>
 <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="2" >
     <ShiftButtons   rolledValue="@primaryDice"
-                    shitedValue="@primaryShiftedDice"  
-                    shiftLeft="@shiftLeft" 
+                    shiftedValue="@primaryShiftedDice"  
+                    ShiftLeft="@shiftLeft" 
                     DiceShifted="PrimaryDiceShifted"></ShiftButtons>
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="2" HorizontalGap="0" Width="145">
         <span>
@@ -13,8 +13,8 @@
         <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dices IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
     </FluentStack>
     <ShiftButtons   rolledValue="@secondaryDice" 
-                    shitedValue="@secondaryShiftedDice" 
-                    shiftLeft="@shiftLeft" 
+                    shiftedValue="@secondaryShiftedDice" 
+                    ShiftLeft="@shiftLeft" 
                     DiceShifted="SecondaryDiceShifted"></ShiftButtons>
     <FluentSpacer Width="200"></FluentSpacer>
     <FluentButton Appearance="Appearance.Accent" @onclick=ResetDices IconStart="@(new Icons.Regular.Size16.ArrowCircleLeft())">Reset Dice</FluentButton>
@@ -61,7 +61,10 @@
 
     protected override void OnParametersSet()
     {
-        shiftLeft = Shift;
+        if (shiftLeft == 0)
+        {
+            shiftLeft = Shift;
+        }
     }
 
     private void Roll2Dices()
@@ -124,7 +127,11 @@
     }
 
     private int GetShiftLeftValue(){
-        return Shift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
+        var pDiceMovs = Math.Abs(primaryDice - primaryShiftedDice);
+        var sDiceMovs = Math.Abs(secondaryDice - secondaryShiftedDice);
+        var movLeft = Shift - pDiceMovs - sDiceMovs;
+        return movLeft;
+        //return Shift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
     }
 
     private void ResetDices()
