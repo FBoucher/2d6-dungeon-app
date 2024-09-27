@@ -37,6 +37,11 @@ public class DiceResult
         return result;
     }
 
+    public string ToDiceSet()
+    {
+        return $"{PrimaryDice}-{SecondaryDice}";
+    }
+
 
 }
 

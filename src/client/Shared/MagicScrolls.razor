@@ -1,0 +1,47 @@
+﻿
+@if(magicScrolls != null){
+
+    @* <table>
+        <thead>
+            <tr>
+                <th>Magic scrolls</th>
+                <th>Orbit</th>
+                <th>Displel doubles</th>
+                <th>Effect modifier</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var scroll in scrolls)
+            {
+                <tr>
+                    <td>@scroll.Description</td>
+                    <td>@(scroll.Orbit ?? "")</td>
+                    <td>@(scroll.DispelDoubles ?? "")</td>
+                    <td>@scroll.Modifier</td>
+                </tr>
+            }
+        </tbody>
+    </table>  *@
+
+
+    <FluentDataGrid Items="@scrolls">
+        <PropertyColumn Title="Magic scrolls" Property="@(a => a.Description)" Sortable="false" Class="multiline-text" />
+        <PropertyColumn Title="Orbit" Property="@(a => a.Orbit ?? "")" Sortable="false"  Class="multiline-text"/>
+        <PropertyColumn Title="Displel doubles" Property="@(a => a.DispelDoubles ?? "")" Sortable="false" Class="multiline-text" />
+        <PropertyColumn Title="Effect modifier" Property="@(a => a.Modifier)" Sortable="false"  Class="multiline-text" />
+    </FluentDataGrid>
+
+}
+
+@code {
+
+    [Parameter]
+    public List<MagicScroll>? magicScrolls { get; set; }
+    
+    IQueryable<MagicScroll>? scrolls;
+    
+    protected override void OnInitialized()
+    {
+        scrolls = magicScrolls?.AsQueryable();
+    }
+}

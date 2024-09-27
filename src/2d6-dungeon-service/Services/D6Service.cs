@@ -132,6 +132,24 @@ public class D6Service : ID6Service
     #endregion
 
 
+
+    #region == Creature Options =====
+
+    public async Task<IQueryable<Creature>> GetCreatures(){
+
+        var result = await _httpClient.GetFromJsonAsync<CreatureList>("creature", _options);
+        return result.value.AsQueryable();
+    }
+
+
+    #endregion
+
+
+
+
+
+
+
     #region == Rooms =====
 
     public async Task<Room> GetRoom(int id)

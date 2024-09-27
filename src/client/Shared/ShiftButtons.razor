@@ -1,0 +1,86 @@
+﻿<FluentStack Orientation="Orientation.Vertical" Width="40">
+    <FluentButton   IconEnd="@(new Icons.Regular.Size12.CaretUp())" 
+                    @onclick=GoUp Appearance="Appearance.Accent" 
+                    disabled="@(isUpDisable)"></FluentButton>
+    <FluentButton   IconEnd="@(new Icons.Regular.Size12.CaretDown())"
+                    @onclick=GoDown Appearance="Appearance.Accent" 
+                    disabled="@(isDownDisable)"></FluentButton>
+</FluentStack>
+
+@code {
+
+    [Parameter]
+    public int rolledValue { get; set; }
+
+    [Parameter]
+    public int shiftedValue { get; set; }
+
+    [Parameter]
+    public int ShiftLeft { get; set; }
+
+    [Parameter] 
+    public EventCallback<ShiftDirection> DiceShifted { get; set; }
+
+    public int currentValue { get; set; }
+
+    private bool isUpDisable = false;
+    private bool isDownDisable  = false;
+    private int shiftLeft ;
+
+    ShiftDirection shift;
+
+    protected override void OnInitialized()
+    {
+        shiftLeft = 0;
+        currentValue = shiftedValue;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (shiftLeft != ShiftLeft)
+        {
+            shiftLeft = ShiftLeft;
+        }
+        UpdateButtonStatus();
+    }
+
+    private async Task GoUp()
+    {
+        shift = ShiftDirection.Up;
+        await DiceShifted.InvokeAsync(shift);
+        UpdateButtonStatus();
+    }
+
+    private async Task GoDown()
+    {
+        shift = ShiftDirection.Down;
+        await DiceShifted.InvokeAsync(shift);
+        UpdateButtonStatus();
+    }
+
+    public enum  ShiftDirection
+    {
+        Up,
+        Down
+    }
+
+    private void UpdateButtonStatus()
+    {
+        if(rolledValue != 0)
+        {
+            bool moreShift = shiftLeft > 0;
+            bool moveUpPossible = shiftedValue < 6;
+            bool moveDownPossible = shiftedValue > 1;
+            bool moveBackUp = (rolledValue > shiftedValue);
+            bool moveBackDown = (rolledValue < shiftedValue);
+
+            isUpDisable = !moveUpPossible || (!moreShift && !moveBackUp);
+            isDownDisable = !moveDownPossible || (!moreShift && !moveBackDown);
+        }
+        else
+        {
+            isUpDisable = true;
+            isDownDisable = true;
+        }
+    }
+}

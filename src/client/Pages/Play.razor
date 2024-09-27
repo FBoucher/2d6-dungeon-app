@@ -29,11 +29,12 @@
             <div style="padding:20px;">
                 @if (primaryDice != 0)
                 {
-                    <img alt="@(primaryDice)" src="dices/dice@(primaryDice).jpg" />
+                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@primaryDice" />
+
                 }
                 @if (secondaryDice != 0)
                 {
-                    <img alt="@(secondaryDice)" src="dices/purlple-dice@(secondaryDice).jpg" />
+                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@secondaryDice" />
                 }
             </div>
 
@@ -48,6 +49,12 @@
     <FluentTab Id="tab-adventurer" Label="Adventurer" Icon="@(new Icons.Regular.Size24.NotepadPerson())"
         DeferredLoading=true>
         <AdventurerCard @bind-Player="currentAdventure.Adventurer"></AdventurerCard>
+    </FluentTab>
+
+
+    <FluentTab Id="tab-combat" Label="Combat Screen" Icon="@(new Icons.Regular.Size24.Shield())"
+        DeferredLoading=true>
+        <Combat @bind-Player="currentAdventure.Adventurer"></Combat>
     </FluentTab>
 
 

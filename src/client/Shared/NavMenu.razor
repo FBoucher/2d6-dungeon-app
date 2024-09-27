@@ -3,6 +3,7 @@
     <nav class="sitenav" aria-labelledby="main-menu" onclick="document.getElementById('navmenu-toggle').click();">
         <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded">
             <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.HomePerson())">Home</FluentNavLink>
+            @* <FluentNavLink Href="/Combat" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Shield())">Combat</FluentNavLink> *@
             <FluentNavLink Href="/Counter" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.AppFolder())">Dice Test</FluentNavLink>
             <FluentNavLink Href="/fetchdata" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Database())">Database Test</FluentNavLink>
             <FluentNavLink Href="/dungeonmap" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Map())">Map Test</FluentNavLink>

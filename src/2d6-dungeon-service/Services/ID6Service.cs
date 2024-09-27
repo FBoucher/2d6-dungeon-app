@@ -15,6 +15,9 @@ public interface ID6Service
     Task<bool> SaveAdventurer(Adventurer player);
     Task<bool> AdventurerCreate(Adventurer player);
     
+    // Creature
+    Task<IQueryable<Creature>> GetCreatures();
+
 
     // Room
     Task<Room> RollRoom(int roll, string size);
