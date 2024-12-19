@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace c5m._2d6Dungeon;
 
 public class GameTurn
@@ -10,11 +11,11 @@ public class GameTurn
     public DiceResult? LastDiceResult { get; set; }
     public string? Message { get; set; }
 
-    private ID6Service D6Service;
+    // private ID6Service D6Service;
 
-    public GameTurn(ID6Service d6Service){
-        D6Service = d6Service;
-    }
+    // public GameTurn(ID6Service d6Service){
+    //     D6Service = d6Service;
+    // }
 
     public async Task<GameTurn> ContinueTurn(DiceResult dResult)
     {
@@ -169,9 +170,9 @@ public class GameTurn
                 roomSize = "regular";
                 break;
         }
-        room = await D6Service.RollRoom(roll, roomSize);
-        //TODO: Is Room Unique?
-        CurrentRoom.Description = room.description;
+        // room = await D6Service.RollRoom(roll, roomSize);
+        // //TODO: Is Room Unique?
+        // CurrentRoom.Description = room.description;
         NextAction = ActionType.RollForExits;
     }
 

@@ -1,0 +1,20 @@
+﻿@rendermode InteractiveServer
+
+<div class="navmenu">
+    <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
+    <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
+    <nav class="sitenav" aria-labelledby="main-menu">
+        <FluentNavMenu Id="main-menu" Collapsible="true" Width="250" Title="Navigation menu" @bind-Expanded="expanded" CustomToggle="true">
+            <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.HomePerson())">Home</FluentNavLink>
+            @* <FluentNavLink Href="/Combat" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Shield())">Combat</FluentNavLink> *@
+            <FluentNavLink Href="/Counter" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.AppFolder())">Dice Test</FluentNavLink>
+            <FluentNavLink Href="/fetchdata" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Database())">Database Test</FluentNavLink>
+            @* <FluentNavLink Href="/dungeonmap" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Map())">Map Test</FluentNavLink> *@
+            <FluentNavLink Href="/settings" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.TextBulletListSquareSettings())">Settings</FluentNavLink>
+        </FluentNavMenu>
+    </nav>
+</div>
+
+@code {
+    private bool expanded = true;
+}

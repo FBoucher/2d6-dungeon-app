@@ -4,20 +4,22 @@ using Bogus;
 using Bogus.DataSets;
 using c5m._2d6Dungeon;
 using c5m._2d6Dungeon.Game;
+using Microsoft.Extensions.Logging;
 
 namespace c5m._2d6Dungeon;
 
-public class D6Service : ID6Service
+public class D6Service
 {
 
     #region == Sercice =====
-    private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptions _options;
-    public D6Service(HttpClient httpClient)
+    private readonly HttpClient httpClient;
+    private readonly ILogger<D6Service> logger;
+    private readonly JsonSerializerOptions options;
+    public D6Service(HttpClient httpClient, ILogger<D6Service> logger)
     {
-        _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        _httpClient = httpClient;
- 
+        options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        this.httpClient = httpClient;
+        this.logger = logger;
     }
     #endregion
 
@@ -31,13 +33,13 @@ public class D6Service : ID6Service
 
     public async Task<AdventurePreviewList?> GetAdventurePreviews()
     {
-        return await _httpClient.GetFromJsonAsync<AdventurePreviewList?>("adventure?$select=id,adventurer_name,level,last_saved_datetime");
+        return await httpClient.GetFromJsonAsync<AdventurePreviewList?>("api/adventure?$select=id,adventurer_name,level,last_saved_datetime");
     }
 
     public async Task<Adventure> GetAdventure(int id)
     {
-        var result = await _httpClient.GetFromJsonAsync<AdventurePreviewList>($"adventure/id/{id.ToString()}");
-        var adventurePrev = result.value.First<AdventurePreview>();
+        var result = await httpClient.GetFromJsonAsync<AdventurePreviewList>($"api/adventure/id/{id.ToString()}");
+        var adventurePrev = result!.value.First<AdventurePreview>();
 
         Adventure loadedGame = new Adventure(adventurePrev);
         if(loadedGame.Id == 0)
@@ -52,14 +54,14 @@ public class D6Service : ID6Service
         draftSavedGame.adventurer_name = game.Adventurer.Name;
         draftSavedGame.last_saved_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
-        var response = await _httpClient.PostAsJsonAsync<AdventurePreview>($"adventure", draftSavedGame);
+        var response = await httpClient.PostAsJsonAsync<AdventurePreview>($"api/adventure", draftSavedGame);
         var status = response.EnsureSuccessStatusCode();
 
         if (!status.IsSuccessStatusCode)
             throw new Exception("Problem Saving the Game");
         
         var returnedList = await response.Content.ReadFromJsonAsync<AdventurePreviewList>();
-        return returnedList.value.First<AdventurePreview>().id;
+        return returnedList!.value.First<AdventurePreview>().id;
     }
 
     public async Task<Adventure> AdventureSave(Adventure game)
@@ -71,7 +73,7 @@ public class D6Service : ID6Service
         var serializedGame = new AdventurePreview(game);
         serializedGame.last_saved_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
-        var response = await _httpClient.PutAsJsonAsync<AdventurePreview>($"adventure/id/{game.Id.ToString()}", serializedGame);
+        var response = await httpClient.PutAsJsonAsync<AdventurePreview>($"api/adventure/id/{game.Id.ToString()}", serializedGame);
         var status = response.EnsureSuccessStatusCode();
 
         if (!status.IsSuccessStatusCode)
@@ -82,26 +84,27 @@ public class D6Service : ID6Service
 
     #endregion
 
+    
 
     #region == Adventurer =====
     public async Task<Adventurer> GetAdventurer(int id)
     {
-        var result = await _httpClient.GetFromJsonAsync<AdventurerPreviewList>($"adventurer/id/{id.ToString()}");
-        var adventurerPrev = result.value.First<AdventurerPreview>();
+        var result = await httpClient.GetFromJsonAsync<AdventurerPreviewList>($"api/adventurer/id/{id.ToString()}");
+        var adventurerPrev = result!.value.First<AdventurerPreview>();
 
         return new Adventurer(adventurerPrev);
     }
 
     public async Task<AdventurerPreviewList?> GetAdventurerPreviews()
     {
-        return await _httpClient.GetFromJsonAsync<AdventurerPreviewList?>("adventurer?$select=id,name,xp,level");
+        return await httpClient.GetFromJsonAsync<AdventurerPreviewList?>("api/adventurer?$select=id,name,xp,level");
     }
 
     public async Task<bool> SaveAdventurer(Adventurer player)
     {
         var dbPlayer = new AdventurerPreview(player);
 
-        var response = await _httpClient.PutAsJsonAsync<AdventurerPreview>($"adventurer/id/{player.Id.ToString()}", dbPlayer);
+        var response = await httpClient.PutAsJsonAsync<AdventurerPreview>($"api/adventurer/id/{player.Id.ToString()}", dbPlayer);
         var status = response.EnsureSuccessStatusCode();
 
         if (status.IsSuccessStatusCode)
@@ -113,7 +116,7 @@ public class D6Service : ID6Service
     {
         var dbPlayer = new AdventurerPreview(player);
 
-        var response = await _httpClient.PostAsJsonAsync<AdventurerPreview>($"adventurer", dbPlayer);
+        var response = await httpClient.PostAsJsonAsync<AdventurerPreview>($"api/adventurer", dbPlayer);
         var status = response.EnsureSuccessStatusCode();
 
         if (status.IsSuccessStatusCode)
@@ -123,6 +126,7 @@ public class D6Service : ID6Service
 
     #endregion
 
+    
 
     #region == Adventurer Options =====
 
@@ -130,32 +134,28 @@ public class D6Service : ID6Service
 
 
     #endregion
-
-
+    
+    
 
     #region == Creature Options =====
 
     public async Task<IQueryable<Creature>> GetCreatures(){
 
-        var result = await _httpClient.GetFromJsonAsync<CreatureList>("creature", _options);
-        return result.value.AsQueryable();
+        var result = await httpClient.GetFromJsonAsync<CreatureList>("api/creature", options);
+        return result!.value.AsQueryable();
     }
 
 
     #endregion
+    
 
-
-
-
-
-
-
+    
     #region == Rooms =====
 
     public async Task<Room> GetRoom(int id)
     {
-        var result = await _httpClient.GetFromJsonAsync<RoomList>($"room/id/{id.ToString()}");
-        var room = result.value.First<Room>();
+        var result = await httpClient.GetFromJsonAsync<RoomList>($"api/room/id/{id.ToString()}");
+        var room = result!.value.First<Room>();
 
         return room;
     }
@@ -163,8 +163,8 @@ public class D6Service : ID6Service
     public async Task<Room> RollRoom(int roll, string size)
     {
         // ex: http://localhost:5000/api/room/?$filter=roll eq 2 and size eq 'small'
-        var result = await _httpClient.GetFromJsonAsync<RoomList>($"room/?$filter=roll eq {roll.ToString()} and size eq '{size}'");
-        var room = result.value.First<Room>();
+        var result = await httpClient.GetFromJsonAsync<RoomList>($"api/room/?$filter=roll eq {roll.ToString()} and size eq '{size}'");
+        var room = result!.value.First<Room>();
 
         return room;
     }
@@ -172,11 +172,13 @@ public class D6Service : ID6Service
     #endregion
 
 
+    
     #region == WeaponManoeuvre =====
 
     public async Task<WeaponList> GetWeapons()
     {
-        var result = await _httpClient.GetFromJsonAsync<WeaponList>("weapon", _options);
+        logger.LogTrace(@"httpClient URL: {0}", httpClient.BaseAddress);
+        var result = await httpClient.GetFromJsonAsync<WeaponList>("api/weapon", options);
         // var weapons = result.value.GroupBy(w => new {w.weapon})
         //                 .Select(w => w.First().weapon)
         //                 .ToList();
@@ -187,8 +189,8 @@ public class D6Service : ID6Service
 
     public async Task<WeaponManoeuvreList?> GetWeaponManoeuvreList(int weaponId, int level)
     {
-        var q = $"weapon_manoeuvre?$filter=level eq {level} and weapon_id eq {weaponId}";
-        return await _httpClient.GetFromJsonAsync<WeaponManoeuvreList>(q, _options);
+        var q = $"api/weapon_manoeuvre?$filter=level eq {level} and weapon_id eq {weaponId}";
+        return await httpClient.GetFromJsonAsync<WeaponManoeuvreList>(q, options);
     }
 
     #endregion
@@ -199,32 +201,34 @@ public class D6Service : ID6Service
 
     public async Task<ArmourPieceList> GetArmourPieces()
     {
-        var result = await _httpClient.GetFromJsonAsync<ArmourPieceList>("armour_piece", _options);
+        var result = await httpClient.GetFromJsonAsync<ArmourPieceList>("api/armour_piece", options);
         return result ?? new ArmourPieceList();
     }
 
     #endregion
 
 
+    
     #region == MagicScroll =====
 
     public async Task<MagicScrollList> GetMagicScrolls()
     {
-        var result = await _httpClient.GetFromJsonAsync<MagicScrollList>("magic_scroll", _options);
+        var result = await httpClient.GetFromJsonAsync<MagicScrollList>("api/magic_scroll", options);
         return result ?? new MagicScrollList();
     }
 
     #endregion
 
+    
 
     #region == MagicPotion =====
 
 
     public async Task<MagicPotion> GetInitialMagicPotion()
     {
-        var q = $"magic_potion?$filter=potion_type eq 'HEALING'";
-        var result = await _httpClient.GetFromJsonAsync<MagicPotionlList>(q);
-        return result.value.First<MagicPotion>();
+        var q = $"api/magic_potion?$filter=potion_type eq 'HEALING'";
+        var result = await httpClient.GetFromJsonAsync<MagicPotionlList>(q);
+        return result!.value.First<MagicPotion>();
     }
 
     #endregion
