@@ -32,11 +32,19 @@ While I prototype functionalities, and make progress I create content (blog post
 
 ### How to Run it Locally
 
-- You will need Docker, Docker Compose witch are included in [Docker Desktop](https://docs.docker.com/desktop/), and [.NET 8](https://dotnet.microsoft.com/en-us/download) installed.
+The solution uses .NET Aspire to manage all the services and website. 
+
+- You will need Docker [Docker](https://docs.docker.com/desktop/) or [Podman](https://podman.io/), and [.NET 9](https://dotnet.microsoft.com/en-us/download) installed.
 - Clone the repository locally.
-- From the repository's root folder start the database and API with the command: `docker compose -f .devcontainer/docker-compose.API.yml up -d` 
-- To start 2d6-dungeon-client, from Open the solution in VSCode or Visual Studio and press F5. Or from repository's root folder execute the command `dotnet run -p src/client`.
-- Navigate to http://localhost:5075 in your favorite web browser.
+- To start 2d6-dungeon-client, from Open the solution in VSCode or Visual Studio and press F5. If asked for the starting point of the solution select the orchestrator `AppHost`. Once the solution starts it will:
+  - Open the .NET Aspire Dashboard in a web browser.
+  - Create a MySQL container, create the database using the SQL script included.
+  - Create a data API, in a second container.
+  - Start the 2D6 Dungeon webApp.
+
+Once everything is ✅ Running, click on the Endpoint of the webApp
+
+![dotnet Aspire Dashboard showing all the 2D6 components](medias/all-running.png)
 
 
 ### Contributing

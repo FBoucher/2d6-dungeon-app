@@ -1,0 +1,92 @@
+﻿@using c5m._2d6Dungeon;
+
+@rendermode InteractiveServer
+
+<h3>Combat Screen</h3>
+
+@if(creature == null)
+{
+    <CreaturePicker ParentCreature="creature" ParentCreatureChanged="CreatureUpdated" ></CreaturePicker>
+}
+else{
+    <FluentStack Orientation="Orientation.Vertical"  Width="100%" >
+        <CombatTurnConsole  actions="combatActions" 
+                            ActionsChanged="ActionsChanged"
+                            TurnCounterChanged="CombatTurnChanged"
+                            Shift="adjustedShift"></CombatTurnConsole>
+        <FluentStack Orientation="Orientation.Horizontal" Width="100%">
+            <FluentCard Width="600px"> 
+                <AdventurerCard Player="player" Extented=true></AdventurerCard>
+            </FluentCard>
+            <FluentCard Width="400px">
+                <QuickReferenceCombatCard   TurnCounter="turnCounter" 
+                                            ShiftAdjustment="adjustmentShift" >
+                </QuickReferenceCombatCard>
+            </FluentCard>
+            <FluentCard Width="400px">
+                <CreatureCard creature="creature"></CreatureCard> 
+            </FluentCard>
+        </FluentStack>
+        <CombatJournal actions="combatActions" ></CombatJournal>
+    </FluentStack>
+}
+
+
+@code {
+    [Parameter]
+    public Game.Adventurer player { get; set; }
+
+    [Parameter] 
+    public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
+
+    public IEnumerable<Creature>? creatures { get; set; }
+    public Creature? creature { get; set; }
+
+    private List<string> combatActions = new List<string>();
+
+    private int turnCounter = 1;
+    private int adjustmentShift = 0;
+    private int adjustedShift = 0;
+
+
+
+    protected override void OnInitialized()
+    {
+        adjustedShift = player.Shift;
+    }
+    private void CombatTurnChanged(int turn){
+
+        turnCounter = turn;
+
+        if(turn < 7)
+        {
+            switch(turn)
+            {
+                case 4:
+                    adjustmentShift = 1;
+                    break;
+                case 5:
+                    adjustmentShift = 2;
+                    break;
+                case 6:
+                    adjustmentShift = 3;
+                    break;
+            }
+
+            adjustedShift = player.Shift + adjustmentShift;
+        }
+        
+    }
+
+    private void CreatureUpdated(Creature selectedCreature)
+    {
+        creature = selectedCreature;
+    }
+
+    private void ActionsChanged(List<string> actions)
+    {
+        combatActions = actions;
+    }
+
+
+}

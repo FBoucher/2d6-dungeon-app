@@ -2,7 +2,7 @@
   "$schema": "https://github.com/Azure/data-api-builder/releases/download/v0.8.51/dab.draft.schema.json",
   "data-source": {
     "database-type": "mysql",
-    "connection-string": "Server=host.docker.internal;Database=2d6db;User ID=frank;Password=myPassword;",
+    "connection-string": "@env('ConnectionStrings__db2d6')",
     "options": {}
   },
   "runtime": {
