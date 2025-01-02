@@ -1,0 +1,71 @@
+﻿@implements IDialogContentComponent<DoorSelections>
+
+@rendermode InteractiveServer
+
+<FluentMessageBarProvider Section="Test" MaxMessageCount="1" />
+
+@if (Dialog != null)
+{
+    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center">
+        <span>Which door do you want to open?</span>
+        <FluentButton Disabled=@(!isDoorN) OnClick="@(() => ToggleDialogPrimaryActionButton('N'))" IconStart="@iconDoorN">Door to the North</FluentButton>
+        <FluentStack Orientation="Orientation.Horizontal"  HorizontalAlignment="HorizontalAlignment.Center">
+            <FluentButton Disabled=@(!isDoorW) OnClick="@(() => ToggleDialogPrimaryActionButton('W'))" IconStart="@iconDoorW">Door to the West</FluentButton>
+            <FluentIcon Value="@(new Icons.Regular.Size32.Globe())" />
+            <FluentButton Disabled=@(!isDoorE) OnClick="@(() => ToggleDialogPrimaryActionButton('E'))" IconStart="@iconDoorE">Door to the East</FluentButton>
+        </FluentStack>
+        <FluentButton Disabled=@(!isDoorS) OnClick="@(() => ToggleDialogPrimaryActionButton('S'))" IconStart="@iconDoorS">Door to the South</FluentButton>
+    </FluentStack>
+}
+
+@code {
+
+    [Parameter]
+    public DoorSelections Content { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; }
+
+    private bool isDoorN = false;
+    private bool isDoorS = false;
+    private bool isDoorW = false;
+    private bool isDoorE = false;
+
+    private Icon iconDoorN = new Icons.Regular.Size20.Door();
+    private Icon iconDoorS = new Icons.Regular.Size20.Door();
+    private Icon iconDoorW = new Icons.Regular.Size20.Door();
+    private Icon iconDoorE = new Icons.Regular.Size20.Door();
+
+    Icon doorIcon = new Icons.Regular.Size20.Door();
+    Icon doorLockedIcon = new Icons.Regular.Size20.CalendarLock();
+
+    private void ToggleDialogPrimaryActionButton(char clickedDoor)
+    {
+        Content.SelectedExit = Content.Exits[clickedDoor];
+        Dialog!.TogglePrimaryActionButton(true);
+    }
+
+
+    protected override async Task OnInitializedAsync(){
+        foreach(var door in Content.Exits){
+            switch(door.Key){
+                case('N'): 
+                    isDoorN = true;
+                    iconDoorN = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
+                    break;
+                case('E'): 
+                    isDoorE = true;
+                    iconDoorE = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
+                    break;
+                case('S'): 
+                    isDoorS = true;
+                    iconDoorS = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
+                    break;
+                case('W'): 
+                    isDoorW = true;
+                    iconDoorW = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
+                    break;
+            }
+        }
+    }
+}
