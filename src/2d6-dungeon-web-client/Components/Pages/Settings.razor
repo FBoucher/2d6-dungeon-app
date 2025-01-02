@@ -14,8 +14,8 @@
 
 <h3>Settings</h3>
 
-<div>
-	<FluentStack Orientation="Orientation.Vertical">
+<div style="padding: 20px;">
+	<FluentStack Orientation="Orientation.Horizontal" VerticalGap="20" HorizontalGap="20"> 
 		<FluentSelect   Label="Theme" Width="150px"
 						Items="@(Enum.GetValues<DesignThemeModes>())"
 						@bind-SelectedOption="@Mode" />
@@ -40,7 +40,7 @@
 
 
 
-	void OnLoaded(LoadedEventArgs e)
+    void OnLoaded(LoadedEventArgs e)
     {
         Logger.LogInformation($"Loaded: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
     }

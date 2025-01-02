@@ -1,8 +1,10 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
 
 <FluentLayout>
     <FluentHeader>
-        2d6-dungeon-web-client
+        2d6 Dungeon App
     </FluentHeader>
     <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
         <NavMenu />
@@ -15,7 +17,7 @@
     <FluentFooter>
         <a href="https://www.fluentui-blazor.net" target="_blank">Documentation and demos</a>
         <FluentSpacer />
-        <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor" target="_blank">About Blazor</a>
+        <a href="https://bio.site/fboucheros" target="_blank">About Frank</a>
     </FluentFooter>
 </FluentLayout>
 
@@ -24,3 +26,9 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+
+@code {
+    public DesignThemeModes Mode { get; set; }
+    public OfficeColor? OfficeColor { get; set; }
+}
