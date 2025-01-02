@@ -1,12 +1,14 @@
 ﻿@page "/theadventure/{state}"
 @using c5m._2d6Dungeon;
-@inject ID6Service D6Service;
+@inject D6Service D6Service;
+
+@rendermode InteractiveServer
 
 <PageTitle>Adventure</PageTitle>
 
 @if (State == "new")
 {
-    @* <AdventureInit @bind-ParentAdventure="theAdventure"></AdventureInit> *@
+    <AdventureInit @bind-ParentAdventure="theAdventure"></AdventureInit>
 }
 else
 {

@@ -1,0 +1,224 @@
+﻿@using c5m._2d6Dungeon;
+@inject D6Service D6Service;
+@inject NavigationManager Navigation;
+@inject IDialogService DialogService
+
+@rendermode InteractiveServer
+
+<h3>Create an Adventurer</h3>
+
+<EditForm Model="@ParentAdventurer">
+@* TODO: Add Validation  *@
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentCard>
+        <FluentHeader Height="18">Adventurer Details</FluentHeader>
+        <FluentTextField    Label="Name"
+                            Required
+                            @bind-Value="ParentAdventurer.Name"></FluentTextField>
+    </FluentCard>
+
+
+    <FluentCard AreaRestricted=false>
+        <FluentHeader Height="18">Weapon</FluentHeader>
+        @if (weapons == null)
+        {
+            <p><em>no weapons loaded yet...</em></p>
+        }
+        else
+        { 
+            <FluentCombobox Items=@weapons.value
+                            Appearance="Appearance.Filled"
+                            Label="Weapons"
+                            Multiple=false
+                            Required
+                            OptionText="@(w => w.Name)"
+                            OptionValue="@(w => w.Id.ToString())"
+                            SelectedOptionChanged = "@( (Weapon w) => WeaponSelected(w.Id))"
+                            Disabled="@isSwitchWeaponPossible"
+                            Placeholder="Select a Weapon"
+                            />
+    }
+    </FluentCard>
+
+
+     <FluentCard Height="200px">
+        <FluentHeader Height="18">Manoeuvres</FluentHeader>
+        @if (manoeuvresQueryable != null)
+        {
+            <FluentSelect   Items=@manoeuvresQueryable
+                            Label="Manoeuvres (description | modifier | dice set)"
+                            Multiple=true
+                            Height="100px"
+                            Width="400px"
+                            Open=@selectManoeuvreOpen
+                            Required
+                            OptionText="@(m => m.Description + " | " + m.Modifier  + " | " + m.DiceSet)"
+                            OptionValue="@(m => m.Id.ToString())"
+                            SelectedOptionsChanged = "@( (IEnumerable<WeaponManoeuvre> selMans) => SelectManoeuvre(selMans))"
+                            Id="selManoeuvres"
+                            />
+        }
+        else
+        {
+            <p><em>Select a wepon first</em></p>     
+        }
+    </FluentCard>
+
+
+    <FluentCard AreaRestricted=false>
+        <FluentHeader Height="18">Armour Piece</FluentHeader>
+        <FluentCombobox Items=@armourPiecesQueryable
+                        Appearance="Appearance.Filled"
+                        @bind-Value=@selectedArmourId
+                        @bind-SelectedOption=@selectedArmour
+                        Label="Armour Piece (name | modifier | dice set)"
+                        Multiple=false
+                        Required
+                        Width="100%"
+                        Open=false
+                        OptionText="@(a => a.Name + " | " + a.Modifier  + " | " + a.DiceSet)"
+                        OptionValue="@(a => a.Id.ToString())"
+                        Placeholder="Select an Armour Piece"
+                        />
+    </FluentCard>
+
+
+    <FluentCard AreaRestricted=false>
+        <FluentHeader Height="18">Magic Scroll</FluentHeader>
+        <FluentCombobox     Items=@magicScollsQueryable
+                            Label="Magic Scroll (type | description)"
+                            Placeholder="Select a Magic Scroll"
+                            Appearance="Appearance.Filled"
+                            Multiple=false
+                            Required
+                            Width="100%"
+                            Open=false
+                            OptionText="@(s => s.ScrollType + " | " + s.Description)"
+                            OptionValue="@(s => s.Id.ToString())"
+                            SelectedOptionChanged = "@( (MagicScroll s) => SelectMagicScroll(s.Id))"
+                            />
+    </FluentCard>
+
+
+    <FluentButton @onclick="CreateAndSaveAdventurer" Appearance="Appearance.Accent">Save Adventurer</FluentButton> 
+
+</FluentStack>
+
+
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Game.Adventurer? ParentAdventurer {get; set;}
+    [Parameter] public EventCallback<Game.Adventurer> ParentAdventurerChanged { get; set; }
+
+    private WeaponList? weapons;
+    private int selectedWeaponId = 1;
+    protected string? selectedArmourId;
+    protected ArmourPiece selectedArmour = default!;
+    private int selectedMagicScrollId = 0;
+    private string weaponName = string.Empty;
+    private IQueryable<WeaponManoeuvre>? manoeuvresQueryable;
+    private List<ArmourPiece>? armourPiecesQueryable;
+    private List<MagicScroll>? magicScollsQueryable;
+    private bool selectManoeuvreOpen = true;
+    private IEnumerable<WeaponManoeuvre>? selectedManoeuvres;
+    private bool isSwitchWeaponPossible = false;
+
+    private bool warningShowed = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try{
+            ParentAdventurer = new Game.Adventurer();
+            weapons = await D6Service.GetWeapons();
+
+            armourPiecesQueryable = (await D6Service.GetArmourPieces()).value;
+            magicScollsQueryable = (await D6Service.GetMagicScrolls()).value;
+
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+        }
+    }
+
+
+    private async Task WeaponSelected(int weaponId)
+    {
+        try{
+            selectedWeaponId = weaponId;
+            if(selectedWeaponId > 0){
+                weaponName = weapons.value.Where(w => w.Id == selectedWeaponId).Select(w => w.Name).FirstOrDefault();
+                var manoeuvres = await D6Service.GetWeaponManoeuvreList(selectedWeaponId, 1);
+                manoeuvresQueryable = manoeuvres.value.AsQueryable();
+            }
+        }
+        catch(Exception ex){
+            Console.WriteLine("Oops1 --> " + ex.Message);
+        }
+    }
+
+    private async Task SelectManoeuvre(IEnumerable<WeaponManoeuvre> selManoeuvres)
+    {
+        selectedManoeuvres = selManoeuvres.ToList();
+        if(selManoeuvres != null && selManoeuvres.Count() > 0){
+            isSwitchWeaponPossible = true;
+            if(selManoeuvres.Count() == 2){
+                selectManoeuvreOpen = false;
+            }
+            if(selManoeuvres.Count() > 2){
+                await ShowMaxManoeuvresReached();
+            }
+        }
+        else
+        {
+            isSwitchWeaponPossible = false;
+        }
+    }
+
+    private async Task ShowMaxManoeuvresReached()
+    {
+        if(!warningShowed){
+            warningShowed = true;
+            var dialog = await DialogService.ShowErrorAsync("Maximum of two weapon manoeuvres");
+            var result = await dialog.Result;
+            var canceled = result.Cancelled;
+        }
+
+    }
+
+
+    private async Task SelectArmourPiece(int armourPieceId)
+    {
+        selectedArmourId = armourPieceId.ToString();
+    }
+
+    private async Task SelectMagicScroll(int magicScollId)
+    {
+        selectedMagicScrollId = magicScollId;
+    }
+    private async Task CreateAndSaveAdventurer()
+    {
+        MagicPotion InitialPotion = await D6Service.GetInitialMagicPotion();
+        
+        ParentAdventurer.Weapon = weapons.value.Single<Weapon>(w => w.Id == selectedWeaponId);
+        
+        ParentAdventurer.WeaponManoeuvres.AddRange(selectedManoeuvres);
+
+        ParentAdventurer.ArmourPieces.Add(selectedArmour);
+
+        ParentAdventurer.MagicScrolls.Add(magicScollsQueryable.Where<MagicScroll>(s => s.Id == selectedMagicScrollId).First<MagicScroll>());
+
+        ParentAdventurer.MagicPotions.Add(InitialPotion);
+
+        var result = await D6Service.AdventurerCreate(ParentAdventurer);
+
+        if (result){
+            Navigation.NavigateTo("theadventure/new");
+        }
+
+    }
+}

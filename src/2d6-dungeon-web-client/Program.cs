@@ -9,6 +9,7 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+    
 builder.Services.AddFluentUIComponents();
 
 builder.Services.AddHttpClient<D6Service>(client =>

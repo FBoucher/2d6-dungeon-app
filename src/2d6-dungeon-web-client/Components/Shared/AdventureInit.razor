@@ -1,0 +1,151 @@
+@using c5m._2d6Dungeon;
+@using c5m._2d6Dungeon.web.Domain;
+@inject IJSRuntime JSRuntime 
+@inject D6Service D6Service;
+@inject NavigationManager Navigation;
+
+@rendermode InteractiveServer
+
+<FluentLabel Typo="Typography.PageTitle">Adventure Initialization</FluentLabel>
+
+<FluentLabel>To create a new adventure you will need: </FluentLabel>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentCard >
+        <FluentHeader>Select or Create an Adventurer</FluentHeader>
+        @if (selectedAdventurer == null)
+        {
+            <AdventurerPicker @bind-ParentPlayer="selectedAdventurer"></AdventurerPicker>
+        }
+        else
+        {
+            @* <AdventurerCard @bind-Player="@(selectedAdventurer)"></AdventurerCard> *@
+        }  
+    </FluentCard> 
+
+    <FluentCard >
+        <FluentHeader>Create a new Dungeon</FluentHeader>
+        <FluentStack Orientation="Orientation.Vertical">
+            <p id="message"></p>
+            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel</FluentButton>
+        </FluentStack>
+        <div style="padding:20px;">
+            @if(dResult != null)
+            {
+                <Dices face="@dResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
+                <Dices face="@dResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+            }
+        </div>
+        <canvas id="dotCanvas" style="width: 300px; height: 300px;" ></canvas> 
+    </FluentCard>  
+</FluentStack>
+
+
+<FluentStack Orientation="Orientation.Horizontal">
+        <FluentButton Appearance="Appearance.Accent" @onclick="StarGame" disabled="@isStartDisable">Start</FluentButton>
+</FluentStack>
+
+@code {
+
+    [Parameter] public Adventure? ParentAdventure {get; set;}
+
+    [Parameter] public EventCallback<Adventure> ParentAdventureChanged { get; set; }
+
+    private Adventure? betaAdventure;
+    public Game.Adventurer? selectedAdventurer;    
+    private bool isStartDisable = true;
+    private bool firstRender = true;
+    private DiceResult dResult = null;
+    private string actionLabel = "Roll 2D6 to determine the Entrance of the dungeon";
+    private MappedRoom entryRoom;
+
+    private async Task StarGame()
+    {
+        betaAdventure = new Adventure();
+        betaAdventure.Adventurer = selectedAdventurer;
+
+        // TODO: Improve reposition bottom center
+        entryRoom.CoordX = 14;
+        entryRoom.CoordY = 20;
+
+        betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
+
+        betaAdventure = await D6Service.AdventureSave(betaAdventure);
+        Navigation.NavigateTo($"play/{betaAdventure.Id}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        if (firstRender) 
+        { 
+            await JSRuntime.InvokeVoidAsync("onResize");
+        } 
+    }
+
+
+    private async Task RollDices()
+    {
+        await MapTools.RefreshCanvas(JSRuntime);
+        dResult = DiceResult.Roll2Dices();
+
+        entryRoom = Dungeon.StartDungeonLevel(ref dResult);
+        entryRoom.IsLobby = true;
+
+        //TODO: hardcoded temporary
+        entryRoom.CoordX = 1;
+        entryRoom.CoordY = 2;
+        
+        SetDungeonEntranceDoor(entryRoom);
+        AssignExits(entryRoom, 'S');
+        await MapTools.DrawRoom(JSRuntime, entryRoom);
+        
+        actionLabel = "Press the Start button to begin your adventure";
+        isStartDisable = false;
+    }
+
+    private async Task RenderCanvas() 
+    { 
+        await JSRuntime.InvokeVoidAsync("onResize");
+    }
+
+    protected void SetDungeonEntranceDoor(MappedRoom currentRoom)
+    {
+        var mainDoor = new Exit();
+        //mainDoor.onWall = 'S';
+        mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
+        mainDoor.Lockable = false;
+
+        if(currentRoom.Exits == null)
+            currentRoom.Exits = new Dictionary<char,Exit>();
+        currentRoom.Exits.Add('S', mainDoor);
+    }
+
+    protected void AssignExits(MappedRoom currentRoom, char entrance)
+    {
+        int seed = DateTime.UtcNow.Millisecond;
+        Random rnd = new Random(seed);
+        
+        var walls = new List<char>(){'N', 'E', 'S', 'W'};
+        walls.Remove(entrance);
+        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<char>(currentRoom.ExitsCount);
+
+        if(currentRoom.Exits == null)
+                currentRoom.Exits = new Dictionary<char,Exit>();
+
+        foreach(var wall in wallsWithExits.ToList())
+        {
+            var aDoor = new Exit();
+            int maxPos = 0;
+            //aDoor.onWall = wall;
+            if("EW".Contains(wall)){
+                maxPos =  (currentRoom.Height +1);
+            }
+            else{
+                maxPos =  (currentRoom.Width +1);
+            }
+            aDoor.PositionOnWall = rnd.Next(1, maxPos);
+            aDoor.Lockable = false;
+            currentRoom.Exits.Add(wall, aDoor); 
+        }
+    }
+
+}
