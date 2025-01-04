@@ -63,20 +63,24 @@ else{
     [Parameter] 
     public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
 
-    public IEnumerable<Creature>? creatures { get; set; }
+    
+    [Parameter] 
     public Creature? creature { get; set; }
+
+    [Parameter] 
+    public EventCallback<Creature> creatureChanged { get; set; }
+
+    public IEnumerable<Creature>? creatures { get; set; }
+    
+
 
     private List<string> combatActions = new List<string>();
 
     private int turnCounter = 1;
     private int adjustmentShift = 0;
     private int adjustedShift = 0;
-
-    
-
     private DiceResult? originalDices;
     private int shiftLeft = 0;
-
     private int primaryDice = 0;
     private int primaryShiftedDice = 0;
     private int secondaryDice = 0;
@@ -144,6 +148,7 @@ else{
     private void CreatureUpdated(Creature selectedCreature)
     {
         creature = selectedCreature;
+        creatureChanged.InvokeAsync(selectedCreature);
     }
 
 
@@ -195,4 +200,6 @@ else{
         combatActions.Add($"Reset Dices");
         StateHasChanged();
     }
+
+
 }

@@ -56,7 +56,7 @@
 
     <FluentTab Id="tab-combat" Label="Combat Screen" Icon="@(new Icons.Regular.Size24.Shield())"
         DeferredLoading=true>
-        <Combat @bind-Player="currentAdventure.Adventurer"></Combat>
+        <Combat @bind-Player="currentAdventure.Adventurer" @bind-creature="@currentCreature" ></Combat>
     </FluentTab>
 
 
@@ -80,6 +80,8 @@
     bool isRollDicesDisable = true;
     string? activeid = "tab-map";
     FluentTab? changedto;
+
+    public Creature? currentCreature { get; set; }
 
 
     protected override async Task OnInitializedAsync()

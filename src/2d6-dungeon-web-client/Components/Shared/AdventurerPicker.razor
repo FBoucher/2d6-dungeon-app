@@ -13,10 +13,10 @@ else
 {
     <FluentStack Orientation="Orientation.Vertical">
 
-        <FluentDataGrid Items="@adventurersQueryable">
-            <TemplateColumn Title="">
+        <FluentDataGrid Items="@adventurersQueryable" ShowHover="true" TGridItem="AdventurerPreview" OnRowClick="@((args) => SelectPlayer(args.Item.id))">
+            @* <TemplateColumn Title="">
                 <FluentButton @onclick="@(() => SelectPlayer(context.id))" Appearance="Appearance.Lightweight">Select</FluentButton>
-            </TemplateColumn>
+            </TemplateColumn> *@
             <PropertyColumn Title="Name" Property="@(c => c.name)" Sortable="true" />
             <PropertyColumn Title="XP" Property="@(c => c.xp.ToString())" Sortable="true"/>
             <PropertyColumn Title="Level" Property="@(c => c.level.ToString())" Sortable="true" />

@@ -45,14 +45,10 @@
     [Parameter]
     public int TurnCounter { get; set; } = 1;
 
-    @* [Parameter]
-    public EventCallback<int> TurnCounterChanged { get; set; } *@
-
     [Parameter]
     public int ShiftAdjustment { get; set; } = 0;
 
-    @* [Parameter]
-    public EventCallback<int> ShiftAdjustmentChanged { get; set; } *@
+
 
 
     private int shiftAdjustment = 0;
@@ -64,28 +60,10 @@
 
     protected override void OnParametersSet()
     {
-        //shiftAdjustment = ShiftAdjustment;
 
         if(TurnCounter <= 6)
             fatigue = TurnCounter;
-        
-        
-        @* switch(fatigue)
-        {
-            case 4:
-                ShiftAdjustment = 1;
-                ShiftAdjustmentChanged.InvokeAsync(1);
-                break;
-            case 5:
-                ShiftAdjustment = 2;
-                ShiftAdjustmentChanged.InvokeAsync(2);
-                break;
-            case 6:
-                ShiftAdjustment = 3;
-                ShiftAdjustmentChanged.InvokeAsync(3);
-                break; 
 
-        } *@
     }
 
     private void HandleOnTabChange(FluentTab tab)
