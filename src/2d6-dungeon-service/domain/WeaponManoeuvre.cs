@@ -11,9 +11,9 @@ public class WeaponManoeuvre
     public int WeaponId { get; set; }
     
     [JsonPropertyName("dice_set")]
-    public string DiceSet { get; set; }
-    public string Description { get; set; }
-    public string Modifier { get; set; }
+    public string? DiceSet { get; set; }
+    public string? Description { get; set; }
+    public string? Modifier { get; set; }
 
     public static WeaponManoeuvre? Parse(string encodedString){
 

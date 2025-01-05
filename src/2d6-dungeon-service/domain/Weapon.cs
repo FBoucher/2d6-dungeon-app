@@ -3,11 +3,13 @@
 public class Weapon
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }
 
 public class WeaponList
 {
-    public List<Weapon> value { get; set; }
+#pragma warning disable IDE1006 // Naming Styles
+    public List<Weapon>? value { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 }
 

@@ -13,7 +13,7 @@ else
 {
     <FluentStack Orientation="Orientation.Vertical">
 
-        <FluentDataGrid Items="@adventurersQueryable" ShowHover="true" TGridItem="AdventurerPreview" OnRowClick="@((args) => SelectPlayer(args.Item.id))">
+        <FluentDataGrid Items="@adventurersQueryable" ShowHover="true" TGridItem="AdventurerPreview" OnRowClick="@((args) => SelectPlayer(args.Item!.id))">
             @* <TemplateColumn Title="">
                 <FluentButton @onclick="@(() => SelectPlayer(context.id))" Appearance="Appearance.Lightweight">Select</FluentButton>
             </TemplateColumn> *@
@@ -41,7 +41,7 @@ else
     {
         try{
             adventurers = await D6Service.GetAdventurerPreviews();  
-            adventurersQueryable = adventurers.value.AsQueryable();  
+            adventurersQueryable = adventurers!.value.AsQueryable();  
         }
         catch(Exception ex){
             Console.WriteLine("Oops! --> " + ex.Message);

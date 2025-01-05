@@ -17,7 +17,7 @@ public class GameTurn
     //     D6Service = d6Service;
     // }
 
-    public async Task<GameTurn> ContinueTurn(DiceResult dResult)
+    public GameTurn ContinueTurn(DiceResult dResult)
     {
         switch(NextAction){
             case(ActionType.StartDungeonLevel): StartDungeonLevel(dResult);
@@ -28,7 +28,7 @@ public class GameTurn
                 break;
             case(ActionType.RollForExits): RollForExits(dResult);
                 break;
-            case(ActionType.RollRoomDefinition): await RollRoomDefinition(dResult);
+            case(ActionType.RollRoomDefinition): RollRoomDefinition(dResult);
                 break;
         };
         return this;
@@ -139,7 +139,7 @@ public class GameTurn
         };
     }
 
-    private async Task RollRoomDefinition(DiceResult dResult){
+    private void RollRoomDefinition(DiceResult dResult){
         LastDiceResult = dResult;
         int area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
         int roll = 0;

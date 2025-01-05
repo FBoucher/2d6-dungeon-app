@@ -12,7 +12,7 @@ else
 {
     <h2>Select a creature</h2>
 
-    <FluentDataGrid Items="@creaturesQueryable" ShowHover="true" TGridItem="Creature" OnRowClick="@(async (args) => await SelectCreature(args.Item))">
+    <FluentDataGrid Items="@creaturesQueryable" ShowHover="true" TGridItem="Creature" OnRowClick="@(async (args) => await SelectCreature(args.Item!))">
         <PropertyColumn Title="Name" Property="@(c => c.name)" Sortable="true" />
         <PropertyColumn Title="HP" Property="@(c => c.health_points.ToString())" Sortable="true"/>
         <PropertyColumn Title="Level" Property="@(c => c.level.ToString())" Sortable="false" />

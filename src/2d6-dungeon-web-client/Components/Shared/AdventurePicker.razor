@@ -12,7 +12,7 @@
 }
 else
 {
-    <FluentDataGrid Items="@AdventurePreviews" ShowHover="true"  ResizableColumns=true TGridItem="AdventurePreview" OnRowClick="@((args) => SelectAdventure(args.Item.id))">
+    <FluentDataGrid Items="@AdventurePreviews" ShowHover="true"  ResizableColumns=true TGridItem="AdventurePreview" OnRowClick="@((args) => SelectAdventure(args.Item!.id))">
         <PropertyColumn Property="@(a => a.adventurer_name)" Title="Adventurer Name" Sortable="true"/>
         <PropertyColumn Property="@(a => a.level)" Title="Level" Sortable="true"/>
         <PropertyColumn Property="@(a => a.last_saved_datetime)" Title="Saved Date" Sortable="true"/>

@@ -7,14 +7,14 @@ public class MagicScroll
     public int Id { get; set; }
 
     [JsonPropertyName("scroll_type")]
-    public string ScrollType { get; set; }
-    public string Description { get; set; }
-    public string Duration { get; set; }
-    public string Orbit { get; set; }
+    public required string ScrollType { get; set; }
+    public required string Description { get; set; }
+    public string? Duration { get; set; }
+    public string? Orbit { get; set; }
 
     [JsonPropertyName("dispel_doubles")]
-    public string DispelDoubles { get; set; }
-    public string Cost { get; set; }
-    public string Fail { get; set; }
-    public string Modifier { get; set; }
+    public string? DispelDoubles { get; set; }
+    public string? Cost { get; set; }
+    public string? Fail { get; set; }
+    public string? Modifier { get; set; }
 }

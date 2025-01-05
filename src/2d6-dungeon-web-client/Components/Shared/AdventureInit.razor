@@ -54,18 +54,18 @@
     private Adventure? betaAdventure;
     public Game.Adventurer? selectedAdventurer;    
     private bool isStartDisable = true;
-    private bool firstRender = true;
-    private DiceResult dResult = null;
+    //private bool firstRender = true;
+    private DiceResult? dResult = null;
     private string actionLabel = "Roll 2D6 to determine the Entrance of the dungeon";
-    private MappedRoom entryRoom;
+    private MappedRoom? entryRoom;
 
     private async Task StarGame()
     {
         betaAdventure = new Adventure();
-        betaAdventure.Adventurer = selectedAdventurer;
+        betaAdventure.Adventurer = selectedAdventurer!;
 
         // TODO: Improve reposition bottom center
-        entryRoom.CoordX = 14;
+        entryRoom!.CoordX = 14;
         entryRoom.CoordY = 20;
 
         betaAdventure.Dungeon.MappedRooms.Add(entryRoom);

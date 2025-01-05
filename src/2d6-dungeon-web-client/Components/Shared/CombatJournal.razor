@@ -10,7 +10,7 @@
 @code {
 
     [Parameter]
-    public List<string> actions { get; set; }
+    public required List<string> actions { get; set; }
 
     [Parameter]
     public EventCallback<List<string>> ActionsChanged { get; set; }

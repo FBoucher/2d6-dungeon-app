@@ -28,7 +28,7 @@
         @* <div class="sheetTitle"><b>WEAPON</b> @Player.Weapon?.Name ?? ""</div>*@
         <div class="sheetTitle"><b>APPLIED RUNES</b> @Player.AppliedRunes.ToString()</div> 
         <div class="sheetTitle">Manoeuvre</div>
-        @foreach(var weaponManoeuvre in Player.WeaponManoeuvres)
+        @foreach(var weaponManoeuvre in Player.WeaponManoeuvres!)
         {
             <div><Manoeuvre manoeuvre="@weaponManoeuvre" /></div>
         }
@@ -40,7 +40,7 @@
 
 @code {
     [Parameter]
-    public Game.Adventurer Player { get; set; }
+    public required Game.Adventurer Player { get; set; }
 
     [Parameter] 
     public EventCallback<Game.Adventurer> PlayerChanged { get; set; }

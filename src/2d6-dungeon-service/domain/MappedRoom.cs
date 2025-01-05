@@ -11,7 +11,7 @@ public class MappedRoom
     public int Width { get; set; }
     public int Height { get; set; }
     public bool IsLobby { get; set; } = false;
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
 
     public static MappedRoom DraftCurrentRoom(DiceResult dResult){

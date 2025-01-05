@@ -5,8 +5,8 @@ namespace c5m._2d6Dungeon;
 public class Exit
 {
     public Direction Direction { get; set; }
-    public string TargetRoomId { get; set; }
-    public string ExitType { get; set; }
+    public string? TargetRoomId { get; set; }
+    public string? ExitType { get; set; }
     public bool Lockable { get; set; }
     public bool IsLocked { get; set; }
     public int PositionOnWall { get; set; }
