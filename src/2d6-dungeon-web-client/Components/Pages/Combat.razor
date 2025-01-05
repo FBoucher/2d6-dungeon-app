@@ -4,15 +4,15 @@
 
 <h3>Combat Screen</h3>
 
-@if(creature == null)
+@if(CombatState.Creature == null)
 {
     <FluentLabel Typo="Typography.Body">Select the creature mentioned in the room description.</FluentLabel>
-    <CreaturePicker ParentCreature="creature" ParentCreatureChanged="CreatureUpdated" ></CreaturePicker>
+    <CreaturePicker ParentCreature="CombatState.Creature" ParentCreatureChanged="CreatureUpdated" ></CreaturePicker>
 }
 else{
     <FluentStack Orientation="Orientation.Vertical"  Width="100%" >
 
-        <h3>Turn @turnCounter</h3>
+        <h3>Turn @CombatState.TurnCounter</h3>
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="2" >
             <ShiftButtons   rolledValue="@primaryDice"
                             shiftedValue="@primaryShiftedDice"  
@@ -24,14 +24,17 @@ else{
                     <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="secondaryShiftedDice" />
                 </span>
                 @shiftLeft shift left
-                <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dices IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
+                <span>
+                    <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dices IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" @onclick=ResetDices IconStart="@(new Icons.Regular.Size16.ArrowCounterclockwise())" 
+                                    Title="Resets the Dices before any shift adjustment" >Reset</FluentButton>
+                </span>
             </FluentStack>
             <ShiftButtons   rolledValue="@secondaryDice" 
                             shiftedValue="@secondaryShiftedDice" 
                             ShiftLeft="@shiftLeft" 
                             DiceShifted="SecondaryDiceShifted"></ShiftButtons>
             <FluentSpacer Width="200"></FluentSpacer>
-            <FluentButton Appearance="Appearance.Accent" @onclick=ResetDices IconStart="@(new Icons.Regular.Size16.ArrowCircleLeft())">Reset Dice</FluentButton>
             <FluentButton Appearance="Appearance.Accent" @onclick=NextTurn IconStart="@(new Icons.Regular.Size16.ArrowNext())">End Turn</FluentButton>
         </FluentStack>
 
@@ -40,43 +43,32 @@ else{
 
         <FluentStack Orientation="Orientation.Horizontal" Width="100%">
             <FluentCard Width="600px"> 
-                <AdventurerCard Player="player" Extented=true></AdventurerCard>
+                <AdventurerCard Player="CombatState.Player" Extented=true></AdventurerCard>
             </FluentCard>
             <FluentCard Width="400px">
-                <QuickReferenceCombatCard   TurnCounter="@turnCounter" 
+                <QuickReferenceCombatCard   TurnCounter="@CombatState.TurnCounter" 
                                             ShiftAdjustment="@adjustmentShift" >
                 </QuickReferenceCombatCard>
             </FluentCard>
             <FluentCard Width="400px">
-                <CreatureCard creature="creature"></CreatureCard> 
+                <CreatureCard creature="CombatState.Creature"></CreatureCard> 
             </FluentCard>
         </FluentStack>
-        <CombatJournal actions="combatActions" ></CombatJournal>
+        <CombatJournal actions="CombatState.CombatActions" ></CombatJournal>
     </FluentStack>
 }
 
 
 @code {
     [Parameter]
-    public required Game.Adventurer player { get; set; }
+    public required CombatState CombatState { get; set; }
 
     [Parameter] 
-    public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
+    public EventCallback<CombatState> CombatStateChanged { get; set; }
 
+
+    @* public IEnumerable<Creature>? creatures { get; set; } *@
     
-    [Parameter] 
-    public Creature? creature { get; set; }
-
-    [Parameter] 
-    public EventCallback<Creature> creatureChanged { get; set; }
-
-    public IEnumerable<Creature>? creatures { get; set; }
-    
-
-
-    private List<string> combatActions = new List<string>();
-
-    private int turnCounter = 1;
     private int adjustmentShift = 0;
     private int adjustedShift = 0;
     private DiceResult? originalDices;
@@ -90,11 +82,14 @@ else{
 
     protected override void OnInitialized()
     {
-        adjustedShift = player.Shift;
+        adjustedShift = CombatState.Player.Shift;
+        if (CombatState.TurnCounter == 0){
+            CombatTurnChanged(1);
+        }
     }
     private void CombatTurnChanged(int turn){
 
-        turnCounter = turn;
+        CombatState.TurnCounter = turn;
 
         if(turn < 7)
         {
@@ -112,11 +107,11 @@ else{
             }
 
             if (adjustmentShift > 0)
-                combatActions.Add($"Shift as been ajusted by {adjustmentShift} due to fatigue reaching {turn}");
+                CombatState.CombatActions.Add($"Shift as been ajusted by {adjustmentShift} due to fatigue reaching {turn}");
 
-            adjustedShift = player.Shift + adjustmentShift;
+            adjustedShift = CombatState.Player.Shift + adjustmentShift;
         }
-        
+        CombatStateChanged.InvokeAsync(CombatState);
     }
 
     private void Roll2Dices()
@@ -125,7 +120,7 @@ else{
         primaryDice = primaryShiftedDice = dices.PrimaryDice;
         secondaryDice = secondaryShiftedDice = dices.SecondaryDice;
 
-        combatActions.Add($"Rolled {primaryDice} and {secondaryDice}");
+        CombatState.CombatActions.Add($"Rolled {primaryDice} and {secondaryDice}");
         
         shiftLeft = GetShiftLeftValue();
 
@@ -134,25 +129,25 @@ else{
 
     private void NextTurn()
     {
-        combatActions.Add($"End Turn {turnCounter}");
-        turnCounter++;
+        CombatState.TurnCounter++;
         primaryDice = primaryShiftedDice = 0;
         secondaryDice = secondaryShiftedDice = 0;
         
-        combatActions.Add($"Start Turn {turnCounter}");
-        CombatTurnChanged(turnCounter);
+        CombatState.CombatActions.Add($"Start Turn {CombatState.TurnCounter}");
+        CombatTurnChanged(CombatState.TurnCounter);
         shiftLeft = adjustedShift;
+        CombatStateChanged.InvokeAsync(CombatState);
         StateHasChanged();
     }
 
     private void CreatureUpdated(Creature selectedCreature)
     {
-        creature = selectedCreature;
-        creatureChanged.InvokeAsync(selectedCreature);
+        CombatState.Creature = selectedCreature;
+        CombatStateChanged.InvokeAsync(CombatState);
     }
 
 
-    private async Task PrimaryDiceShifted(ShiftButtons.ShiftDirection shift)
+    private void PrimaryDiceShifted(ShiftButtons.ShiftDirection shift)
     {
         int preValue = primaryShiftedDice;
         if (shift == ShiftButtons.ShiftDirection.Up)
@@ -163,12 +158,12 @@ else{
         {
             primaryShiftedDice--;
         }
-        combatActions.Add($"Primary dice Shifted from {preValue} to {primaryDice}");
+        CombatState.CombatActions.Add($"Primary dice Shifted from {preValue} to {primaryDice}");
         shiftLeft = GetShiftLeftValue();
         StateHasChanged();
     }
 
-    private async Task SecondaryDiceShifted(ShiftButtons.ShiftDirection shift)
+    private void SecondaryDiceShifted(ShiftButtons.ShiftDirection shift)
     {
         int preValue = secondaryShiftedDice;
         if (shift == ShiftButtons.ShiftDirection.Up)
@@ -179,7 +174,7 @@ else{
         {
             secondaryShiftedDice--;
         }
-        combatActions.Add($"Secondary dice Shifted from {preValue} to {secondaryDice}");
+        CombatState.CombatActions.Add($"Secondary dice Shifted from {preValue} to {secondaryDice}");
         shiftLeft = GetShiftLeftValue();
         StateHasChanged();
     }
@@ -197,7 +192,7 @@ else{
         primaryDice = primaryShiftedDice = originalDices?.PrimaryDice ?? 0;
         secondaryDice = secondaryShiftedDice = originalDices?.SecondaryDice ?? 0;
         shiftLeft = adjustedShift;
-        combatActions.Add($"Reset Dices");
+        CombatState.CombatActions.Add($"Reset Dices");
         StateHasChanged();
     }
 
