@@ -7,7 +7,8 @@
 <FluentPersona  Name="@(Player.Name)"
                 ImageSize="50px"
                 Status="PresenceStatus.Available"
-                StatusSize="PresenceBadgeSize.Small">
+                StatusSize="PresenceBadgeSize.Small"
+                OnClick="@(() => ToggleExtended())">
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
             <FluentLabel Typo="Typography.H3">@Player.Name</FluentLabel>
             <FluentLabel Typo="Typography.Body"><b>XP:</b> @Player.XP.ToString()</FluentLabel>
@@ -27,7 +28,7 @@
         @* <div class="sheetTitle"><b>WEAPON</b> @Player.Weapon?.Name ?? ""</div>*@
         <div class="sheetTitle"><b>APPLIED RUNES</b> @Player.AppliedRunes.ToString()</div> 
         <div class="sheetTitle">Manoeuvre</div>
-        @foreach(var weaponManoeuvre in Player.WeaponManoeuvres)
+        @foreach(var weaponManoeuvre in Player.WeaponManoeuvres!)
         {
             <div><Manoeuvre manoeuvre="@weaponManoeuvre" /></div>
         }
@@ -39,11 +40,16 @@
 
 @code {
     [Parameter]
-    public Game.Adventurer Player { get; set; }
+    public required Game.Adventurer Player { get; set; }
 
     [Parameter] 
     public EventCallback<Game.Adventurer> PlayerChanged { get; set; }
 
     [Parameter]
     public bool Extented { get; set; } = false;
+
+    private void ToggleExtended()
+    {
+        Extented = !Extented;
+    }
 }

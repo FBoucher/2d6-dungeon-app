@@ -24,7 +24,7 @@ else
         {
             <option value="0" selected> - Select a Weapon - </option>
         }
-        @foreach (var w in weapons.value)
+        @foreach (var w in weapons.value!)
         {
             <option value="@w.Id"> @w.Name </option>
         }

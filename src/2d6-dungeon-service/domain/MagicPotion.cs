@@ -7,8 +7,8 @@ public class MagicPotion
     public int Id { get; set; }
 
     [JsonPropertyName("potion_type")]
-    public string PotionType { get; set; }
-    public string Modifier { get; set; }
-    public string Duration { get; set; }
-    public string Cost { get; set; }
+    public required string PotionType { get; set; }
+    public string? Modifier { get; set; }
+    public string? Duration { get; set; }
+    public string? Cost { get; set; }
 }

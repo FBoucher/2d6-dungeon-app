@@ -12,17 +12,11 @@ else
 {
     <h2>Select a creature</h2>
 
-    <FluentStack Orientation="Orientation.Vertical">
-
-        <FluentDataGrid Items="@creaturesQueryable">
-            <TemplateColumn Title="">
-                <FluentButton @onclick="@(() => SelectCreature(context))" Appearance="Appearance.Accent">Select</FluentButton>
-            </TemplateColumn>
-            <PropertyColumn Title="Name" Property="@(c => c.name)" Sortable="true" />
-            <PropertyColumn Title="HP" Property="@(c => c.health_points.ToString())" Sortable="true"/>
-            <PropertyColumn Title="Level" Property="@(c => c.level.ToString())" Sortable="false" />
-        </FluentDataGrid>
-    </FluentStack>
+    <FluentDataGrid Items="@creaturesQueryable" ShowHover="true" TGridItem="Creature" OnRowClick="@(async (args) => await SelectCreature(args.Item!))">
+        <PropertyColumn Title="Name" Property="@(c => c.name)" Sortable="true" />
+        <PropertyColumn Title="HP" Property="@(c => c.health_points.ToString())" Sortable="true"/>
+        <PropertyColumn Title="Level" Property="@(c => c.level.ToString())" Sortable="false" />
+    </FluentDataGrid>
 }
 
 @code {
@@ -30,19 +24,20 @@ else
 
     [Parameter] public EventCallback<Creature> ParentCreatureChanged { get; set; }
 
-    IQueryable<Creature>? creaturesQueryable;
+    IQueryable<Creature>? creaturesQueryable;  
+
 
     protected override async Task OnInitializedAsync()
     {
         try{
-            creaturesQueryable = await D6Service.GetCreatures();  
+            creaturesQueryable = await D6Service.GetCreatures(); 
         }
         catch(Exception ex){
             Console.WriteLine("Oops! --> " + ex.Message);
         }
     }
 
-    private async Task SelectCreature(Creature selectedCreature)
+    private async Task SelectCreature(Creature selectedCreature) 
     {
         try{
             ParentCreature = selectedCreature;

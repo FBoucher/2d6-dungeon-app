@@ -1,7 +1,7 @@
 ﻿@rendermode InteractiveServer
 
 @if(armourPiece != null){
-    <FluentDataGrid Items="@pieces" style="width: 100%;">
+    <FluentDataGrid Items="@pieces" style="width: 100%;" MultiLine="true">
         <PropertyColumn Title="ARMOUR PIECE" Property="@(a => a.Name)" Sortable="false" />
         <TemplateColumn Title="DICESET" >
             <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.tiny" face="@context.DiceSet" />

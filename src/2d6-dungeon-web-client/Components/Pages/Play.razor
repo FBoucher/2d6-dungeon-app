@@ -18,7 +18,7 @@
                 <FluentAccordionItem Heading="Current Room Details" Expanded="true">
                     <FluentIcon Value="@(new Icons.Regular.Size20.ConferenceRoom())" Color="@Color.Neutral"
                         Slot="start" />
-                    <FluentLabel Typo="Typography.H4">Room:</FluentLabel> @currentRoom.Description
+                    <FluentLabel Typo="Typography.H4">Room:</FluentLabel> @currentRoom!.Description
                 </FluentAccordionItem>
             </FluentAccordion>
 
@@ -50,13 +50,13 @@
 
     <FluentTab Id="tab-adventurer" Label="Adventurer" Icon="@(new Icons.Regular.Size24.NotepadPerson())"
         DeferredLoading=true>
-        <AdventurerCard @bind-Player="currentAdventure.Adventurer"></AdventurerCard>
+        <AdventurerCard @bind-Player="currentAdventure!.Adventurer" Extented="true"></AdventurerCard>
     </FluentTab>
 
 
     <FluentTab Id="tab-combat" Label="Combat Screen" Icon="@(new Icons.Regular.Size24.Shield())"
         DeferredLoading=true>
-        <Combat @bind-Player="currentAdventure.Adventurer"></Combat>
+        <Combat @bind-CombatState="currentAdventure!.CombatState"></Combat>
     </FluentTab>
 
 
@@ -87,6 +87,7 @@
         try
         {
             currentAdventure = await D6Service.GetAdventure(adventureId);
+            currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
             currentRoom = currentAdventure.Dungeon.MappedRooms.Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
             await FillCanvas();
         }
@@ -110,7 +111,7 @@
     }
 
 
-    private async Task RollDices()
+    private void RollDices()
     {
         @* await MapTools.RefreshCanvas(JSRuntime);
 var dResult = DiceResult.Roll2Dices();
@@ -141,7 +142,7 @@ isStartDisable = false; *@
     {
         DialogParameters parameters = new()
             {
-                Title = $"To get out of the current room you have {currentRoom.ExitsCount} options.",
+                Title = $"To get out of the current room you have {currentRoom!.ExitsCount} options.",
                 PrimaryAction = "Open",
                 PrimaryActionEnabled = false,
                 SecondaryAction = "Cancel",
@@ -151,7 +152,7 @@ isStartDisable = false; *@
                 PreventScroll = true
             };
 
-        DoorSelections dSelect = new DoorSelections(currentRoom.Exits);
+        DoorSelections dSelect = new DoorSelections(currentRoom.Exits!);
 
         IDialogReference dialog = await DialogService.ShowDialogAsync<SelectDoorDialog>(dSelect, parameters);
         DialogResult? result = await dialog.Result;
@@ -161,10 +162,10 @@ isStartDisable = false; *@
         {
             DoorSelections? doorSelection = result.Data as DoorSelections;
         }
-        else
+        @* else
         {
             var test = "test";
-        }
+        } *@
     }
 
     private async Task RenderCanvas()
@@ -180,7 +181,7 @@ isStartDisable = false; *@
     private async Task FillCanvas()
     {
         await RenderCanvas();
-        foreach (var room in currentAdventure.Dungeon.MappedRooms)
+        foreach (var room in currentAdventure!.Dungeon.MappedRooms)
         {
             await MapTools.DrawRoom(JSRuntime, room);
         }

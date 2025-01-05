@@ -21,7 +21,7 @@
 @code {
 
     [Parameter]
-    public DoorSelections Content { get; set; }
+    public required DoorSelections Content { get; set; }
 
     [CascadingParameter]
     public FluentDialog? Dialog { get; set; }
@@ -41,13 +41,13 @@
 
     private void ToggleDialogPrimaryActionButton(char clickedDoor)
     {
-        Content.SelectedExit = Content.Exits[clickedDoor];
+        Content!.SelectedExit = Content.Exits[clickedDoor];
         Dialog!.TogglePrimaryActionButton(true);
     }
 
 
-    protected override async Task OnInitializedAsync(){
-        foreach(var door in Content.Exits){
+    protected override void OnInitialized(){
+        foreach(var door in Content!.Exits){
             switch(door.Key){
                 case('N'): 
                     isDoorN = true;

@@ -22,7 +22,7 @@ public static class MapTools
 
     public static async Task DrawDoors(IJSRuntime js, MappedRoom currentRoom)
     {
-        foreach (var door in currentRoom.Exits)
+        foreach (var door in currentRoom.Exits!)
         {
             string orientation = GetDoorOrientation(door.Key);
             int x = 0;

@@ -12,7 +12,7 @@ public class Adventurer
     public int Shift { get; set; }
     public int Discipline { get; set; }
     public int Precision { get; set; }
-    public Weapon Weapon { get; set; }
+    public Weapon? Weapon { get; set; }
     public int AppliedRunes { get; set; }
     public List<WeaponManoeuvre>? WeaponManoeuvres { get; set; }
     public List<ArmourPiece>? ArmourPieces { get; set; }
@@ -141,7 +141,7 @@ public class Adventurer
     private static Adventurer DatabaseDecode(string base64EncodedData) 
     {
         var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
-        var jsonPlayer = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        string jsonPlayer = System.Text.Encoding.UTF8.GetString(base64EncodedBytes)!;
         return JsonSerializer.Deserialize<Adventurer>(jsonPlayer);
     }
 }

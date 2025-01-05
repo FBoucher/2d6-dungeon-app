@@ -7,7 +7,8 @@ public class Adventure
     public int Id { get; set; } = 0;
     public Adventurer Adventurer { get; set; }
     public Dungeon Dungeon { get; set; }
-    GameTurn GameTurn { get; set; }
+    public CombatState? CombatState { get; set; }
+    GameTurn? GameTurn { get; set; }
 
 
     public Adventure()
@@ -17,6 +18,10 @@ public class Adventure
     }
 
     public Adventure(AdventurePreview preview){
+
+        Adventurer = new Adventurer(preview.adventurer_name);
+        Dungeon = new Dungeon();
+
         if(string.IsNullOrEmpty(preview.serialiazedObj)){
             // todo: what should happens
         }
@@ -33,6 +38,6 @@ public class Adventure
     {
         var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
         var jsonAdventure = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-        return JsonSerializer.Deserialize<Adventure>(jsonAdventure);
+        return JsonSerializer.Deserialize<Adventure>(jsonAdventure)!;
     }
 }

@@ -20,11 +20,11 @@
         </div>
         <img src="images/monster/gendo-creature.jpeg" style="width: 50px; height: 50px" />
     </FluentStack>
-    <div><b>Interrupt:</b> @creature.interrupt1.Replace('|',' ')</div>
-    <div>@creature.interrupt2.Replace('|',' ')</div>
+    <div><b>Interrupt:</b> @creature.interrupt1!.Replace('|',' ')</div>
+    <div>@creature.interrupt2!.Replace('|',' ')</div>
     <div style="text-align: right;"><b>Manoeuvre:</b> </div>
-    <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre1)" /></div>
-    <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre2)" /></div>
+    <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre1!)" /></div>
+    <div><Manoeuvre manoeuvre="@WeaponManoeuvre.Parse(@creature.manoeuvre2!)" /></div>
     <div style="word-wrap: break-word; background-color: lightgray">
         @creature.description
     </div>
@@ -50,7 +50,7 @@
 
 @code {
     [Parameter]
-    public Creature creature { get; set; }
+    public required Creature creature { get; set; }
 
     [Parameter] 
     public EventCallback<Creature> creatureChanged { get; set; }
