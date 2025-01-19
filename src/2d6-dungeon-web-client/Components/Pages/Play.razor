@@ -19,6 +19,7 @@
                     <FluentIcon Value="@(new Icons.Regular.Size20.ConferenceRoom())" Color="@Color.Neutral"
                         Slot="start" />
                     <FluentLabel Typo="Typography.H4">Room:</FluentLabel> @currentRoom!.Description
+                    <FluentLabel Typo="Typography.Body">@gameTurnInstructions</FluentLabel> 
                 </FluentAccordionItem>
             </FluentAccordion>
 
@@ -29,14 +30,14 @@
             </FluentStack>
 
             <div style="padding:20px;">
-                @if (primaryDice != 0)
+                @if (diceResult.PrimaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@primaryDice" />
+                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@diceResult.PrimaryDice" />
 
                 }
-                @if (secondaryDice != 0)
+                @if (diceResult.SecondaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@secondaryDice" />
+                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@diceResult.SecondaryDice" />
                 }
             </div>
 
@@ -75,11 +76,16 @@
     private Adventure? currentAdventure;
     MappedRoom? currentRoom = new MappedRoom();
 
-    int primaryDice = 0;
-    int secondaryDice = 0;
-    bool isRollDicesDisable = true;
+    @* int primaryDice = 0;
+    int secondaryDice = 0; *@
+    DiceResult diceResult = new DiceResult();
+
+    bool isRollDicesDisable = false;
     string? activeid = "tab-map";
     FluentTab? changedto;
+
+    private string gameTurnInstructions = String.Empty;
+    private GameTurn gameTurn = new GameTurn();
 
 
     protected override async Task OnInitializedAsync()
@@ -89,6 +95,7 @@
             currentAdventure = await D6Service.GetAdventure(adventureId);
             currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
             currentRoom = currentAdventure.Dungeon.MappedRooms.Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
+            gameTurnInstructions = "Press Roll Dices to roll the dimentions and pick a door to enter the next room.";
             await FillCanvas();
         }
         catch (Exception ex)
@@ -113,32 +120,15 @@
 
     private void RollDices()
     {
-        @* await MapTools.RefreshCanvas(JSRuntime);
-var dResult = DiceResult.Roll2Dices();
-
-entryRoom = Dungeon.StartDungeonLevel(ref dResult);
-
-// Update the UI
-primaryDice = dResult.PrimaryDice;
-secondaryDice = dResult.SecondaryDice;
-
-//TODO: hardcoded temporary
-entryRoom.CoordX = 1;
-entryRoom.CoordY = 2;
-
-SetDungeonEntranceDoor(entryRoom);
-AssignExits(entryRoom, "S");
-await DrawRoom(entryRoom, true);
-
-actionLabel = "Press the Start button to begin your adventure";
-isStartDisable = false; *@
+        var dResult = DiceResult.Roll2Dices();
     }
 
     private async Task PickADoor()
     {
-        await OpenDialogAsync();
+        await OpenSelectDoorDialogDialogAsync();
+        await OpenNewRoomDialog();
     }
-    private async Task OpenDialogAsync()
+    private async Task OpenSelectDoorDialogDialogAsync()
     {
         DialogParameters parameters = new()
             {
@@ -157,15 +147,40 @@ isStartDisable = false; *@
         IDialogReference dialog = await DialogService.ShowDialogAsync<SelectDoorDialog>(dSelect, parameters);
         DialogResult? result = await dialog.Result;
 
-
         if (result.Data is not null)
         {
             DoorSelections? doorSelection = result.Data as DoorSelections;
+            @* this.gameTurn.NextAction = ActionType.RollForARoom;
+            var currentDice = this.gameTurn.ContinueTurn(diceResult); *@
+
         }
-        @* else
+    }
+
+    private async Task OpenNewRoomDialog()
+    {
+        DialogParameters parameters = new()
+            {
+                Title = $"Let's see what room you are getting in!",
+                PrimaryAction = "Save",
+                PrimaryActionEnabled = false,
+                SecondaryAction = "Cancel",
+                Width = "800px",
+                TrapFocus = true,
+                Modal = true
+            };
+
+        Room newRoom = new Room();
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(newRoom, parameters);
+        DialogResult? result = await dialog.Result;
+
+        if (result.Data is not null)
         {
-            var test = "test";
-        } *@
+            Room? createdRoom = result.Data as Room;
+            // Check if the same
+            if(newRoom.description == createdRoom!.description)
+                Console.WriteLine("--> Both room are the same.");
+        }
     }
 
     private async Task RenderCanvas()

@@ -1,0 +1,97 @@
+﻿@implements IDialogContentComponent<Room>
+@inject IJSRuntime JSRuntime 
+
+@rendermode InteractiveServer
+
+
+
+<FluentWizard StepperPosition="StepperPosition.Left"
+              StepSequence="WizardStepSequence.Visited"
+              DisplayStepNumber="@(WizardStepStatus.Current | WizardStepStatus.Next)"
+              Border="WizardBorder.Outside"
+              StepTitleHiddenWhen="@GridItemHidden.XsAndDown"
+              Height="300px"
+              OnFinish="@OnFinishedAsync">
+
+    <Steps>
+        <FluentWizardStep Label="Set Dimentions"
+                          OnChange="@OnStepChange">
+            <FluentStack Orientation="Orientation.Vertical">
+                <p>@gameTurrn.Message</p>
+                <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isDicesLock)">Roll Dices</FluentButton>
+
+                <div style="padding:20px;">
+                    @if(dicesResult != null)
+                    {
+                        <Dices face="@dicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
+                        <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+                    }
+                </div>
+            </FluentStack>
+        </FluentWizardStep>
+        <FluentWizardStep Label="Set Exits"
+                          Summary="Determines the number of exits in the room"
+                          OnChange="@OnStepChange">
+           
+        </FluentWizardStep>
+        <FluentWizardStep Label="Set Definition"
+                          Summary="Identify the best price"
+                          IconPrevious="@(new Icons.Filled.Size24.Star())"
+                          IconCurrent="@(new Icons.Filled.Size24.StarEmphasis())"
+                          IconNext="@(new Icons.Regular.Size24.Star())"
+                          DisplayStepNumber="false"
+                          OnChange="@OnStepChange">
+
+            <FluentSelect Items="@(Enumerable.Range(10, 80).Select(i => i.ToString()))"
+                          Style="min-width: 70px;"
+                          Height="300px" />
+        </FluentWizardStep>
+        <FluentWizardStep Label="Summary"
+                          OnChange="@OnStepChange">
+            
+        </FluentWizardStep>
+    </Steps>
+</FluentWizard>
+
+@code {
+
+    [Parameter]
+    public required Room Content { get; set; }
+
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; }
+
+    private GameTurn gameTurrn = new GameTurn();
+
+    private ActionType currentAction = ActionType.RollForARoom;
+    private DiceResult? dicesResult = null;
+    private bool isDicesLock = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        gameTurrn.Message = "Roll 2D6 to determine the dimention of the room.";
+        //await MapTools.RefreshCanvas(JSRuntime);
+    }
+
+    void OnStepChange(FluentWizardStepChangeEventArgs e)
+    {
+        Console.WriteLine($"Go to step {e.TargetLabel} (#{e.TargetIndex})");
+        switch(e.TargetIndex){
+            case 0:
+                
+                break;
+        }
+    }
+
+    async Task OnFinishedAsync()
+    {
+        Console.WriteLine("Wizard completed");
+    }
+
+    private async Task RollDices()
+    {
+        dicesResult = DiceResult.Roll2Dices();
+        isDicesLock = true;
+        gameTurrn.ContinueTurn(dicesResult);
+    }
+}
