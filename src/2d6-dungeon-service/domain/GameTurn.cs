@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 
 namespace c5m._2d6Dungeon;
@@ -11,13 +12,17 @@ public class GameTurn
     public DiceResult? LastDiceResult { get; set; }
     public string? Message { get; set; }
 
-    // private ID6Service D6Service;
+    public D6Service? d6Service;
 
-    // public GameTurn(ID6Service d6Service){
-    //     D6Service = d6Service;
+    // public GameTurn(D6Service service){
+    //     this.d6Service = service;
     // }
 
-    public GameTurn ContinueTurn(DiceResult dResult)
+    public GameTurn(){
+
+    }
+
+    public async Task<GameTurn> ContinueTurn(DiceResult dResult)
     {
         switch(NextAction){
             case(ActionType.StartDungeonLevel): StartDungeonLevel(dResult);
@@ -28,7 +33,7 @@ public class GameTurn
                 break;
             case(ActionType.RollForExits): RollForExits(dResult);
                 break;
-            case(ActionType.RollRoomDefinition): RollRoomDefinition(dResult);
+            case(ActionType.RollRoomDefinition): await RollRoomDefinition(dResult);
                 break;
         };
         return this;
@@ -120,12 +125,12 @@ public class GameTurn
         if(CurrentRoom.IsCorridor)
         {
             NextAction = ActionType.EndOfTurn;
-            Message = $"You found a corridor with {CurrentRoom.Exits} exits";
+            Message = $"You found a corridor with {CurrentRoom.ExitsCount} other exits";
         }
         else
         {
             NextAction = ActionType.Encounter;
-            Message = $"There {CurrentRoom.Exits} exits in this room.";
+            Message = $"There {CurrentRoom.ExitsCount} other exits in this room.";
         }
 
         
@@ -139,7 +144,7 @@ public class GameTurn
         };
     }
 
-    private void RollRoomDefinition(DiceResult dResult){
+    private async Task RollRoomDefinition(DiceResult dResult){
         LastDiceResult = dResult;
         int area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
         int roll = 0;
@@ -170,10 +175,11 @@ public class GameTurn
                 roomSize = "regular";
                 break;
         }
-        // room = await D6Service.RollRoom(roll, roomSize);
+        room = await d6Service!.RollRoom(roll, roomSize);
         // //TODO: Is Room Unique?
-        // CurrentRoom.Description = room.description;
-        NextAction = ActionType.RollForExits;
+        CurrentRoom!.Description = room.description;
+        //NextAction = ActionType.RollForExits;
+        Message = $"Go to the sumary to see all the details of the room.";
     }
 
 }

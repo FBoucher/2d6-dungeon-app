@@ -1,6 +1,6 @@
 @page "/play/{adventureId:int}"
 @using c5m._2d6Dungeon.web.Domain;
-@inject D6Service D6Service;
+@inject D6Service d6Service;
 @inject IJSRuntime JSRuntime;
 @inject IDialogService DialogService;
 
@@ -85,14 +85,18 @@
     FluentTab? changedto;
 
     private string gameTurnInstructions = String.Empty;
-    private GameTurn gameTurn = new GameTurn();
+    private GameTurn? gameTurn;
 
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            currentAdventure = await D6Service.GetAdventure(adventureId);
+            //gameTurn = new GameTurn(d6Service);
+            gameTurn = new GameTurn();
+            gameTurn.d6Service = d6Service;
+
+            currentAdventure = await d6Service.GetAdventure(adventureId);
             currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
             currentRoom = currentAdventure.Dungeon.MappedRooms.Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
             gameTurnInstructions = "Press Roll Dices to roll the dimentions and pick a door to enter the next room.";
