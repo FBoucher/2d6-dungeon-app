@@ -1,4 +1,4 @@
-﻿@implements IDialogContentComponent<Room>
+﻿@implements IDialogContentComponent<MappedRoom>
 @inject IJSRuntime JSRuntime 
 @inject D6Service d6Service;
 
@@ -84,7 +84,7 @@
 @code {
 
     [Parameter]
-    public required Room Content { get; set; }
+    public required MappedRoom Content { get; set; }
 
     [CascadingParameter]
     public FluentDialog? Dialog { get; set; }
@@ -128,7 +128,8 @@
 
     private async Task OnFinishedAsync()
     {
-        
+        Content = gameTurn.CurrentRoom!;
+        await Dialog.CloseAsync(Content);
     }
 
     private async Task RollDicesForRoomDimensions()
@@ -152,10 +153,11 @@
         gameTurn.NextAction = ActionType.RollRoomDefinition;
         await gameTurn.ContinueTurn(DescriptionDicesResult);
         isDescriptionSet = true;
-        
+    }
 
-        //Need to have some logic convert room into map room
-
+    private async Task CloseAsync()
+    {
+        await OnFinishedAsync();
     }
 
 }

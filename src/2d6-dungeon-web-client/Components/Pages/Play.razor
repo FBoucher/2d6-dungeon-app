@@ -167,24 +167,30 @@
                 Title = $"Let's see what room you are getting in!",
                 PrimaryAction = "Save",
                 PrimaryActionEnabled = false,
-                SecondaryAction = "Cancel",
+                SecondaryAction = "Cancel", 
                 Width = "800px",
                 TrapFocus = true,
                 Modal = true
             };
 
-        Room newRoom = new Room();
+        //MappedRoom newRoom = new MappedRoom();
 
-        IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(newRoom, parameters);
+        IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(new MappedRoom(), parameters);
         DialogResult? result = await dialog.Result;
 
         if (result.Data is not null)
         {
-            Room? createdRoom = result.Data as Room;
-            // Check if the same
-            if(newRoom.description == createdRoom!.description)
-                Console.WriteLine("--> Both room are the same.");
+            MappedRoom? createdRoom = result.Data as MappedRoom;
+
+            //Just temporary
+            createdRoom!.CoordX = 20;
+            createdRoom.CoordY = 10;
+
+            currentAdventure!.Dungeon.MappedRooms.Add(createdRoom!);
+            await RefreshCanvas();
         }
+
+
     }
 
     private async Task RenderCanvas()
@@ -202,6 +208,10 @@
         await RenderCanvas();
         foreach (var room in currentAdventure!.Dungeon.MappedRooms)
         {
+            if (room.IsLobby == false)
+            {
+                continue; // help while debugging
+            }
             await MapTools.DrawRoom(JSRuntime, room);
         }
     }
