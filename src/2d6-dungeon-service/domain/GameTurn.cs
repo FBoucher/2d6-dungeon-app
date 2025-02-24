@@ -122,6 +122,8 @@ public class GameTurn
         }
 
 
+
+
         if(CurrentRoom.IsCorridor)
         {
             NextAction = ActionType.EndOfTurn;
@@ -180,6 +182,57 @@ public class GameTurn
         CurrentRoom!.Description = room.description;
         //NextAction = ActionType.RollForExits;
         Message = $"Go to the sumary to see all the details of the room.";
+    }
+
+    public static void SetDungeonEntranceDoor(MappedRoom currentRoom, char entranceWall = 'S')
+    {
+        var mainDoor = new Exit();
+        mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
+        mainDoor.Lockable = false;
+
+        if(currentRoom.Exits == null)
+            currentRoom.Exits = new Dictionary<char,Exit>();
+        currentRoom.Exits.Add(entranceWall, mainDoor);
+    }
+
+    public static void AssignExits(MappedRoom currentRoom, char entrance)
+    {
+        int seed = DateTime.UtcNow.Millisecond;
+        Random rnd = new Random(seed);
+        
+        var walls = new List<char>(){'N', 'E', 'S', 'W'};
+        walls.Remove(entrance);
+        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<char>(currentRoom.ExitsCount);
+
+        if(currentRoom.Exits == null)
+                currentRoom.Exits = new Dictionary<char,Exit>();
+
+        foreach(var wall in wallsWithExits.ToList())
+        {
+            var aDoor = new Exit();
+            int maxPos = 0;
+            //aDoor.onWall = wall;
+            if("EW".Contains(wall)){
+                maxPos =  (currentRoom.Height +1);
+            }
+            else{
+                maxPos =  (currentRoom.Width +1);
+            }
+            aDoor.PositionOnWall = rnd.Next(1, maxPos);
+            aDoor.Lockable = false;
+            currentRoom.Exits.Add(wall, aDoor); 
+        }
+    }
+
+    public static Direction GetOppositeDirection(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.North => Direction.South,
+            Direction.South => Direction.North,
+            Direction.East => Direction.West,
+            Direction.West => Direction.East
+        };
     }
 
 }

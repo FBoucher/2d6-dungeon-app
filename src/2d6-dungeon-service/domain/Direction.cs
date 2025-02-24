@@ -11,9 +11,5 @@ public enum Direction
     [Description("East")]
     East,
     [Description("West")]
-    West,
-    [Description("Up")]
-    Up,
-    [Description("Down")]
-    Down
+    West
 }

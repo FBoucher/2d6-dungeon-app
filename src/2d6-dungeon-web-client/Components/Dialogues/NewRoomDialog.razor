@@ -52,7 +52,8 @@
                           IconCurrent="@(new Icons.Filled.Size24.StarEmphasis())"
                           IconNext="@(new Icons.Regular.Size24.Star())"
                           DisplayStepNumber="false"
-                          OnChange="@OnStepChange">
+                          OnChange="@OnStepChange"
+                          Disabled="@(isCorridor)">
             <FluentStack Orientation="Orientation.Vertical">
                 <p>@(gameTurn!.Message ?? string.Empty)</p>
                 <FluentButton @onclick=RollDicesForDescription Appearance="Appearance.Accent" disabled="@(isDescriptionSet)">Roll Dices</FluentButton>
@@ -84,10 +85,10 @@
 @code {
 
     [Parameter]
-    public required MappedRoom Content { get; set; }
+    public required MappedRoom Content { get; set; } = default!;
 
     [CascadingParameter]
-    public FluentDialog? Dialog { get; set; }
+    public FluentDialog? Dialog { get; set; } = default!;
 
     private GameTurn gameTurn = new GameTurn();
 
@@ -98,11 +99,13 @@
     private bool isSizeSet = false;
     private bool isExitsSet = false;
     private bool isDescriptionSet = false;
+    private bool isCorridor = false;
 
     protected override void OnInitialized()
     {
         gameTurn.d6Service = d6Service;
         gameTurn.Message = "Roll 2D6 to determine the dimention of the room";
+        gameTurn.CurrentRoom = Content;
         
         //await MapTools.RefreshCanvas(JSRuntime);
     }
@@ -137,6 +140,11 @@
         sizeDicesResult = DiceResult.Roll2Dices();
         await gameTurn.ContinueTurn(sizeDicesResult);
         isSizeSet = true;
+        if(gameTurn.CurrentRoom!.IsCorridor)
+        {
+            isDescriptionSet = true;
+            isCorridor = true;
+        }
     }
 
     private async Task RollDicesForExits()
@@ -155,9 +163,9 @@
         isDescriptionSet = true;
     }
 
-    private async Task CloseAsync()
+    private async Task SaveAsync()
     {
-        await OnFinishedAsync();
+        await Dialog.CloseAsync(Content);
     }
 
 }

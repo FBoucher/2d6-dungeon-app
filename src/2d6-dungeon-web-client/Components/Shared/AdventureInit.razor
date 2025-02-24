@@ -68,7 +68,7 @@
         entryRoom!.CoordX = 14;
         entryRoom.CoordY = 20;
 
-        betaAdventure.Dungeon.MappedRooms.Add(entryRoom);
+        betaAdventure.Dungeon.AddRoom(entryRoom);
 
         betaAdventure = await D6Service.AdventureSave(betaAdventure);
         Navigation.NavigateTo($"play/{betaAdventure.Id}");
@@ -94,8 +94,8 @@
         entryRoom.CoordX = 1;
         entryRoom.CoordY = 2;
         
-        SetDungeonEntranceDoor(entryRoom);
-        AssignExits(entryRoom, 'S');
+        GameTurn.SetDungeonEntranceDoor(entryRoom);
+        GameTurn.AssignExits(entryRoom, 'S');
         await MapTools.DrawRoom(JSRuntime, entryRoom);
         
         actionLabel = "Press the Start button to begin your adventure";
@@ -107,7 +107,7 @@
         await JSRuntime.InvokeVoidAsync("onResize");
     }
 
-    protected void SetDungeonEntranceDoor(MappedRoom currentRoom)
+    @* protected void SetDungeonEntranceDoor(MappedRoom currentRoom)
     {
         var mainDoor = new Exit();
         //mainDoor.onWall = 'S';
@@ -117,9 +117,9 @@
         if(currentRoom.Exits == null)
             currentRoom.Exits = new Dictionary<char,Exit>();
         currentRoom.Exits.Add('S', mainDoor);
-    }
+    } *@
 
-    protected void AssignExits(MappedRoom currentRoom, char entrance)
+    @* protected void AssignExits(MappedRoom currentRoom, char entrance)
     {
         int seed = DateTime.UtcNow.Millisecond;
         Random rnd = new Random(seed);
@@ -146,6 +146,6 @@
             aDoor.Lockable = false;
             currentRoom.Exits.Add(wall, aDoor); 
         }
-    }
+    } *@
 
 }
