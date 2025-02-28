@@ -187,6 +187,7 @@ public class GameTurn
     public static void SetDungeonEntranceDoor(MappedRoom currentRoom, char entranceWall = 'S')
     {
         var mainDoor = new Exit();
+        //.mainDoor.Direction = entranceWall
         mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
         mainDoor.Lockable = false;
 

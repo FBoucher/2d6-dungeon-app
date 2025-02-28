@@ -42,8 +42,7 @@
     private void ToggleDialogPrimaryActionButton(char clickedDoor)
     {
         Dialog.TogglePrimaryActionButton(true);
-        var temp = Content.Exits[clickedDoor];
-        Content.SelectedExit = temp;//Content.Exits[clickedDoor];
+        Content.SelectedExit = Content.Exits[clickedDoor];
     }
 
 

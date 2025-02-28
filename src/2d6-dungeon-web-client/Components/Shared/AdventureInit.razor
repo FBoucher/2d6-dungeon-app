@@ -1,6 +1,6 @@
 @using c5m._2d6Dungeon;
 @using c5m._2d6Dungeon.web.Domain;
-@inject IJSRuntime JSRuntime 
+@inject IJSRuntime JSRuntime
 @inject D6Service D6Service;
 @inject NavigationManager Navigation;
 
@@ -11,7 +11,7 @@
 <FluentLabel>To create a new adventure you will need: </FluentLabel>
 
 <FluentStack Orientation="Orientation.Vertical">
-    <FluentCard >
+    <FluentCard>
         <FluentHeader>Select or Create an Adventurer</FluentHeader>
         @if (selectedAdventurer == null)
         {
@@ -20,39 +20,40 @@
         else
         {
             <AdventurerCard @bind-Player="@(selectedAdventurer)"></AdventurerCard>
-        }  
-    </FluentCard> 
+        }
+    </FluentCard>
 
-    <FluentCard >
+    <FluentCard>
         <FluentHeader>Create a new Dungeon</FluentHeader>
         <FluentStack Orientation="Orientation.Vertical">
             <p id="message"></p>
-            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel</FluentButton>
+            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel
+            </FluentButton>
         </FluentStack>
         <div style="padding:20px;">
-            @if(dResult != null)
+            @if (dResult != null)
             {
                 <Dices face="@dResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
                 <Dices face="@dResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
             }
         </div>
-        <canvas id="dotCanvas" style="width: 300px; height: 300px;" ></canvas> 
-    </FluentCard>  
+        <canvas id="dotCanvas" style="width: 300px; height: 300px;"></canvas>
+    </FluentCard>
 </FluentStack>
 
 
 <FluentStack Orientation="Orientation.Horizontal">
-        <FluentButton Appearance="Appearance.Accent" @onclick="StarGame" disabled="@isStartDisable">Start</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" @onclick="StarGame" disabled="@isStartDisable">Start</FluentButton>
 </FluentStack>
 
 @code {
 
-    [Parameter] public Adventure? ParentAdventure {get; set;}
+    [Parameter] public Adventure? ParentAdventure { get; set; }
 
     [Parameter] public EventCallback<Adventure> ParentAdventureChanged { get; set; }
 
     private Adventure? betaAdventure;
-    public Game.Adventurer? selectedAdventurer;    
+    public Game.Adventurer? selectedAdventurer;
     private bool isStartDisable = true;
     //private bool firstRender = true;
     private DiceResult? dResult = null;
@@ -74,11 +75,12 @@
         Navigation.NavigateTo($"play/{betaAdventure.Id}");
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender){
-        if (firstRender) 
-        { 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
             await JSRuntime.InvokeVoidAsync("onResize");
-        } 
+        }
     }
 
 
@@ -93,17 +95,17 @@
         //TODO: hardcoded temporary
         entryRoom.CoordX = 1;
         entryRoom.CoordY = 2;
-        
+
         GameTurn.SetDungeonEntranceDoor(entryRoom);
         GameTurn.AssignExits(entryRoom, 'S');
         await MapTools.DrawRoom(JSRuntime, entryRoom);
-        
+
         actionLabel = "Press the Start button to begin your adventure";
         isStartDisable = false;
     }
 
-    private async Task RenderCanvas() 
-    { 
+    private async Task RenderCanvas()
+    {
         await JSRuntime.InvokeVoidAsync("onResize");
     }
 

@@ -205,6 +205,8 @@
             Char entranceWall = directionFrom.ToString()[0];
             GameTurn.SetDungeonEntranceDoor(nextRoom!, entranceWall);
             GameTurn.AssignExits(nextRoom!, entranceWall);
+            
+            var roomIdTest = nextRoom!.Id;
 
             await MapTools.DrawRoom(JSRuntime, nextRoom);
         }
@@ -247,6 +249,8 @@
     {
         currentAdventure!.Dungeon.AddRoom(nextRoom!);
         currentRoom = nextRoom;
+        await d6Service.AdventureSave(currentAdventure);
+
         nextRoom = new MappedRoom();
         await RefreshCanvas();
     }
