@@ -6,20 +6,20 @@
 @rendermode InteractiveServer
 
 <FluentLabel Typo="Typography.H3">Select the Adventure you would like to continue.</FluentLabel>
-@if (AdventurePreviews == null)
-{
-    <FluentProgressRing>Loading...</FluentProgressRing>
-}
-else
-{
-    <FluentDataGrid Items="@AdventurePreviews" ShowHover="true"  ResizableColumns=true TGridItem="AdventurePreview" OnRowClick="@((args) => SelectAdventure(args.Item!.id))">
+
+<FluentDataGrid Items="@AdventurePreviews" ShowHover="true"  ResizableColumns=true TGridItem="AdventurePreview" OnRowClick="@((args) => SelectAdventure(args.Item!.id))">
+    <ChildContent>
         <PropertyColumn Property="@(a => a.adventurer_name)" Title="Adventurer Name" Sortable="true"/>
         <PropertyColumn Property="@(a => a.level)" Title="Level" Sortable="true"/>
         <PropertyColumn Property="@(a => a.last_saved_datetime)" Title="Saved Date" Sortable="true"/>
-    </FluentDataGrid>
+    </ChildContent>
+    <EmptyContent>
+        <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Accent" />&nbsp; Nothing so far, a Create a new one to get started!
+    </EmptyContent>
+</FluentDataGrid>
 
-    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" OnClick="CreateNewAdventure">Create a new adventure</FluentButton>
-}
+<FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Filled.Size20.Add())" OnClick="CreateNewAdventure">Create a new adventure</FluentButton>
+
 
 @code {
 

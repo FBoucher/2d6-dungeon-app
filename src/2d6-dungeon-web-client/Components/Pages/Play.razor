@@ -1,6 +1,6 @@
 @page "/play/{adventureId:int}"
 @using c5m._2d6Dungeon.web.Domain;
-@inject D6Service D6Service;
+@inject D6Service d6Service;
 @inject IJSRuntime JSRuntime;
 @inject IDialogService DialogService;
 
@@ -19,6 +19,7 @@
                     <FluentIcon Value="@(new Icons.Regular.Size20.ConferenceRoom())" Color="@Color.Neutral"
                         Slot="start" />
                     <FluentLabel Typo="Typography.H4">Room:</FluentLabel> @currentRoom!.Description
+                    <FluentLabel Typo="Typography.Body">@gameTurnInstructions</FluentLabel> 
                 </FluentAccordionItem>
             </FluentAccordion>
 
@@ -29,20 +30,32 @@
             </FluentStack>
 
             <div style="padding:20px;">
-                @if (primaryDice != 0)
+                @if (diceResult.PrimaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@primaryDice" />
+                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@diceResult.PrimaryDice" />
 
                 }
-                @if (secondaryDice != 0)
+                @if (diceResult.SecondaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@secondaryDice" />
+                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@diceResult.SecondaryDice" />
                 }
             </div>
 
             <canvas id="dotCanvas" style="width: 800px; height: 800px;"></canvas>
 
             <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
+            <div style="width: 100px;">
+                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentButton @onclick="@( () => MoveRoom("LEFT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowLeft())" />
+                    <FluentStack Orientation="Orientation.Vertical">
+                        <FluentButton @onclick="@( () => MoveRoom("UP"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowUp())" />
+                        <FluentButton @onclick="@( () => MoveRoom("DOWN"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowDown())" />
+                    </FluentStack>
+                    <FluentButton @onclick="@( () => MoveRoom("RIGHT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowRight())" />
+                </FluentStack> 
+            </div>
+                   
+            <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
         </FluentStack>
 
     </FluentTab>
@@ -74,21 +87,29 @@
     public int adventureId { get; set; }
     private Adventure? currentAdventure;
     MappedRoom? currentRoom = new MappedRoom();
+    MappedRoom? nextRoom = new MappedRoom();
+    DiceResult diceResult = new DiceResult();
 
-    int primaryDice = 0;
-    int secondaryDice = 0;
-    bool isRollDicesDisable = true;
+    bool isRollDicesDisable = false;
     string? activeid = "tab-map";
     FluentTab? changedto;
+
+    private string gameTurnInstructions = String.Empty;
+    private GameTurn? gameTurn;
 
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            currentAdventure = await D6Service.GetAdventure(adventureId);
+            //gameTurn = new GameTurn(d6Service);
+            gameTurn = new GameTurn();
+            gameTurn.d6Service = d6Service;
+
+            currentAdventure = await d6Service.GetAdventure(adventureId);
             currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
-            currentRoom = currentAdventure.Dungeon.MappedRooms.Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
+            currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
+            gameTurnInstructions = "Press Roll Dices to roll the dimentions and pick a door to enter the next room.";
             await FillCanvas();
         }
         catch (Exception ex)
@@ -113,32 +134,19 @@
 
     private void RollDices()
     {
-        @* await MapTools.RefreshCanvas(JSRuntime);
-var dResult = DiceResult.Roll2Dices();
-
-entryRoom = Dungeon.StartDungeonLevel(ref dResult);
-
-// Update the UI
-primaryDice = dResult.PrimaryDice;
-secondaryDice = dResult.SecondaryDice;
-
-//TODO: hardcoded temporary
-entryRoom.CoordX = 1;
-entryRoom.CoordY = 2;
-
-SetDungeonEntranceDoor(entryRoom);
-AssignExits(entryRoom, "S");
-await DrawRoom(entryRoom, true);
-
-actionLabel = "Press the Start button to begin your adventure";
-isStartDisable = false; *@
+        var dResult = DiceResult.Roll2Dices();
     }
 
     private async Task PickADoor()
     {
-        await OpenDialogAsync();
+        Direction? directionTo = await OpenSelectDoorDialogDialogAsync();
+        if(directionTo is not null){
+            Direction directionFrom = GameTurn.GetOppositeDirection(directionTo.Value);
+            await OpenNewRoomDialog(directionFrom);
+        }
+            
     }
-    private async Task OpenDialogAsync()
+    private async Task<Direction?> OpenSelectDoorDialogDialogAsync()
     {
         DialogParameters parameters = new()
             {
@@ -152,20 +160,56 @@ isStartDisable = false; *@
                 PreventScroll = true
             };
 
-        DoorSelections dSelect = new DoorSelections(currentRoom.Exits!);
+        var possibleExits = new DoorSelections(currentRoom.Exits!);
 
-        IDialogReference dialog = await DialogService.ShowDialogAsync<SelectDoorDialog>(dSelect, parameters);
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<SelectDoorDialog>(possibleExits, parameters);
         DialogResult? result = await dialog.Result;
 
-
-        if (result.Data is not null)
+        if (!result.Cancelled && result.Data != null)
         {
-            DoorSelections? doorSelection = result.Data as DoorSelections;
+            DoorSelections dSelect = (DoorSelections)result.Data;
+            Direction goingTo = dSelect.SelectedExit!.Direction;
+            return goingTo;
         }
-        @* else
+        else
+            return null;            
+    }
+
+    private async Task OpenNewRoomDialog(Direction directionFrom)
+    {
+        DialogParameters parameters = new()
+            {
+                Title = $"Let's see what room you are getting in!",
+                PrimaryAction = "Save",
+                PrimaryActionEnabled = false,
+                SecondaryAction = "Cancel", 
+                Width = "800px",
+                TrapFocus = true,
+                Modal = true
+            };
+
+        nextRoom.IsLobby = false; 
+
+        IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(nextRoom, parameters);
+        DialogResult? result = await dialog.Result;
+
+        if (!result.Cancelled)
         {
-            var test = "test";
-        } *@
+            nextRoom = result.Data as MappedRoom;
+
+            //Just temporary
+            nextRoom!.CoordX = 20;
+            nextRoom.CoordY = 10;
+
+            Char entranceWall = directionFrom.ToString()[0];
+            GameTurn.SetDungeonEntranceDoor(nextRoom!, entranceWall);
+            GameTurn.AssignExits(nextRoom!, entranceWall);
+            
+            var roomIdTest = nextRoom!.Id;
+
+            await MapTools.DrawRoom(JSRuntime, nextRoom);
+        }
     }
 
     private async Task RenderCanvas()
@@ -178,10 +222,48 @@ isStartDisable = false; *@
         await FillCanvas();
     }
 
+    private async Task MoveRoom(string direction)
+    {
+        switch (direction)
+        {
+            case "UP":
+                nextRoom!.CoordY -= 1;
+                break;
+            case "DOWN":
+                nextRoom!.CoordY += 1;
+                break;
+            case "LEFT":
+                nextRoom!.CoordX -= 1;
+                break;
+            case "RIGHT":
+                nextRoom!.CoordX += 1;
+                break;
+        }
+
+        await RefreshCanvas();
+        await MapTools.DrawRoom(JSRuntime, nextRoom!);
+    }
+
+
+    private async Task AddRoomToDungeon()
+    {
+        currentAdventure!.Dungeon.AddRoom(nextRoom!);
+        currentRoom = nextRoom;
+        await d6Service.AdventureSave(currentAdventure);
+
+        nextRoom = new MappedRoom();
+        await RefreshCanvas();
+    }
+
     private async Task FillCanvas()
     {
         await RenderCanvas();
-        foreach (var room in currentAdventure!.Dungeon.MappedRooms)
+        var rooms = currentAdventure!.Dungeon.GetRooms();
+        int roomCount = rooms.Count;
+
+        Console.WriteLine($"There are {roomCount} rooms in the dungeon");
+
+        foreach (var room in rooms)
         {
             await MapTools.DrawRoom(JSRuntime, room);
         }
