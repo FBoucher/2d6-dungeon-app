@@ -39,11 +39,27 @@ VALUES(2, 2, 'Blood suddenly spurts from the body. Gain the bloodied status. The
 -- rooms Level 1
 -- small
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (2,1,'Empty space', 'small','There is nothing in this small space', 'Archways',false);
+VALUES (2, 1, 'EMPTY SPACE', 'small', 'There is nothing in this small space.', 'Archways', false);
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (3,1,'Strange Text', 'small','This narrow room connects the corridors and has no furniture. On the wall though...', 'Archways',false);
+VALUES (3, 1, 'STRANGE TEXT', 'small', 'This narrow room connects the corridors and has no furniture. On the wall though is some illegible text.', 'Archways', false);
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (4,1,'Grakada Mural', 'small','There is a large mural of Grakada here. Her old faces smiles. If you call for her favour here -2 to roll. There is no space to make offering.', 'Archways',true);
+VALUES (4, 1, 'GRAKADA HOLY PLACE', 'small', 'There is a large mural of Grakada here. Her old face smiles at you. If you call for her favour here -2 to the roll. There is no space to make offerings.', 'Archways', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (5, 1, 'INTUNERIC ALTAR', 'small', 'There is a large mosaic of Intuneric here, a swirling black visage. If you call for his favour here -2 to the roll. There is no space to make offerings.', 'Archways', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (6, 1, 'MADUVA SANCTUARY', 'small', 'There is a rough statue of Maduva here. Its form is twisted sinew. If you call for its favour here -2 to the roll. There is no space to make offerings.', 'Archways', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (7, 1, 'MURATAYNIE FONT', 'small', 'There is a grisly effigy of Murataynie here. It smells of rotting flesh. If you call for its favour here -2 to the roll. There is no space to make offerings.', 'Archways', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (8, 1, 'NEVAZATOR SHRINE', 'small', 'There is a rope doll of Nevazator hanging here, limp and symbolic. If you call for his favour here -2 to the roll. There is no space to make offerings.', 'Archways', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (9, 1, 'RADACINA RELIQUARY', 'small', 'There is a beautiful tapestry of Radacina here, high out of reach. If you call for her favour here -2 to the roll. There is no space to make offerings.', 'Archways', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (10,	1, 'HEATED SPACE', 'small', 'There is a small burner here, that is lit. The space is warm, flickering shadows cast across the space. If you dry yourself roll on L1P. There is nothing else in the room.','Archways', false);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (11,	1, 'MUSHROOM FARM', 'small', 'In the wall is a small shrine at which you can make an offering, as it has a ledge to place items. It is dedicated to a god, roll on GOT1. Gain 1 FP if applied correctly.', 'Archways', false);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (12,	1, 'WALL BANNER', 'small', 'On the wall are two crossed spears and a shield. You take a closer look and see they are for display only and useless. There are some cord and metal strips though.', 'Archways', false);
 
 
 -- regular
@@ -59,13 +75,28 @@ VALUES (14,1,'mason''s workshop', 'regular','Large blocks of stone scatter the s
 
 -- large
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (2,1,'Stone workshop', 'large','This large space has rough walls and piles of stone laying everywhere. There are the remains of a large stone statue that has been smashed. There is no one here.', 'Wooden doors',false);
+VALUES (2, 1, 'STONE WORKSHOP', 'large', 'This large space has rough walls and piles of stone laying everywhere. There are the remains of a large stone statue that has been smashed. There is no one here.', 'WOODEN DOORS', false);
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (3,1,'marble hall', 'large','There are evently spaced pillars running along this large marble lined hall, with a round central burner and a metal grill. If you have some wood, you could start a fire.', 'Archways',true);
+VALUES (3, 1, 'MARBLE HALL', 'large', 'There are evenly spaced pillars running along this large marble lined hall, with a round central burner and a metal grill. If you have some wood, you could start a fire.', 'ARCHWAYS', true);
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (4,1,'old mess hall', 'large','This room was once a mess hall. Some benches and tables are punched to the side. Other chairs are stacked around the edges of the room. Rool on IAUT1.', 'Wooden doors',true);
+VALUES (4, 1, 'OLD MESS HALL', 'large', 'This room was once a mess hall. Some benches and tables are pushed to one side. Other chairs are stacked around the edges of the room. Roll on IAUT1.', 'WOODEN DOORS', true);
 INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
-VALUES (5,1,'penitentiary', 'large','THe northeast corner is being used to hold captives. There are whips and knives on table. The floor is covered in bloodied straw. Fight a JAILOR and then roll on ENP1.', 'reinforced doors',true);
+VALUES (5, 1, 'PENITENTIARY', 'large', 'The northeast corner is being used to hold captives. There are whips and knives on table. The floor is covered in bloodied straw. Fight a JAILOR and then roll on ENP1.', 'REINFORCED DOORS', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (6, 1, 'FOUNTAIN ROOM', 'large', 'In the centre is an ornate fountain bubbling with clear water. It is dedicated to a god and carved in their form. Roll on GOT1. You can make an offering for 1 FP.', 'ARCHWAYS', false);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (7, 1, 'TEMPLE', 'large', 'Dark murals line the walls. Empty pews form two lines, chandeliers loaded with lit candles hang above. Behind a pulpit stands a figure who attacks. Roll on L1R -1.', 'ARCHWAYS', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (8, 1, 'SPARRING CHAMBER', 'large', 'This is a training room, where there is a circle of sand in which a WARRIOR and a SCOUT are sparring. They turn and attack. If you survive roll on BT1 +2.', 'WOODEN DOORS', false);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (9, 1, 'CRATE STORE', 'large', 'This space is used for storage and crates scatter the space, creating hidden spaces. There is a noise so roll on L1CE, then on MIT2, CT1 -2 and BT2 -1.', 'ARCHWAYS', false);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (10,	1, 'SLATE SHRINE', 'large', 'A large slate monolith stands in the centre. Hanging from it is a gold amulet worth 2D6 GC and it has 4 slots. If you have 4 gems you may roll on GCT1.', 'ARCHWAYS', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (11,	1, 'DORMITORY', 'large', 'Lining the walls are bunks and you count enough for twelve men, but most are empty. But, two are occupied. Roll on L1W -1 and L1WO -1. They attack. After, roll on CT2.', 'WOODEN DOORS', true);
+INSERT INTO db2d6.rooms(roll, level, room_type, size, description, exits, is_unique)
+VALUES (12,	1, 'LIBRARY', 'large', 'Lined with bookshelves, this huge library is protected by two GUARDS. There are also tables covered in scrolls. If you survive roll on SCT1 and SCT2.', 'WOODEN DOORS', true);
+
 
 
 -- demo adventurers
