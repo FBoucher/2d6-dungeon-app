@@ -159,21 +159,15 @@ public class GameTurn
 
         switch(area){
             case(<6): 
-                //roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
-                values = new[] { 2, 3, 4};
-                roll = values[r.Next(values.Length)];
+                roll = int.Parse($"{LastDiceResult.PrimaryDice}{LastDiceResult.SecondaryDice}");
                 roomSize = "small";
                 break;
             case >32 : 
-                //roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
-                values = new[] { 2, 3, 4};
-                roll = values[r.Next(values.Length)];
+                roll = int.Parse($"{LastDiceResult.PrimaryDice}{LastDiceResult.SecondaryDice}");
                 roomSize = "large";
                 break;
             default: 
-                //roll = int.Parse(string.Concat(LastDiceResult.PrimaryDice.ToString(),  LastDiceResult.SecondaryDice.ToString()));
-                values = new[] { 11, 12, 13};
-                roll = values[r.Next(values.Length)];
+                roll = int.Parse(string.Concat(LastDiceResult.PrimaryDice.ToString(),  LastDiceResult.SecondaryDice.ToString()));
                 roomSize = "regular";
                 break;
         }
