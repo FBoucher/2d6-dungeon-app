@@ -189,7 +189,7 @@
                 Modal = true
             };
 
-        nextRoom.IsLobby = false; 
+        nextRoom!.IsLobby = false; 
 
         IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(nextRoom, parameters);
         DialogResult? result = await dialog.Result;
@@ -248,8 +248,12 @@
     private async Task AddRoomToDungeon()
     {
         currentAdventure!.Dungeon.AddRoom(nextRoom!);
+        currentAdventure!.Dungeon.ChangeRoom(currentRoom!, nextRoom!);
         currentRoom = nextRoom;
+
         await d6Service.AdventureSave(currentAdventure);
+
+        
 
         nextRoom = new MappedRoom();
         await RefreshCanvas();

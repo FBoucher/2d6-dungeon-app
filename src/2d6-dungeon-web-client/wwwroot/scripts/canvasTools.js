@@ -48,7 +48,12 @@ function drawDots() {
   }
 }
 
-function DrawRoom(posX, posY, width, height){
+function DrawRoom(posX, posY, width, height, youAreHere=false){
+
+  let roomColor = '#ffffff';
+  if(youAreHere == true){
+    roomColor = '#F7EDD5'; 
+  }
 
   posX = posX * cubeSize;
   posY = posY * cubeSize;
@@ -58,7 +63,7 @@ function DrawRoom(posX, posY, width, height){
   context.fillStyle = '#000000'; 
   context.fillRect(posX, posY, width, height);
   context.stroke();
-  context.fillStyle = '#ffffff';
+  context.fillStyle = roomColor;
   context.fillRect(posX+1, posY+1, width-2, height-2);
   context.stroke();
 }

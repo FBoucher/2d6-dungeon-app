@@ -69,6 +69,8 @@
         entryRoom!.CoordX = 14;
         entryRoom.CoordY = 20;
 
+        entryRoom.YouAreHere = true;
+
         betaAdventure.Dungeon.AddRoom(entryRoom);
 
         betaAdventure = await D6Service.AdventureSave(betaAdventure);
