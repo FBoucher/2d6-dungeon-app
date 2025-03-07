@@ -33,7 +33,9 @@ public class GameTurn
                 break;
             case(ActionType.RollForExits): RollForExits(dResult);
                 break;
-            case(ActionType.RollRoomDefinition): await RollRoomDefinition(dResult);
+            case(ActionType.RollRoomDefinition): 
+                int area = CurrentRoom!.Width * CurrentRoom.Height;
+                await RollRoomDefinition(area, dResult);
                 break;
         };
         return this;
@@ -66,6 +68,7 @@ public class GameTurn
             if (LastDiceResult.IsDoubleSix)
             {
                 CurrentRoom = DraftCurrentRoom(LastDiceResult);
+                
                 NextAction = ActionType.DrawRoom;
                 Message = $"You found a square room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
             }
@@ -146,24 +149,19 @@ public class GameTurn
         };
     }
 
-    private async Task RollRoomDefinition(DiceResult dResult){
+    private async Task RollRoomDefinition(int area, DiceResult dResult){
         LastDiceResult = dResult;
-        int area = LastDiceResult.PrimaryDice * LastDiceResult.SecondaryDice;
         int roll = 0;
         string roomSize;
-        Room room;
-
-        //temporary until more data
-        Random r = new Random();
-        int[]? values;
+        Room room; 
 
         switch(area){
             case(<6): 
-                roll = int.Parse($"{LastDiceResult.PrimaryDice}{LastDiceResult.SecondaryDice}");
+                roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
                 roomSize = "small";
                 break;
             case >32 : 
-                roll = int.Parse($"{LastDiceResult.PrimaryDice}{LastDiceResult.SecondaryDice}");
+                roll = LastDiceResult.PrimaryDice + LastDiceResult.SecondaryDice;
                 roomSize = "large";
                 break;
             default: 

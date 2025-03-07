@@ -75,4 +75,12 @@ public class Dungeon
         entryRoom.Description = "This is the entrance of the dungeon. The room is empty.";
         return entryRoom;
     }
+
+
+    public void ChangeRoom(MappedRoom roomFrom, MappedRoom roomTo)
+    {
+        MappedRooms.First(r => r.Id == roomFrom.Id).YouAreHere = false;
+        MappedRooms.First(r => r.Id == roomTo.Id).YouAreHere = true;
+    }
+
 }
