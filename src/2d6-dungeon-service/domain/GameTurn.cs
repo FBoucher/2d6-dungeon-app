@@ -75,7 +75,7 @@ public class GameTurn
             else
             {
                 NextAction = ActionType.DoubleSizedRoom;
-                Message = "Wow! It's a double size room. Roll 2D6.";
+                Message = "Wow! It's a double size room. Roll 2D6 again!";
             }
         }
         else
