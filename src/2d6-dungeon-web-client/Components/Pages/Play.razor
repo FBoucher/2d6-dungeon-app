@@ -202,9 +202,9 @@
             nextRoom!.CoordX = 20;
             nextRoom.CoordY = 10;
 
-            Char entranceWall = directionFrom.ToString()[0];
-            GameTurn.SetDungeonEntranceDoor(nextRoom!, entranceWall);
-            GameTurn.AssignExits(nextRoom!, entranceWall);
+            @* Char entranceWall = directionFrom.ToString()[0]; *@
+            GameTurn.SetDungeonEntranceDoor(nextRoom!, directionFrom);
+            GameTurn.AssignExits(nextRoom!, directionFrom);
             
             var roomIdTest = nextRoom!.Id;
 

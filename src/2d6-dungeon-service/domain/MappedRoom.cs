@@ -5,7 +5,7 @@ public class MappedRoom
     public int Id { get; set; }
     public bool IsCorridor { get; set; }
     public int ExitsCount { get; set; }
-    public Dictionary<char,Exit>? Exits { get; set; }
+    public Dictionary<Direction,Exit>? Exits { get; set; }
     public int CoordX { get; set; }
     public int CoordY { get; set; }
     public int Width { get; set; }

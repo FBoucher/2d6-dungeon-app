@@ -99,7 +99,7 @@
         entryRoom.CoordY = 2;
 
         GameTurn.SetDungeonEntranceDoor(entryRoom);
-        GameTurn.AssignExits(entryRoom, 'S');
+        GameTurn.AssignExits(entryRoom, Direction.South);
         await MapTools.DrawRoom(JSRuntime, entryRoom);
 
         actionLabel = "Press the Start button to begin your adventure";
