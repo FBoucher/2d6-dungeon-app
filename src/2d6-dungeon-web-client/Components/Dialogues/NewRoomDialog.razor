@@ -132,7 +132,7 @@
     private async Task OnFinishedAsync()
     {
         Content = gameTurn.CurrentRoom!;
-        await Dialog.CloseAsync(Content);
+        await Dialog!.CloseAsync(Content);
     }
 
     private async Task RollDicesForRoomDimensions()
@@ -169,7 +169,7 @@
 
     private async Task SaveAsync()
     {
-        await Dialog.CloseAsync(Content);
+        await Dialog!.CloseAsync(Content);
     }
 
 }

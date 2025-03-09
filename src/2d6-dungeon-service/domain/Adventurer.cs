@@ -142,6 +142,6 @@ public class Adventurer
     {
         var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
         string jsonPlayer = System.Text.Encoding.UTF8.GetString(base64EncodedBytes)!;
-        return JsonSerializer.Deserialize<Adventurer>(jsonPlayer);
+        return JsonSerializer.Deserialize<Adventurer>(jsonPlayer)!;
     }
 }

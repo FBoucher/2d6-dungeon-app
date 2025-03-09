@@ -8,13 +8,13 @@
 {
     <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center">
         <span>Which door do you want to open?</span>
-        <FluentButton Disabled=@(!isDoorN) OnClick="@(() => ToggleDialogPrimaryActionButton('N'))" IconStart="@iconDoorN">Door to the North</FluentButton>
+        <FluentButton Disabled=@(!isDoorN) OnClick="@(() => ToggleDialogPrimaryActionButton(Direction.North))" IconStart="@iconDoorN">Door to the North</FluentButton>
         <FluentStack Orientation="Orientation.Horizontal"  HorizontalAlignment="HorizontalAlignment.Center">
-            <FluentButton Disabled=@(!isDoorW) OnClick="@(() => ToggleDialogPrimaryActionButton('W'))" IconStart="@iconDoorW">Door to the West</FluentButton>
+            <FluentButton Disabled=@(!isDoorW) OnClick="@(() => ToggleDialogPrimaryActionButton(Direction.West))" IconStart="@iconDoorW">Door to the West</FluentButton>
             <FluentIcon Value="@(new Icons.Regular.Size32.Globe())" />
-            <FluentButton Disabled=@(!isDoorE) OnClick="@(() => ToggleDialogPrimaryActionButton('E'))" IconStart="@iconDoorE">Door to the East</FluentButton>
+            <FluentButton Disabled=@(!isDoorE) OnClick="@(() => ToggleDialogPrimaryActionButton(Direction.East))" IconStart="@iconDoorE">Door to the East</FluentButton>
         </FluentStack>
-        <FluentButton Disabled=@(!isDoorS) OnClick="@(() => ToggleDialogPrimaryActionButton('S'))" IconStart="@iconDoorS">Door to the South</FluentButton>
+        <FluentButton Disabled=@(!isDoorS) OnClick="@(() => ToggleDialogPrimaryActionButton(Direction.South))" IconStart="@iconDoorS">Door to the South</FluentButton>
     </FluentStack>
 }
 
@@ -39,7 +39,7 @@
     Icon doorIcon = new Icons.Regular.Size20.Door();
     Icon doorLockedIcon = new Icons.Regular.Size20.CalendarLock();
 
-    private void ToggleDialogPrimaryActionButton(char clickedDoor)
+    private void ToggleDialogPrimaryActionButton(Direction clickedDoor)
     {
         Dialog.TogglePrimaryActionButton(true);
         Content.SelectedExit = Content.Exits[clickedDoor];
@@ -49,19 +49,19 @@
     protected override void OnInitialized(){
         foreach(var door in Content.Exits){
             switch(door.Key){
-                case('N'): 
+                case(Direction.North): 
                     isDoorN = true;
                     iconDoorN = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
                     break;
-                case('E'): 
+                case(Direction.East): 
                     isDoorE = true;
                     iconDoorE = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
                     break;
-                case('S'): 
+                case(Direction.South): 
                     isDoorS = true;
                     iconDoorS = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
                     break;
-                case('W'): 
+                case(Direction.West): 
                     isDoorW = true;
                     iconDoorW = (door.Value.IsLocked) ? doorLockedIcon: doorIcon;
                     break;

@@ -2,11 +2,11 @@
 
 public class DoorSelections
 {
-    public Dictionary<char, Exit> Exits { get; set; }
+    public Dictionary<Direction, Exit> Exits { get; set; }
 
     public Exit? SelectedExit { get; set; } = null;
 
-    public DoorSelections(Dictionary<char, Exit> exits){
+    public DoorSelections(Dictionary<Direction, Exit> exits){
         Exits = exits;
     }
 
