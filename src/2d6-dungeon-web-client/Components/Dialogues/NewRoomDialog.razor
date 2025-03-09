@@ -138,13 +138,19 @@
     private async Task RollDicesForRoomDimensions()
     {
         sizeDicesResult = DiceResult.Roll2Dices();
+        sizeDicesResult.PrimaryDice = 3;
+        sizeDicesResult.SecondaryDice = 3;
         await gameTurn.ContinueTurn(sizeDicesResult);
-        isSizeSet = true;
-        if(gameTurn.CurrentRoom!.IsCorridor)
+        if(gameTurn.NextAction != ActionType.DoubleSizedRoom)
         {
-            isDescriptionSet = true;
-            isCorridor = true;
+            isSizeSet = true;
+            if(gameTurn.CurrentRoom!.IsCorridor)
+            {
+                isDescriptionSet = true;
+                isCorridor = true;
+            }
         }
+        
     }
 
     private async Task RollDicesForExits()
