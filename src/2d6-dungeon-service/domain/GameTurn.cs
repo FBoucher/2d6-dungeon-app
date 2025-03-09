@@ -54,7 +54,7 @@ public class GameTurn
             LastDiceResult.PrimaryDice =  3;
             LastDiceResult.SecondaryDice = 2; 
         }
-        CurrentRoom = DraftCurrentRoom(LastDiceResult);
+        DraftCurrentRoom(LastDiceResult);
         CurrentRoom.ExitsCount = 3;
         NextAction = ActionType.DungeonStarted;
         Message = "You are in the dungeon entrance";
@@ -67,7 +67,7 @@ public class GameTurn
         {
             if (LastDiceResult.IsDoubleSix)
             {
-                CurrentRoom = DraftCurrentRoom(LastDiceResult);
+                DraftCurrentRoom(LastDiceResult);
                 
                 NextAction = ActionType.DrawRoom;
                 Message = $"You found a square room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
@@ -82,13 +82,13 @@ public class GameTurn
         {
             if (LastDiceResult.IsOneDiceOne)
             {
-                CurrentRoom = DraftCurrentRoom(LastDiceResult);
+                DraftCurrentRoom(LastDiceResult);
                 NextAction = ActionType.RollForExits;
                 Message = "You found a corridor. Roll to know how many exists.";
             }
             else
             {
-                CurrentRoom = DraftCurrentRoom(LastDiceResult);
+                DraftCurrentRoom(LastDiceResult);
                 NextAction = ActionType.DrawRoom;
                 Message = $"You found a room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
             }
@@ -102,7 +102,7 @@ public class GameTurn
         }
         LastDiceResult.PrimaryDice += dResult.PrimaryDice;
         LastDiceResult.SecondaryDice += dResult.SecondaryDice;
-        CurrentRoom = DraftCurrentRoom(LastDiceResult);
+        DraftCurrentRoom(LastDiceResult);
         NextAction = ActionType.DrawRoom;
         Message = $"You found this big room of {LastDiceResult.PrimaryDice} by {LastDiceResult.SecondaryDice}";
     }
@@ -141,12 +141,10 @@ public class GameTurn
         
     }
 
-    private MappedRoom DraftCurrentRoom(DiceResult dResult){
-        return new MappedRoom{
-            Width = dResult.PrimaryDice,
-            Height = dResult.SecondaryDice,
-            IsCorridor = dResult.IsOneDiceOne
-        };
+    private void DraftCurrentRoom(DiceResult dResult){
+        CurrentRoom.Width = dResult.PrimaryDice;
+        CurrentRoom.Height = dResult.SecondaryDice;
+        CurrentRoom.IsCorridor = dResult.IsOneDiceOne;
     }
 
     private async Task RollRoomDefinition(int area, DiceResult dResult){
@@ -176,10 +174,11 @@ public class GameTurn
         Message = $"Go to the sumary to see all the details of the room.";
     }
 
-    public static void SetDungeonEntranceDoor(MappedRoom currentRoom, Direction entranceWall = Direction.South)
+    public static void SetDungeonEntranceDoor(MappedRoom currentRoom, Direction entranceWall = Direction.South, int fromRoomId = 0)
     {
         var mainDoor = new Exit();
-        //.mainDoor.Direction = entranceWall
+        mainDoor.Direction = entranceWall;
+        mainDoor.TargetRoomId = fromRoomId;
         mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
         mainDoor.Lockable = false;
 
@@ -213,6 +212,7 @@ public class GameTurn
             {
                 maxPos =  (currentRoom.Width +1);
             }
+            aDoor.Direction = wall;
             aDoor.PositionOnWall = rnd.Next(1, maxPos);
             aDoor.Lockable = false;
             currentRoom.Exits.Add(wall, aDoor); 
