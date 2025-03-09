@@ -31,6 +31,13 @@ public class Dungeon
         set => _mappedRooms = value;
     }
 
+    public MappedRoom GetNewRoom()
+    {
+        var room = new MappedRoom();
+        room.Id = MappedRooms.Count + 1;
+        room.IsLobby = false; 
+        return room;
+    }
 
     /// <summary>
     /// Adds a room to the dungeon.
@@ -38,7 +45,8 @@ public class Dungeon
     /// <param name="room">The room to add.</param>
     public void AddRoom(MappedRoom room)
     {
-        room.Id = MappedRooms.Count + 1;
+        if(room.Id == 0)
+            room.Id = MappedRooms.Count + 1;
         MappedRooms.Add(room);
     }
 
@@ -49,6 +57,11 @@ public class Dungeon
     public List<MappedRoom> GetRooms()
     {
         return MappedRooms;
+    }
+
+    public MappedRoom? GetRoom(int id)
+    {
+        return MappedRooms.FirstOrDefault(r => r.Id == id);
     }
 
     /// <summary>
@@ -71,6 +84,7 @@ public class Dungeon
             dResult.SecondaryDice = 2;
         }
         var entryRoom = MappedRoom.DraftCurrentRoom(dResult);
+        entryRoom.Id = 1;
         entryRoom.ExitsCount = 3;
         entryRoom.Description = "This is the entrance of the dungeon. The room is empty.";
         return entryRoom;

@@ -41,21 +41,31 @@
                 }
             </div>
 
-            <canvas id="dotCanvas" style="width: 800px; height: 800px;"></canvas>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10">
 
-            <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
-            <div style="width: 100px;">
-                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                    <FluentButton @onclick="@( () => MoveRoom("LEFT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowLeft())" />
-                    <FluentStack Orientation="Orientation.Vertical">
-                        <FluentButton @onclick="@( () => MoveRoom("UP"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowUp())" />
-                        <FluentButton @onclick="@( () => MoveRoom("DOWN"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowDown())" />
+                <canvas id="dotCanvas" style="width: 800px; height: 800px;"></canvas>
+
+                <div>
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="10" >
+
+                        <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
+
+                        <div style="width: 100px;">
+                            <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                                <FluentButton @onclick="@( () => MoveRoom("LEFT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowLeft())" />
+                                <FluentStack Orientation="Orientation.Vertical">
+                                    <FluentButton @onclick="@( () => MoveRoom("UP"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowUp())" />
+                                    <FluentButton @onclick="@( () => MoveRoom("DOWN"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowDown())" />
+                                </FluentStack>
+                                <FluentButton @onclick="@( () => MoveRoom("RIGHT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowRight())" />
+                            </FluentStack> 
+                        </div>
+    
+                        <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
+
                     </FluentStack>
-                    <FluentButton @onclick="@( () => MoveRoom("RIGHT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowRight())" />
-                </FluentStack> 
-            </div>
-                   
-            <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
+                </div>
+            </FluentStack>
         </FluentStack>
 
     </FluentTab>
@@ -108,8 +118,11 @@
 
             currentAdventure = await d6Service.GetAdventure(adventureId);
             currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
-            currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
-            gameTurnInstructions = "Press Roll Dices to roll the dimentions and pick a door to enter the next room.";
+            currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.YouAreHere == true).First<MappedRoom>();
+            if (currentRoom.IsLobby)
+            {
+                gameTurnInstructions = "You are in the lobby, you can go anywhere!";
+            }
             await FillCanvas();
         }
         catch (Exception ex)
@@ -141,8 +154,29 @@
     {
         Direction? directionTo = await OpenSelectDoorDialogDialogAsync();
         if(directionTo is not null){
+            var exit = currentRoom!.Exits[directionTo.Value];
+
+            if (exit.TargetRoomId > 0)
+            {
+                var destinationRoom = currentAdventure!.Dungeon.GetRoom(exit.TargetRoomId.Value);
+                currentAdventure!.Dungeon.ChangeRoom(currentRoom!, destinationRoom!);
+                currentRoom = destinationRoom;
+                await RefreshCanvas();
+                return;
+            }
+            else if (exit.TargetRoomId == -1)
+            {
+                gameTurnInstructions = "If you go there you will get out of the dungeon!";
+                //TODO: We should manage that better
+                return;
+            }
+
             Direction directionFrom = GameTurn.GetOppositeDirection(directionTo.Value);
-            await OpenNewRoomDialog(directionFrom);
+            var newRoomId = await OpenNewRoomDialog(directionFrom);
+            if (newRoomId is not null && newRoomId > 0)
+            {
+                exit.TargetRoomId = newRoomId;
+            }
         }
             
     }
@@ -176,7 +210,7 @@
             return null;            
     }
 
-    private async Task OpenNewRoomDialog(Direction directionFrom)
+    private async Task<int?> OpenNewRoomDialog(Direction directionFrom)
     {
         DialogParameters parameters = new()
             {
@@ -189,7 +223,8 @@
                 Modal = true
             };
 
-        nextRoom!.IsLobby = false; 
+        nextRoom = currentAdventure!.Dungeon.GetNewRoom();
+
 
         IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(nextRoom, parameters);
         DialogResult? result = await dialog.Result;
@@ -197,19 +232,21 @@
         if (!result.Cancelled)
         {
             nextRoom = result.Data as MappedRoom;
-
+//ID should be there!!!
             //Just temporary
             nextRoom!.CoordX = 20;
             nextRoom.CoordY = 10;
 
             @* Char entranceWall = directionFrom.ToString()[0]; *@
-            GameTurn.SetDungeonEntranceDoor(nextRoom!, directionFrom);
+            GameTurn.SetDungeonEntranceDoor(nextRoom!, directionFrom, currentRoom.Id);
             GameTurn.AssignExits(nextRoom!, directionFrom);
             
             var roomIdTest = nextRoom!.Id;
 
             await MapTools.DrawRoom(JSRuntime, nextRoom);
+            return roomIdTest;
         }
+        return null;
     }
 
     private async Task RenderCanvas()

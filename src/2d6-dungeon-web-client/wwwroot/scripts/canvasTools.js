@@ -31,14 +31,20 @@ function resizeCanvas() {
   // Set the "drawn" size of the canvas
   canvas.style.width = `${rect.width}px`;
   canvas.style.height = `${rect.height}px`;
+
   drawDots();
 }
+
 // dots
 function drawDots() {
 
   var r = 1,
       cw = cubeSize,
       ch = cubeSize;
+
+  //Paper color
+  context.fillStyle = '#3B3428';
+  context.fillRect(0, 0, vw, vh); 
   
   for (var x = 0; x < vw; x+=cw) {
     for (var y = 0; y < vh; y+=ch) {
@@ -102,10 +108,4 @@ function DrawDoor(posX, posY, orientation, isMain=false){
     context.fillRect(posX+1, posY+1, doorWith-2, doorHeight-2);
     context.stroke();
   }
-}
-
-function ClearMap(){
-  context.fillStyle = '#Ece7d7';
-  context.clearRect(0, 0, vw, vh);  
-  drawDots()
 }
