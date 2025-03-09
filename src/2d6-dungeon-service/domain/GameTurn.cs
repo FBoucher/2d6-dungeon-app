@@ -9,8 +9,6 @@ public class GameTurn
     public bool IsFinished { get; set; } = false;
     public MappedRoom? CurrentRoom { get; set; }
     public ActionType NextAction { get; set; } = ActionType.RollForARoom;
-
-    private DiceResult? SavedDicesResult { get; set; }
     public DiceResult? LastDiceResult { get; set; }
     public string? Message { get; set; }
 
@@ -76,7 +74,6 @@ public class GameTurn
             }
             else
             {
-                SavedDicesResult = dResult;
                 NextAction = ActionType.DoubleSizedRoom;
                 Message = "Wow! It's a double size room. Roll 2D6 again!";
             }

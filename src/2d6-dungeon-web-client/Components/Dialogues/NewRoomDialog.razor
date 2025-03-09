@@ -20,7 +20,7 @@
                           OnChange="@OnStepChange">
             <FluentStack Orientation="Orientation.Vertical">
                 <p>@(gameTurn!.Message ?? string.Empty)</p>
-                <FluentButton @onclick=RollDicesForRoomDimensions Appearance="Appearance.Accent" disabled="@(isSizeSet)">Roll Dices</FluentButton>
+                <FluentButton @onclick=RollDicesForRoomDimensions Appearance="Appearance.Accent" disabled="@(isSizeSet)">Roll 2 Dices</FluentButton>
 
                 <div style="padding:20px;">
                     @if(sizeDicesResult != null)
@@ -56,7 +56,7 @@
                           Disabled="@(isCorridor)">
             <FluentStack Orientation="Orientation.Vertical">
                 <p>@(gameTurn!.Message ?? string.Empty)</p>
-                <FluentButton @onclick=RollDicesForDescription Appearance="Appearance.Accent" disabled="@(isDescriptionSet)">Roll Dices</FluentButton>
+                <FluentButton @onclick=RollDicesForDescription Appearance="Appearance.Accent" disabled="@(isDescriptionSet)">Roll 2 Dices</FluentButton>
 
                 <div style="padding:20px;">
                     @if(DescriptionDicesResult != null)
@@ -138,8 +138,7 @@
     private async Task RollDicesForRoomDimensions()
     {
         sizeDicesResult = DiceResult.Roll2Dices();
-        sizeDicesResult.PrimaryDice = 3;
-        sizeDicesResult.SecondaryDice = 3;
+        
         await gameTurn.ContinueTurn(sizeDicesResult);
         if(gameTurn.NextAction != ActionType.DoubleSizedRoom)
         {
@@ -150,7 +149,6 @@
                 isCorridor = true;
             }
         }
-        
     }
 
     private async Task RollDicesForExits()
