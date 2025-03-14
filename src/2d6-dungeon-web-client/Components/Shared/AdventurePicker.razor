@@ -13,10 +13,10 @@
                     ShowHover="true"  
                     ResizableColumns=true 
                     TGridItem="AdventurePreview" 
-                    OnRowClick="@((args) => SelectAdventure(args.Item!.id))"
-                    style="height: 400px;">
+                    OnRowClick="@(async (args) => { if (args.Item?.id != null) SelectAdventure(args.Item.id); })"
+                    style="height: 600px;">
         <ChildContent>
-            <PropertyColumn Property="@(a => a.adventurer_name)" Title="Adventurer Name" Sortable="true"/>
+            <PropertyColumn Property="@(a => a.adventurer_name)" Title="Adventurer Name" Sortable="true" Width="200"/>
             <PropertyColumn Property="@(a => a.level)" Title="Level" Sortable="true"/>
             <PropertyColumn Property="@(a => a.last_saved_datetime)" Title="Saved Date" Sortable="true"/>
         </ChildContent>
