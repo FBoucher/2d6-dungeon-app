@@ -1,4 +1,27 @@
 
+-- 2d6 Tables
+INSERT INTO db2d6.meta_table(code, name, columns_name, columns_label)
+VALUES('l1p', 'Level 1 Patrols', 'roll, encountered', 'Roll, Encountered');
+INSERT INTO db2d6.meta_table(code, name, columns_name, columns_label)
+VALUES('bst1', 'Body Search', 'table_number, roll, description', 'Table number, Roll, Description');
+INSERT INTO db2d6.meta_table(code, name, columns_name, columns_label)
+VALUES('bst2', 'Body Search', 'table_number, roll, description', 'Table number, Roll, Description');
+
+
+-- L1P Level 1 Patrols
+INSERT INTO db2d6.l1p(roll, encountered)
+VALUES(1, 'LABOURER');
+INSERT INTO db2d6.l1p(roll, encountered)
+VALUES(2, 'CRAZED PREACHER');
+INSERT INTO db2d6.l1p(roll, encountered)
+VALUES(3, 'GARD');
+INSERT INTO db2d6.l1p(roll, encountered)
+VALUES(4, 'GARD');
+INSERT INTO db2d6.l1p(roll, encountered)
+VALUES(5, 'GARD');
+INSERT INTO db2d6.l1p(roll, encountered)
+VALUES(6, 'GARD AND GARD DOG');
+
 -- Starting Amour
 INSERT INTO db2d6.armour_pieces(name, dice_set, modifier)
 VALUES('Jerkin', 4, '-1 Damage');
@@ -27,13 +50,16 @@ INSERT INTO db2d6.magic_potions(potion_type, modifier, duration, cost)
 
 
 -- Body Search tables 
-INSERT INTO db2d6.body_searches(table_number, roll, description)
-VALUES(1, 2, 'The body stinks, and a cloud of spores erupts. Lose 1 HP.');
-INSERT INTO db2d6.body_searches(table_number, roll, description)
-VALUES(1, 3, 'The body burts into flames destroying any loot. There is dark magic here.');
+INSERT INTO db2d6.bst1(roll, description)
+VALUES(0, 'Roll 2D6. The modified range rule applies. Anyitems you find can be taken and used for inventive Usage.');
+INSERT INTO db2d6.bst1(roll, description)
+VALUES(2, 'The body stinks, and a cloud of spores erupts. Lose 1 HP.');
+INSERT INTO db2d6.bst1(roll, description)
+VALUES(3, 'The body burts into flames destroying any loot. There is dark magic here.');
 
-INSERT INTO db2d6.body_searches(table_number, roll, description)
-VALUES(2, 2, 'Blood suddenly spurts from the body. Gain the bloodied status. There is nothing here.');
+
+INSERT INTO db2d6.bst2(roll, description)
+VALUES(2, 'Blood suddenly spurts from the body. Gain the bloodied status. There is nothing here.');
 
 
 -- rooms Level 1

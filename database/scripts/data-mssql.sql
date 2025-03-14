@@ -24,12 +24,12 @@ INSERT INTO dbo.magic_potions(potion_type, modifier, duration, cost)
     VALUES('HEALING', 'Heal up to 10 Health Points', 'INSTANT', '18gc');
 
 -- Body Search tables 
-INSERT INTO dbo.body_searches(table_number, roll, description)
+INSERT INTO dbo.bst1(table_number, roll, description)
 VALUES(1, 2, 'The body stinks, and a cloud of spores erupts. Lose 1 HP.');
-INSERT INTO dbo.body_searches(table_number, roll, description)
+INSERT INTO dbo.bst1(table_number, roll, description)
 VALUES(1, 3, 'The body burts into flames destroying any loot. There is dark magic here.');
 
-INSERT INTO dbo.body_searches(table_number, roll, description)
+INSERT INTO dbo.bst1(table_number, roll, description)
 VALUES(2, 2, 'Blood suddenly spurts from the body. Gain the bloodied status. There is nothing here.');
 
 

@@ -1,5 +1,23 @@
 CREATE DATABASE db2d6;
 
+CREATE TABLE IF NOT EXISTS db2d6.l1p (
+  roll INT NOT NULL,
+  encountered varchar(50) DEFAULT NULL,
+  PRIMARY KEY (roll)
+);
+
+
+CREATE TABLE IF NOT EXISTS db2d6.meta_table (
+  id int NOT NULL AUTO_INCREMENT,
+  code varchar(25) DEFAULT NULL,
+  name varchar(50) DEFAULT NULL,
+  columns_name varchar(255) DEFAULT NULL,
+  columns_label varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+
 CREATE TABLE IF NOT EXISTS db2d6.adventurers (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(255) DEFAULT NULL,
@@ -29,12 +47,17 @@ CREATE TABLE IF NOT EXISTS db2d6.armour_pieces (
 );
 
 
-CREATE TABLE IF NOT EXISTS db2d6.body_searches (
-  id int NOT NULL AUTO_INCREMENT,
-  table_number INT DEFAULT 1,
-  roll INT DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS db2d6.bst1 (
+  roll INT NOT NULL,
   description varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (roll)
+);
+
+
+CREATE TABLE IF NOT EXISTS db2d6.bst2 (
+  roll INT NOT NULL,
+  description varchar(255) DEFAULT NULL,
+  PRIMARY KEY (roll)
 );
 
 

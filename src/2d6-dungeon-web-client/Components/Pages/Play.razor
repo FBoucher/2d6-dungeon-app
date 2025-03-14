@@ -82,6 +82,11 @@
         <Combat @bind-CombatState="currentAdventure!.CombatState"></Combat>
     </FluentTab>
 
+    <FluentTab Id="tab-tables" Label="Tables" Icon="@(new Icons.Regular.Size24.Table())"
+        DeferredLoading=true>
+        <TableViewer />
+    </FluentTab>
+
 
     <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
         DeferredLoading=true>

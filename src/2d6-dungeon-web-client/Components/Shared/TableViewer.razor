@@ -1,12 +1,12 @@
-﻿@inject D6Service d6Service;
+﻿@using c5m._2d6Dungeon;
+@inject D6Service D6Service;
 
+@rendermode InteractiveServer
 
 <h3>Table Viewer</h3>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
-    @* <FluentSelect Items=@selectedTable Label="Select Table" /> *@
-
-    <div>
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="10">
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
             <FluentButton OnClick="@( () => RollDices(1) )" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
             <FluentButton OnClick="@( () => RollDices(2) )" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
@@ -19,11 +19,19 @@
                 <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
             }
         </div>
-    </div>
+    </FluentStack>
+
+    <FluentSelect Items=@selectedTable Label="Select Table" /> 
+
+    <FluentGrid Items="@tableData" SelectionMode="FluentGridSelectionMode.Single" SelectedItem="@selectedTable">
+        <FluentGridColumn Property="Name" Title="Name" />
+        <FluentGridColumn Property="Value" Title="Value" />
+    </FluentGrid>
+    
 </FluentStack>
 
 @code {
-    private string selectedTable;
+    private string? selectedTable;
     private List<string> tables = new List<string> { "Table1", "Table2", "Table3" };
     private List<TableData> tableData = new List<TableData>();
 
@@ -45,13 +53,21 @@
 
     private void RollDices(int numberOfDice)
     {
-        dicesResult = DiceResult.Roll2Dices();
+        if (numberOfDice == 1)
+        {
+            dicesResult = DiceResult.Roll1Dice();
+        }
+        else
+        {
+            dicesResult = DiceResult.Roll2Dices();
+        }
+
     }
 
     private class TableData
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public string? Name { get; set; }
+        public string? Value { get; set; }
     }
 }
 
