@@ -3,9 +3,9 @@
 INSERT INTO db2d6.meta_table(code, name, columns_name, columns_label)
 VALUES('l1p', 'Level 1 Patrols', 'roll, encountered', 'Roll, Encountered');
 INSERT INTO db2d6.meta_table(code, name, columns_name, columns_label)
-VALUES('bst1', 'Body Search', 'table_number, roll, description', 'Table number, Roll, Description');
+VALUES('bst1', 'Body Search 1', 'table_number, roll, description', 'Table number, Roll, Description');
 INSERT INTO db2d6.meta_table(code, name, columns_name, columns_label)
-VALUES('bst2', 'Body Search', 'table_number, roll, description', 'Table number, Roll, Description');
+VALUES('bst2', 'Body Search 2', 'table_number, roll, description', 'Table number, Roll, Description');
 
 
 -- L1P Level 1 Patrols

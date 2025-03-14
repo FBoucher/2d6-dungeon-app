@@ -3,6 +3,7 @@ using System.Text.Json;
 using Bogus;
 using Bogus.DataSets;
 using c5m._2d6Dungeon;
+using c5m._2d6Dungeon.domain;
 using c5m._2d6Dungeon.Game;
 using Microsoft.Extensions.Logging;
 
@@ -229,6 +230,18 @@ public class D6Service
         var q = $"api/magic_potion?$filter=potion_type eq 'HEALING'";
         var result = await httpClient.GetFromJsonAsync<MagicPotionlList>(q);
         return result!.value.First<MagicPotion>();
+    }
+
+    #endregion
+
+
+    #region == Meta Tables =====
+
+
+    public async Task<MetaTablesList> GetMetaTables()
+    {
+        var result = await httpClient.GetFromJsonAsync<MetaTablesList>("api/meta_table", options);
+        return result ?? new MetaTablesList();
     }
 
     #endregion

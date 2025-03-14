@@ -1,4 +1,5 @@
 ﻿@using c5m._2d6Dungeon;
+@using c5m._2d6Dungeon.domain
 @inject D6Service D6Service;
 
 @rendermode InteractiveServer
@@ -6,11 +7,21 @@
 <h3>Table Viewer</h3>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
-    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="10">
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap=10" VerticalAlignment="VerticalAlignment.Center" >
+        <div>
+                <FluentSelect   Items=@metatablesQueryable 
+                    Label="Select Table"
+                    OptionText="@(t => t.Name)"
+                    OptionValue="@(t => t.Id.ToString())"
+                    SelectedOptionChanged = "@( (MetaTables t) => TableSelected(t.Id))"
+                    Placeholder="Select a Table"
+                    /> 
+        </div>
+
+        <div>
             <FluentButton OnClick="@( () => RollDices(1) )" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
             <FluentButton OnClick="@( () => RollDices(2) )" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
-        </FluentStack>
+        </div>
         
         <div style="padding:20px;">
             @if(dicesResult != null)
@@ -21,34 +32,30 @@
         </div>
     </FluentStack>
 
-    <FluentSelect Items=@selectedTable Label="Select Table" /> 
 
-    <FluentGrid Items="@tableData" SelectionMode="FluentGridSelectionMode.Single" SelectedItem="@selectedTable">
-        <FluentGridColumn Property="Name" Title="Name" />
-        <FluentGridColumn Property="Value" Title="Value" />
-    </FluentGrid>
-    
+
 </FluentStack>
 
 @code {
-    private string? selectedTable;
-    private List<string> tables = new List<string> { "Table1", "Table2", "Table3" };
-    private List<TableData> tableData = new List<TableData>();
-
+    private MetaTables? selectedTable;
+    IQueryable<MetaTables>? metatablesQueryable;
     private DiceResult dicesResult = new DiceResult();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        LoadTableData();
+        await LoadTableData();
     }
 
-    private void LoadTableData()
+    private async Task LoadTableData()
     {
-        tableData = new List<TableData>
+        try{
+            var metatables = await D6Service.GetMetaTables();  
+            metatablesQueryable = metatables!.Value.AsQueryable();  
+        }
+        catch(Exception ex)
         {
-            new TableData { Name = "Item1", Value = "Value1" },
-            new TableData { Name = "Item2", Value = "Value2" }
-        };
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
     }
 
     private void RollDices(int numberOfDice)
@@ -61,13 +68,18 @@
         {
             dicesResult = DiceResult.Roll2Dices();
         }
-
     }
 
-    private class TableData
+    private async Task TableSelected(int tableId)
     {
-        public string? Name { get; set; }
-        public string? Value { get; set; }
+        try
+        {
+            var test = await D6Service.GetMagicScrolls();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
     }
 }
 
