@@ -244,5 +244,52 @@ public class D6Service
         return result ?? new MetaTablesList();
     }
 
+    public async Task<Table2D6> GetTableCsv(int tableId)
+    {
+        try
+    {
+        string filePath = Path.Combine("data", $"{tableId}.csv");
+        
+        if (!File.Exists(filePath))
+        {
+            logger.LogError($"Table CSV file not found: {filePath}");
+            return new Table2D6 { Success = false, ErrorMessage = "Table file not found" };
+        }
+        
+        var lines = await File.ReadAllLinesAsync(filePath);
+        
+        if (lines.Length == 0)
+        {
+            return new Table2D6 { Success = false, ErrorMessage = "Table file is empty" };
+        }
+        
+        // Parse headers
+        var headers = lines[0].Split(',').Select(h => h.Trim()).ToArray();
+        
+        // Parse rows
+        var rows = new List<string[]>();
+        for (int i = 1; i < lines.Length; i++)
+        {
+            if (!string.IsNullOrWhiteSpace(lines[i]))
+            {
+                rows.Add(lines[i].Split(',').Select(c => c.Trim()).ToArray());
+            }
+        }
+        
+        return new Table2D6 
+        { 
+            Success = true,
+            TableId = tableId,
+            Headers = headers,
+            Rows = rows
+        };
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, $"Error reading table {tableId}");
+        return new Table2D6 { Success = false, ErrorMessage = ex.Message };
+    }
+    }
+
     #endregion
 }
