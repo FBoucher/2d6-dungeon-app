@@ -40,4 +40,6 @@ public interface ID6Service
 
     // MetaTables
     Task<MetaTablesList> GetMetaTables();
+
+    Task<Table2D6> GetTableData(string tableCode);
 }

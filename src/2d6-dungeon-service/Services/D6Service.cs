@@ -244,11 +244,11 @@ public class D6Service
         return result ?? new MetaTablesList();
     }
 
-    public async Task<Table2D6> GetTableCsv(int tableId)
+    public async Task<Table2D6> GetTableData(string tableCode)
     {
         try
     {
-        string filePath = Path.Combine("data", $"{tableId}.csv");
+        string filePath = Path.Combine("data", $"{tableCode}.csv");
         
         if (!File.Exists(filePath))
         {
@@ -279,14 +279,14 @@ public class D6Service
         return new Table2D6 
         { 
             Success = true,
-            TableId = tableId,
+            TableCode = tableCode,
             Headers = headers,
             Rows = rows
         };
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, $"Error reading table {tableId}");
+        logger.LogError(ex, $"Error reading table {tableCode}");
         return new Table2D6 { Success = false, ErrorMessage = ex.Message };
     }
     }

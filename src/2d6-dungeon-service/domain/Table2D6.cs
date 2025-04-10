@@ -6,7 +6,7 @@ public class Table2D6
 {
 	public bool Success { get; set; }
     public string? ErrorMessage { get; set; }
-    public int TableId { get; set; }
+    public string TableCode { get; set; }
     public string[]? Headers { get; set; }
     public List<string[]>? Rows { get; set; }
 }
