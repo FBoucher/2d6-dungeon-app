@@ -57,58 +57,6 @@
         }
       ]
     },
-    "bst1": {
-      "source": {
-        "object": "bst1",
-        "type": "table"
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "bst1",
-          "plural": "bst1"
-        }
-      },
-      "rest": {
-        "enabled": true
-      },
-      "permissions": [
-        {
-          "role": "anonymous",
-          "actions": [
-            {
-              "action": "*"
-            }
-          ]
-        }
-      ]
-    },
-    "bst2": {
-      "source": {
-        "object": "bst2",
-        "type": "table"
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "bst2",
-          "plural": "bst2s"
-        }
-      },
-      "rest": {
-        "enabled": true
-      },
-      "permissions": [
-        {
-          "role": "anonymous",
-          "actions": [
-            {
-              "action": "*"
-            }
-          ]
-        }
-      ]
-    },
     "adventurer": {
       "source": {
         "object": "adventurers",
@@ -327,32 +275,6 @@
         "type": {
           "singular": "meta_table",
           "plural": "meta_tables"
-        }
-      },
-      "rest": {
-        "enabled": true
-      },
-      "permissions": [
-        {
-          "role": "anonymous",
-          "actions": [
-            {
-              "action": "*"
-            }
-          ]
-        }
-      ]
-    },
-    "l1p": {
-      "source": {
-        "object": "l1p",
-        "type": "table"
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "l1p",
-          "plural": "l1p"
         }
       },
       "rest": {
