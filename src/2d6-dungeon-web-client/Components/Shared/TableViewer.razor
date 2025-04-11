@@ -1,5 +1,5 @@
 ﻿@using c5m._2d6Dungeon;
-@using c5m._2d6Dungeon.domain
+@using c5m._2d6Dungeon.domain;
 @inject D6Service D6Service;
 
 @rendermode InteractiveServer
@@ -10,57 +10,52 @@
     <FluentStack    Orientation="Orientation.Horizontal" 
                     HorizontalGap=10" 
                     VerticalAlignment="VerticalAlignment.Center"> *@
-        <div>
-            <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
-                OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t.Code))"
-                Placeholder="Select a Table" />
-        </div>
+<div>
+    <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
+        OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t.Code))"
+        Placeholder="Select a Table" />
+</div>
 
-        <div>
-            <FluentButton OnClick="@(() => RollDices(1))" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
-            <FluentButton OnClick="@(() => RollDices(2))" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
-        </div>
+<div>
+    <FluentButton OnClick="@(() => RollDices(1))" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
+    <FluentButton OnClick="@(() => RollDices(2))" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
+</div>
 
-        <div style="padding:20px;">
-            @if (dicesResult != null)
-            {
-                <Dices face="@dicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
-                <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
-            }
-        </div>
-    @* </FluentStack>
+<div style="padding:20px;">
+    @if (dicesResult != null)
+    {
+        <Dices face="@dicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
+        <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+    }
+</div>
+@* </FluentStack>
 </FluentStack> *@
 
 @if (selectedTableData != null)
 {
-    <FluentDataGrid id="tblGrid" GenerateHeader="GenerateHeaderOption.None" DisplayMode="DataGridDisplayMode.Table" TGridItem="string" role="grid">
-        <FluentDataGridRow RowType="DataGridRowType.Header">
-            @for (var h = 0; h < selectedTableData.Headers.Length; h++)
-            {
-                <FluentDataGridCell GridColumn=@h CellType="DataGridCellType.ColumnHeader">@selectedTableData.Headers[h]
-                </FluentDataGridCell>
-            }
-        </FluentDataGridRow>
+    <h3>@selectedTableData.TableCode</h3>
 
-
-        @foreach (var row in selectedTableData.Rows)
-        {
-            <FluentDataGridRow>
-                @for (var i = 1; i < row.Length; i++)
-                {
-                    <FluentDataGridCell GridColumn=@i>@row[i]</FluentDataGridCell>
-                }
-            </FluentDataGridRow>
-        }
-
+    <FluentDataGrid Items="@selectedTableDataRows" 
+                    ShowHover="true"  
+                    ResizableColumns=true >
+        <ChildContent>
+            <PropertyColumn Property="@(t => t.Roll)" Sortable="true" Width="100" />
+            <PropertyColumn Title="@secondColTitle" Property="@(t => t.Description)" Sortable="true" />
+        </ChildContent>
+        <EmptyContent>
+            <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Accent" />&nbsp; Select a table first
+        </EmptyContent>
     </FluentDataGrid>
+
 }
 
 @code {
     private MetaTables? selectedTable;
     IQueryable<MetaTables>? metatablesQueryable;
     private DiceResult dicesResult = new DiceResult();
-    private Table2D6? selectedTableData = null;
+    private SimpleTable2D6? selectedTableData = null;
+    private IQueryable<SimpleTable2D6Row>? selectedTableDataRows = null;
+    private string secondColTitle = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,10 +92,14 @@
         selectedTableData = null;
         try
         {
+            selectedTable = metatablesQueryable?.FirstOrDefault(t => t.Code == tableCode);
+
             var response = await D6Service.GetTableData(tableCode);
-            if (response != null && response.Success )
+            if (response != null)
             {
                 selectedTableData = response;
+                selectedTableDataRows = response.Rows.AsQueryable();
+                secondColTitle = selectedTableData.Headers[1]?? "Description";
             }
         }
         catch (Exception ex)

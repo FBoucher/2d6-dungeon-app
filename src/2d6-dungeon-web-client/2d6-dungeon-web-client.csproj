@@ -18,4 +18,11 @@
     <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\2d6-dungeon-service\data\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LinkBase>data</LinkBase>
+    </Content>
+  </ItemGroup>
+
 </Project>

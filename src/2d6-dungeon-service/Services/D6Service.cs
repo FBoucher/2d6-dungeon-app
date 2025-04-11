@@ -244,51 +244,66 @@ public class D6Service
         return result ?? new MetaTablesList();
     }
 
-    public async Task<Table2D6> GetTableData(string tableCode)
+    public async Task<SimpleTable2D6?> GetTableData(string tableCode)
     {
         try
-    {
-        string filePath = Path.Combine("data", $"{tableCode}.csv");
-        
-        if (!File.Exists(filePath))
         {
-            logger.LogError($"Table CSV file not found: {filePath}");
-            return new Table2D6 { Success = false, ErrorMessage = "Table file not found" };
-        }
-        
-        var lines = await File.ReadAllLinesAsync(filePath);
-        
-        if (lines.Length == 0)
-        {
-            return new Table2D6 { Success = false, ErrorMessage = "Table file is empty" };
-        }
-        
-        // Parse headers
-        var headers = lines[0].Split(',').Select(h => h.Trim()).ToArray();
-        
-        // Parse rows
-        var rows = new List<string[]>();
-        for (int i = 1; i < lines.Length; i++)
-        {
-            if (!string.IsNullOrWhiteSpace(lines[i]))
+            string baseDirectory = AppContext.BaseDirectory;
+            string dataDirectory = Path.Combine(baseDirectory, "data");
+            
+            if (!Directory.Exists(dataDirectory))
             {
-                rows.Add(lines[i].Split(',').Select(c => c.Trim()).ToArray());
+                string assemblyLocation = Path.GetDirectoryName(typeof(D6Service).Assembly.Location) ?? baseDirectory;
+                dataDirectory = Path.Combine(assemblyLocation, "data");
+                
+                if (!Directory.Exists(dataDirectory))
+                {
+                    string parentDir = Directory.GetParent(assemblyLocation)?.FullName ?? assemblyLocation;
+                    dataDirectory = Path.Combine(parentDir, "data");
+                }
             }
+            
+            string filePath = Path.Combine(dataDirectory, $"{tableCode}.csv");
+            
+            logger.LogInformation($"Looking for table data at: {filePath}");
+            
+            if (!File.Exists(filePath))
+            {
+                logger.LogError($"Table CSV file not found: {filePath}");
+                return null;
+            }
+            
+            var lines = await File.ReadAllLinesAsync(filePath);
+            
+            if (lines.Length == 0)
+            {
+                return null;
+            }
+            
+            var headers = lines[0].Split(',').Select(h => h.Trim()).ToArray();
+            
+            var rows = new List<SimpleTable2D6Row>();
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var cols = lines[i].Split(',');
+                rows.Add(new SimpleTable2D6Row{
+                                                Roll = cols[0], 
+                                                Description = cols[1].Trim('"')
+                                            });
+            }
+            
+            return new SimpleTable2D6 
+            { 
+                TableCode = tableCode,
+                Headers = headers,
+                Rows = rows
+            };
         }
-        
-        return new Table2D6 
-        { 
-            Success = true,
-            TableCode = tableCode,
-            Headers = headers,
-            Rows = rows
-        };
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, $"Error reading table {tableCode}");
-        return new Table2D6 { Success = false, ErrorMessage = ex.Message };
-    }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Error reading table {tableCode}");
+            return null;
+        }
     }
 
     #endregion
