@@ -1,4 +1,13 @@
 
+-- 2d6 Tables
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('l1p', 'Level 1 Patrols');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('bst1', 'Body Search 1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('bst2', 'Body Search 2');
+
+
 -- Starting Amour
 INSERT INTO db2d6.armour_pieces(name, dice_set, modifier)
 VALUES('Jerkin', 4, '-1 Damage');
@@ -23,17 +32,6 @@ VALUES('Melt metal', 'Destroys one lock or armour-related interrupt on an enemy'
 -- Starting Potion
 INSERT INTO db2d6.magic_potions(potion_type, modifier, duration, cost) 
     VALUES('HEALING', 'Heal up to 10 Health Points', 'INSTANT', '18gc');
-
-
-
--- Body Search tables 
-INSERT INTO db2d6.body_searches(table_number, roll, description)
-VALUES(1, 2, 'The body stinks, and a cloud of spores erupts. Lose 1 HP.');
-INSERT INTO db2d6.body_searches(table_number, roll, description)
-VALUES(1, 3, 'The body burts into flames destroying any loot. There is dark magic here.');
-
-INSERT INTO db2d6.body_searches(table_number, roll, description)
-VALUES(2, 2, 'Blood suddenly spurts from the body. Gain the bloodied status. There is nothing here.');
 
 
 -- rooms Level 1

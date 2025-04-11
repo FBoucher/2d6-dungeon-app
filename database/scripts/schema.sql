@@ -1,5 +1,15 @@
 CREATE DATABASE db2d6;
 
+
+CREATE TABLE IF NOT EXISTS db2d6.meta_table (
+  id int NOT NULL AUTO_INCREMENT,
+  code varchar(25) DEFAULT NULL,
+  name varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
+
 CREATE TABLE IF NOT EXISTS db2d6.adventurers (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(255) DEFAULT NULL,
@@ -25,15 +35,6 @@ CREATE TABLE IF NOT EXISTS db2d6.armour_pieces (
   name varchar(255) DEFAULT NULL,
   dice_set int DEFAULT 0,
   modifier varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id)
-);
-
-
-CREATE TABLE IF NOT EXISTS db2d6.body_searches (
-  id int NOT NULL AUTO_INCREMENT,
-  table_number INT DEFAULT 1,
-  roll INT DEFAULT NULL,
-  description varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 

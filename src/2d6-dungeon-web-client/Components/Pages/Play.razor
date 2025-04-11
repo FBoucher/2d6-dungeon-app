@@ -82,6 +82,11 @@
         <Combat @bind-CombatState="currentAdventure!.CombatState"></Combat>
     </FluentTab>
 
+    <FluentTab Id="tab-tables" Label="Tables" Icon="@(new Icons.Regular.Size24.Table())"
+        DeferredLoading=true>
+        <TableViewer />
+    </FluentTab>
+
 
     <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
         DeferredLoading=true>
@@ -116,14 +121,17 @@
             gameTurn = new GameTurn();
             gameTurn.d6Service = d6Service;
 
-            currentAdventure = await d6Service.GetAdventure(adventureId);
-            currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
-            currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.YouAreHere == true).First<MappedRoom>();
-            if (currentRoom.IsLobby)
+            if(adventureId > 0)
             {
-                gameTurnInstructions = "You are in the lobby, you can go anywhere!";
+                currentAdventure = await d6Service.GetAdventure(adventureId);
+                currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
+                currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.YouAreHere == true).First<MappedRoom>();
+                if (currentRoom.IsLobby)
+                {
+                    gameTurnInstructions = "You are in the lobby, you can go anywhere!";
+                }
+                await FillCanvas();
             }
-            await FillCanvas();
         }
         catch (Exception ex)
         {

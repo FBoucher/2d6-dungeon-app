@@ -1,0 +1,112 @@
+﻿@using c5m._2d6Dungeon;
+@using c5m._2d6Dungeon.domain;
+@inject D6Service D6Service;
+
+@rendermode InteractiveServer
+
+<h3>Table Viewer</h3>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Bottom">
+        <div>
+            <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
+                OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t))"
+                Placeholder="Select a Table" />
+        </div>
+
+        <div>
+            <FluentButton OnClick="@(() => RollDices(1))" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
+            <FluentButton OnClick="@(() => RollDices(2))" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
+        </div>
+
+        <div style="padding-left:20px;">
+            @if (dicesResult != null)
+            {
+                <Dices face="@dicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
+                <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+            }
+        </div>
+    </FluentStack>
+    <div>
+        <h3>@selectedTableName</h3>
+
+        <FluentDataGrid Items="@selectedTableDataRows" 
+                        ShowHover="true"  
+                        ResizableColumns=true 
+                        GridTemplateColumns="1fr 4fr">
+            <ChildContent>
+                <PropertyColumn Property="@(t => t.Roll)" Sortable="true" />
+                <PropertyColumn Title="@secondColTitle" Property="@(t => t.Description)" Sortable="true" />
+            </ChildContent>
+            <EmptyContent>
+                <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Accent" />&nbsp; Select a table first
+            </EmptyContent>
+        </FluentDataGrid>
+    </div>
+</FluentStack>
+
+
+
+@code {
+    private MetaTables? selectedTable;
+    IQueryable<MetaTables>? metatablesQueryable;
+    private DiceResult? dicesResult = null;
+    private SimpleTable2D6? selectedTableData = null;
+    private IQueryable<SimpleTable2D6Row>? selectedTableDataRows = null;
+    private string secondColTitle = string.Empty;
+    private string selectedTableName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTableData();
+    }
+
+    private async Task LoadTableData()
+    {
+        try
+        {
+            var metatables = await D6Service.GetMetaTables();
+            metatablesQueryable = metatables!.Value.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+
+    private void RollDices(int numberOfDice)
+    {
+        if (numberOfDice == 1)
+        {
+            dicesResult = DiceResult.Roll1Dice();
+        }
+        else
+        {
+            dicesResult = DiceResult.Roll2Dices();
+        }
+    }
+
+    private async Task TableSelected(MetaTables table)
+    {
+        dicesResult = null;
+        selectedTableData = null;
+        selectedTableName = table.Name;
+
+        try
+        {
+            selectedTable = metatablesQueryable?.FirstOrDefault(t => t.Code == table.Code);
+
+            var response = await D6Service.GetTableData(table.Code);
+            if (response != null)
+            {
+                selectedTableData = response;
+                selectedTableDataRows = response.Rows.AsQueryable();
+                secondColTitle = selectedTableData.Headers[1]?? "Description";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Oops! --> " + ex.Message);
+        }
+    }
+}

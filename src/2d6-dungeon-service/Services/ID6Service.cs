@@ -1,4 +1,6 @@
 ﻿namespace c5m._2d6Dungeon;
+
+using c5m._2d6Dungeon.domain;
 using c5m._2d6Dungeon.Game;
 
 public interface ID6Service
@@ -35,4 +37,9 @@ public interface ID6Service
 
     // MagicPotion
     Task<MagicPotion> GetInitialMagicPotion();
+
+    // MetaTables
+    Task<MetaTablesList> GetMetaTables();
+
+    Task<SimpleTable2D6?> GetTableData(string tableCode);
 }

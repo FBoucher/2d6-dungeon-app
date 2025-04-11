@@ -57,32 +57,6 @@
         }
       ]
     },
-    "bodySearch": {
-      "source": {
-        "object": "body_searches",
-        "type": "table"
-      },
-      "graphql": {
-        "enabled": true,
-        "type": {
-          "singular": "bodySearch",
-          "plural": "bodySearches"
-        }
-      },
-      "rest": {
-        "enabled": true
-      },
-      "permissions": [
-        {
-          "role": "anonymous",
-          "actions": [
-            {
-              "action": "*"
-            }
-          ]
-        }
-      ]
-    },
     "adventurer": {
       "source": {
         "object": "adventurers",
@@ -275,6 +249,32 @@
         "type": {
           "singular": "creature",
           "plural": "creatures"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": [
+            {
+              "action": "*"
+            }
+          ]
+        }
+      ]
+    },
+    "meta_table": {
+      "source": {
+        "object": "meta_table",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "meta_table",
+          "plural": "meta_tables"
         }
       },
       "rest": {

@@ -35,7 +35,7 @@ CREATE TABLE dbo.magic_potions (
 
 
 
-CREATE TABLE dbo.body_searches (
+CREATE TABLE dbo.bst1 (
   id int NOT NULL IDENTITY,
   table_number INT DEFAULT 1,
   roll INT DEFAULT NULL,
