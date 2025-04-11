@@ -12,7 +12,7 @@
                     VerticalAlignment="VerticalAlignment.Center"> *@
 <div>
     <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
-        OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t.Code))"
+        OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t))"
         Placeholder="Select a Table" />
 </div>
 
@@ -33,13 +33,14 @@
 
 @if (selectedTableData != null)
 {
-    <h3>@selectedTableData.TableCode</h3>
+    <h3>@selectedTableName</h3>
 
     <FluentDataGrid Items="@selectedTableDataRows" 
                     ShowHover="true"  
-                    ResizableColumns=true >
+                    ResizableColumns=true 
+                    GridTemplateColumns="1fr 4fr">
         <ChildContent>
-            <PropertyColumn Property="@(t => t.Roll)" Sortable="true" Width="100" />
+            <PropertyColumn Property="@(t => t.Roll)" Sortable="true" />
             <PropertyColumn Title="@secondColTitle" Property="@(t => t.Description)" Sortable="true" />
         </ChildContent>
         <EmptyContent>
@@ -52,10 +53,11 @@
 @code {
     private MetaTables? selectedTable;
     IQueryable<MetaTables>? metatablesQueryable;
-    private DiceResult dicesResult = new DiceResult();
+    private DiceResult? dicesResult = null;
     private SimpleTable2D6? selectedTableData = null;
     private IQueryable<SimpleTable2D6Row>? selectedTableDataRows = null;
     private string secondColTitle = string.Empty;
+    private string selectedTableName = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,14 +89,17 @@
         }
     }
 
-    private async Task TableSelected(string tableCode)
+    private async Task TableSelected(MetaTables table)
     {
+        dicesResult = null;
         selectedTableData = null;
+        selectedTableName = table.Name;
+
         try
         {
-            selectedTable = metatablesQueryable?.FirstOrDefault(t => t.Code == tableCode);
+            selectedTable = metatablesQueryable?.FirstOrDefault(t => t.Code == table.Code);
 
-            var response = await D6Service.GetTableData(tableCode);
+            var response = await D6Service.GetTableData(table.Code);
             if (response != null)
             {
                 selectedTableData = response;
