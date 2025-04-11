@@ -6,49 +6,46 @@
 
 <h3>Table Viewer</h3>
 
-@* <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
-    <FluentStack    Orientation="Orientation.Horizontal" 
-                    HorizontalGap=10" 
-                    VerticalAlignment="VerticalAlignment.Center"> *@
-<div>
-    <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
-        OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t))"
-        Placeholder="Select a Table" />
-</div>
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Bottom">
+        <div>
+            <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
+                OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t))"
+                Placeholder="Select a Table" />
+        </div>
 
-<div>
-    <FluentButton OnClick="@(() => RollDices(1))" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
-    <FluentButton OnClick="@(() => RollDices(2))" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
-</div>
+        <div>
+            <FluentButton OnClick="@(() => RollDices(1))" Appearance="Appearance.Accent">Roll 1D6</FluentButton>
+            <FluentButton OnClick="@(() => RollDices(2))" Appearance="Appearance.Accent">Roll 2D6</FluentButton>
+        </div>
 
-<div style="padding:20px;">
-    @if (dicesResult != null)
-    {
-        <Dices face="@dicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
-        <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
-    }
-</div>
-@* </FluentStack>
-</FluentStack> *@
+        <div style="padding-left:20px;">
+            @if (dicesResult != null)
+            {
+                <Dices face="@dicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
+                <Dices face="@dicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+            }
+        </div>
+    </FluentStack>
+    <div>
+        <h3>@selectedTableName</h3>
 
-@if (selectedTableData != null)
-{
-    <h3>@selectedTableName</h3>
+        <FluentDataGrid Items="@selectedTableDataRows" 
+                        ShowHover="true"  
+                        ResizableColumns=true 
+                        GridTemplateColumns="1fr 4fr">
+            <ChildContent>
+                <PropertyColumn Property="@(t => t.Roll)" Sortable="true" />
+                <PropertyColumn Title="@secondColTitle" Property="@(t => t.Description)" Sortable="true" />
+            </ChildContent>
+            <EmptyContent>
+                <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Accent" />&nbsp; Select a table first
+            </EmptyContent>
+        </FluentDataGrid>
+    </div>
+</FluentStack>
 
-    <FluentDataGrid Items="@selectedTableDataRows" 
-                    ShowHover="true"  
-                    ResizableColumns=true 
-                    GridTemplateColumns="1fr 4fr">
-        <ChildContent>
-            <PropertyColumn Property="@(t => t.Roll)" Sortable="true" />
-            <PropertyColumn Title="@secondColTitle" Property="@(t => t.Description)" Sortable="true" />
-        </ChildContent>
-        <EmptyContent>
-            <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Accent" />&nbsp; Select a table first
-        </EmptyContent>
-    </FluentDataGrid>
 
-}
 
 @code {
     private MetaTables? selectedTable;
