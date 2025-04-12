@@ -98,7 +98,7 @@ public class GameTurn
     private void FinishDoubleSizedRoom(DiceResult dResult)
     {
         if(LastDiceResult == null){
-            throw new Exception("Lost the first dices result. PLease start the turn again.");
+            throw new Exception("Lost the first dice result. PLease start the turn again.");
         }
         LastDiceResult.PrimaryDice += dResult.PrimaryDice;
         LastDiceResult.SecondaryDice += dResult.SecondaryDice;
