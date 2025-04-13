@@ -24,20 +24,20 @@
             </FluentAccordion>
 
             <FluentStack Orientation="Orientation.Horizontal">
-                <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isRollDicesDisable)">Roll
-                    Dices</FluentButton>
+                <FluentButton @onclick=RollDice Appearance="Appearance.Accent" disabled="@(isRollDiceDisable)">Roll
+                    Dice</FluentButton>
                 <FluentButton @onclick=PickADoor Appearance="Appearance.Accent">Pick a Door</FluentButton>
             </FluentStack>
 
             <div style="padding:20px;">
                 @if (diceResult.PrimaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@diceResult.PrimaryDice" />
+                    <Dice color="Dice.DiceColor.red" size="Dice.DiceSize.regular" face="@diceResult.PrimaryDice" />
 
                 }
                 @if (diceResult.SecondaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@diceResult.SecondaryDice" />
+                    <Dice color="Dice.DiceColor.purple" size="Dice.DiceSize.regular" face="@diceResult.SecondaryDice" />
                 }
             </div>
 
@@ -105,7 +105,7 @@
     MappedRoom? nextRoom = new MappedRoom();
     DiceResult diceResult = new DiceResult();
 
-    bool isRollDicesDisable = false;
+    bool isRollDiceDisable = false;
     string? activeid = "tab-map";
     FluentTab? changedto;
 
@@ -153,9 +153,9 @@
     }
 
 
-    private void RollDices()
+    private void RollDice()
     {
-        var dResult = DiceResult.Roll2Dices();
+        var dResult = DiceResult.Roll2Dice();
     }
 
     private async Task PickADoor()
@@ -169,6 +169,7 @@
                 var destinationRoom = currentAdventure!.Dungeon.GetRoom(exit.TargetRoomId.Value);
                 currentAdventure!.Dungeon.ChangeRoom(currentRoom!, destinationRoom!);
                 currentRoom = destinationRoom;
+                gameTurnInstructions = "You already visited that room, Pick another door!";
                 await RefreshCanvas();
                 return;
             }
@@ -184,6 +185,7 @@
             if (newRoomId is not null && newRoomId > 0)
             {
                 exit.TargetRoomId = newRoomId;
+                gameTurnInstructions = "Proceed with the encounter";
             }
         }
             

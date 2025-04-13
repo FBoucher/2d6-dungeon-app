@@ -27,14 +27,14 @@
         <FluentHeader>Create a new Dungeon</FluentHeader>
         <FluentStack Orientation="Orientation.Vertical">
             <p id="message"></p>
-            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel
+            <FluentButton @onclick=RollDice Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel
             </FluentButton>
         </FluentStack>
         <div style="padding:20px;">
             @if (dResult != null)
             {
-                <Dices face="@dResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
-                <Dices face="@dResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+                <Dice face="@dResult.PrimaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.red"></Dice>
+                <Dice face="@dResult.SecondaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.purple"></Dice>
             }
         </div>
         <canvas id="dotCanvas" style="width: 300px; height: 300px;"></canvas>
@@ -86,10 +86,10 @@
     }
 
 
-    private async Task RollDices()
+    private async Task RollDice()
     {
         await MapTools.RefreshCanvas(JSRuntime);
-        dResult = DiceResult.Roll2Dices();
+        dResult = DiceResult.Roll2Dice();
 
         entryRoom = Dungeon.StartDungeonLevel(ref dResult);
         entryRoom.IsLobby = true;

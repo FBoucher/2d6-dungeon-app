@@ -16,7 +16,7 @@ public class DiceResult
         var die = new List<int> { 1,2,3,4,5,6 };
         return die.OrderBy(x => Guid.NewGuid()).First<int>(); 
     }
-    public static DiceResult Roll2Dices()
+    public static DiceResult Roll2Dice ()
     {
         var result = new DiceResult();
         result.DiceRolled = DiceRolled.TwoD6;
