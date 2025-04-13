@@ -15,7 +15,7 @@
               OnFinish="@OnFinishedAsync">
 
     <Steps>
-        <FluentWizardStep   Label="Dimentions"
+        <FluentWizardStep   Label="Dimensions"
                             Summary="Determine the dimension of the room"
                           OnChange="@OnStepChange">
             <FluentStack Orientation="Orientation.Vertical">
@@ -104,7 +104,7 @@
     protected override void OnInitialized()
     {
         gameTurn.d6Service = d6Service;
-        gameTurn.Message = "Roll 2D6 to determine the dimention of the room";
+        gameTurn.Message = "Roll 2D6 to determine the dimension of the room";
         gameTurn.CurrentRoom = Content;
         
         //await MapTools.RefreshCanvas(JSRuntime);
@@ -115,7 +115,7 @@
         Console.WriteLine($"Go to step {e.TargetLabel} (#{e.TargetIndex})");
         switch(e.TargetIndex){
             case 0:
-                gameTurn.Message = "Roll 2D6 to determine the dimention of the room";
+                gameTurn.Message = "Roll 2D6 to determine the dimension of the room";
                 break;
             case 1:
                 gameTurn.Message = "Roll 1D6 to determines the number of exits in the room";
