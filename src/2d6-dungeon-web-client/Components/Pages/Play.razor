@@ -169,6 +169,7 @@
                 var destinationRoom = currentAdventure!.Dungeon.GetRoom(exit.TargetRoomId.Value);
                 currentAdventure!.Dungeon.ChangeRoom(currentRoom!, destinationRoom!);
                 currentRoom = destinationRoom;
+                gameTurnInstructions = "You already visited that room, Pick another door!";
                 await RefreshCanvas();
                 return;
             }
@@ -184,6 +185,7 @@
             if (newRoomId is not null && newRoomId > 0)
             {
                 exit.TargetRoomId = newRoomId;
+                gameTurnInstructions = "Proceed with the encounter";
             }
         }
             
