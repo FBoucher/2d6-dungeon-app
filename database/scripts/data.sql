@@ -6,6 +6,13 @@ INSERT INTO db2d6.meta_table(code, name)
 VALUES('bst1', 'Body Search 1');
 INSERT INTO db2d6.meta_table(code, name)
 VALUES('bst2', 'Body Search 2');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('sct1', 'Scrolls T1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('sct2', 'Scrolls T2');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('got1', 'God T1');
+
 
 
 -- Starting Amour
