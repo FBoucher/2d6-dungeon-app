@@ -5,7 +5,18 @@ VALUES('l1p', 'Level 1 Patrols');
 INSERT INTO db2d6.meta_table(code, name)
 VALUES('bst1', 'Body Search 1');
 INSERT INTO db2d6.meta_table(code, name)
-VALUES('bst2', 'Body Search 2');
+VALUES('sct1', 'Scrolls T1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('got1', 'God T1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('bt1', 'Loot Bag T1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('ct1', 'Chest T1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('pt1', 'Pouch T1');
+INSERT INTO db2d6.meta_table(code, name)
+VALUES('enp1', 'Encounter Prisoner T1');
+
 
 
 -- Starting Amour

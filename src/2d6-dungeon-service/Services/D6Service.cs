@@ -280,12 +280,12 @@ public class D6Service
                 return null;
             }
             
-            var headers = lines[0].Split(',').Select(h => h.Trim()).ToArray();
+            var headers = lines[0].Split('|').Select(h => h.Trim()).ToArray();
             
             var rows = new List<SimpleTable2D6Row>();
             for (int i = 1; i < lines.Length; i++)
             {
-                var cols = lines[i].Split(',');
+                var cols = lines[i].Split('|');
                 rows.Add(new SimpleTable2D6Row{
                                                 Roll = cols[0], 
                                                 Description = cols[1].Trim('"')
