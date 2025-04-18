@@ -20,14 +20,14 @@ else{
                             DiceShifted="PrimaryDiceShifted"></ShiftButtons>
             <FluentStack Orientation="Orientation.Vertical" VerticalGap="2" HorizontalGap="0" Width="145">
                 <span>
-                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="primaryShiftedDice" />
-                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="secondaryShiftedDice" />
+                    <Dice color="Dice.DiceColor.red" size="Dice.DiceSize.regular" face="primaryShiftedDice" />
+                    <Dice color="Dice.DiceColor.purple" size="Dice.DiceSize.regular" face="secondaryShiftedDice" />
                 </span>
                 @shiftLeft shift left
                 <span>
-                    <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dices IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
-                    <FluentButton Appearance="Appearance.Accent" @onclick=ResetDices IconStart="@(new Icons.Regular.Size16.ArrowCounterclockwise())" 
-                                    Title="Resets the Dices before any shift adjustment" >Reset</FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" @onclick=Roll2Dice IconStart="@(new Icons.Regular.Size16.Cube())">Roll</FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" @onclick=ResetDice IconStart="@(new Icons.Regular.Size16.ArrowCounterclockwise())" 
+                                    Title="Resets the Dice before any shift adjustment" >Reset</FluentButton>
                 </span>
             </FluentStack>
             <ShiftButtons   rolledValue="@secondaryDice" 
@@ -43,7 +43,7 @@ else{
 
         <FluentStack Orientation="Orientation.Horizontal" Width="100%">
             <FluentCard Width="600px"> 
-                <AdventurerCard Player="CombatState.Player" Extented=true></AdventurerCard>
+                <AdventurerCard Player="CombatState.Player" Extented=true Editable=true></AdventurerCard>
             </FluentCard>
             <FluentCard Width="400px">
                 <QuickReferenceCombatCard   TurnCounter="@CombatState.TurnCounter" 
@@ -51,7 +51,7 @@ else{
                 </QuickReferenceCombatCard>
             </FluentCard>
             <FluentCard Width="400px">
-                <CreatureCard creature="CombatState.Creature"></CreatureCard> 
+                <CreatureCard creature="CombatState.Creature" Editable=true></CreatureCard> 
             </FluentCard>
         </FluentStack>
         <CombatJournal actions="CombatState.CombatActions" ></CombatJournal>
@@ -71,7 +71,7 @@ else{
     
     private int adjustmentShift = 0;
     private int adjustedShift = 0;
-    private DiceResult? originalDices;
+    private DiceResult? originalDice;
     private int shiftLeft = 0;
     private int primaryDice = 0;
     private int primaryShiftedDice = 0;
@@ -114,11 +114,11 @@ else{
         CombatStateChanged.InvokeAsync(CombatState);
     }
 
-    private void Roll2Dices()
+    private void Roll2Dice()
     {
-        var dices = originalDices = DiceResult.Roll2Dices();
-        primaryDice = primaryShiftedDice = dices.PrimaryDice;
-        secondaryDice = secondaryShiftedDice = dices.SecondaryDice;
+        var dice = originalDice = DiceResult.Roll2Dice();
+        primaryDice = primaryShiftedDice = dice.PrimaryDice;
+        secondaryDice = secondaryShiftedDice = dice.SecondaryDice;
 
         CombatState.CombatActions.Add($"Rolled {primaryDice} and {secondaryDice}");
         
@@ -187,12 +187,12 @@ else{
         //return adjustedShift - Math.Abs(primaryDice - primaryShiftedDice) - Math.Abs(secondaryDice - secondaryShiftedDice);
     }
 
-    private void ResetDices()
+    private void ResetDice()
     {
-        primaryDice = primaryShiftedDice = originalDices?.PrimaryDice ?? 0;
-        secondaryDice = secondaryShiftedDice = originalDices?.SecondaryDice ?? 0;
+        primaryDice = primaryShiftedDice = originalDice?.PrimaryDice ?? 0;
+        secondaryDice = secondaryShiftedDice = originalDice?.SecondaryDice ?? 0;
         shiftLeft = adjustedShift;
-        CombatState.CombatActions.Add($"Reset Dices");
+        CombatState.CombatActions.Add($"Reset Dice");
         StateHasChanged();
     }
 

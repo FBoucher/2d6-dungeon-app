@@ -7,22 +7,22 @@
             <span class="sheetTitle">Combat FATIGUE and SHIFT adjustment platform</span>
             <div>Combat Fatigue</div>
             <FluentStack Orientation="Orientation.Horizontal" VerticalGap="5">
-                <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.regular" face="@fatigue" />
+                <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.regular" face="@fatigue" />
                 <div>
                     Start the dice at 1. Every time you finish a turn the fatigue dice up 1 number. When you reach 4 +1 Shift, 5 +2 Shift and 6 +3 Shift. Shift remains +3 until the combat is over.
                 </div>
             </FluentStack>
             <div>Shift Adjustment</div>
             <FluentStack Orientation="Orientation.Horizontal" VerticalGap="5">
-                <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.regular" face="@ShiftAdjustment" />
+                <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.regular" face="@ShiftAdjustment" />
                 <div>
-                    When the fatigue dices reaches 4 put the Shift adjustment starts. This modifier applies to the player and the foe. Both benefit from the Shift bonus.
+                    When the fatigue dice reaches 4 put the Shift adjustment starts. This modifier applies to the player and the foe. Both benefit from the Shift bonus.
                 </div>
             </FluentStack>
         </FluentStack>
     </FluentTab>
 
-    @* Roll to Hit Shifting the dices *@
+    @* Roll to Hit Shifting the dice *@
     <FluentTab Id="tab-card1" Label="Hit  and Shifting" Icon="@(new Icons.Regular.Size24.TargetEdit())">
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
             <div>Roll to Hit</div>

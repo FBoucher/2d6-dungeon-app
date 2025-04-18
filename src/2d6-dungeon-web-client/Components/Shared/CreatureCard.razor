@@ -12,7 +12,14 @@
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
         <div>
             <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5">
-                <span><b>HP:</b> @creature.health_points</span>
+                @if(Editable)
+                {
+                    <span><b>HP:</b> <FluentNumberField @bind-Value=creature.health_points style="width: 70px;"/></span>
+                }
+                else 
+                {
+                    <span><b>HP:</b> @creature.health_points</span>
+                }
                 <span><b>XP:</b> @creature.experience.ToString()</span>
                 <span><b>SH:</b> @creature.shift_points.ToString()</span>
             </FluentStack>
@@ -31,14 +38,14 @@
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5"  >
         <div style="width=50%; background-color: rgb(183, 211, 218)">
             <div>
-                <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.tiny" diceset="1-1" />
+                <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" diceset="1-1" />
                 <b>Prime Attack Roll:</b>
             </div>
             <div>@creature.prime_attack_rolls</div>
         </div>
         <div style="width=50%; background-color: rgb(248, 183, 193)">
             <div>
-                <Dices color="Dices.DiceColor.white" size="Dices.DiceSize.tiny" diceset="6-6" />
+                <Dice color="Dice.DiceColor.white" size="Dice.DiceSize.tiny" diceset="6-6" />
                 <b>Mishap Attack Roll:</b>
                 </div>
             <div>@creature.mishap_attack_rolls</div>
@@ -55,6 +62,8 @@
     [Parameter] 
     public EventCallback<Creature> creatureChanged { get; set; }
 
+    [Parameter]
+    public bool Editable { get; set; } = false;
 
 
 

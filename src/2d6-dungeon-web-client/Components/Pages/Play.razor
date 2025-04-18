@@ -3,10 +3,13 @@
 @inject D6Service d6Service;
 @inject IJSRuntime JSRuntime;
 @inject IDialogService DialogService;
+@inject IToastService ToastService;
 
 @rendermode InteractiveServer
 
 <PageTitle>Play</PageTitle>
+
+<FluentButton @onclick="@( () => SaveAventure())" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Save())" />
 
 <FluentTabs @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange">
 
@@ -24,38 +27,49 @@
             </FluentAccordion>
 
             <FluentStack Orientation="Orientation.Horizontal">
-                <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(isRollDicesDisable)">Roll
-                    Dices</FluentButton>
+                <FluentButton @onclick=RollDice Appearance="Appearance.Accent" disabled="@(isRollDiceDisable)">Roll
+                    Dice</FluentButton>
                 <FluentButton @onclick=PickADoor Appearance="Appearance.Accent">Pick a Door</FluentButton>
             </FluentStack>
 
             <div style="padding:20px;">
                 @if (diceResult.PrimaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.red" size="Dices.DiceSize.regular" face="@diceResult.PrimaryDice" />
+                    <Dice color="Dice.DiceColor.red" size="Dice.DiceSize.regular" face="@diceResult.PrimaryDice" />
 
                 }
                 @if (diceResult.SecondaryDice != 0)
                 {
-                    <Dices color="Dices.DiceColor.purple" size="Dices.DiceSize.regular" face="@diceResult.SecondaryDice" />
+                    <Dice color="Dice.DiceColor.purple" size="Dice.DiceSize.regular" face="@diceResult.SecondaryDice" />
                 }
             </div>
 
-            <canvas id="dotCanvas" style="width: 800px; height: 800px;"></canvas>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10">
 
-            <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
-            <div style="width: 100px;">
-                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
-                    <FluentButton @onclick="@( () => MoveRoom("LEFT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowLeft())" />
-                    <FluentStack Orientation="Orientation.Vertical">
-                        <FluentButton @onclick="@( () => MoveRoom("UP"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowUp())" />
-                        <FluentButton @onclick="@( () => MoveRoom("DOWN"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowDown())" />
+                <canvas id="dotCanvas" style="width: 800px; height: 800px;"></canvas>
+
+                <div>
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="10" >
+
+                        <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
+
+                        
+                        <div style="width: 100px;">
+                            <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                                <FluentButton @onclick="@( () => MoveRoom("LEFT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowLeft())" />
+                                <FluentStack Orientation="Orientation.Vertical">
+                                    <FluentButton @onclick="@( () => MoveRoom("UP"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowUp())" />
+                                    <FluentButton @onclick="@( () => MoveRoom("DOWN"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowDown())" />
+                                </FluentStack>
+                                <FluentButton @onclick="@( () => MoveRoom("RIGHT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowRight())" />
+                            </FluentStack> 
+                        </div>
+                        <FluentLabel Color="@Color.Disabled">Once you have a new room, position it using the arrows above, then pin it to the map with the button below.</FluentLabel>
+                        <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
+
                     </FluentStack>
-                    <FluentButton @onclick="@( () => MoveRoom("RIGHT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowRight())" />
-                </FluentStack> 
-            </div>
-                   
-            <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
+                </div>
+            </FluentStack>
         </FluentStack>
 
     </FluentTab>
@@ -72,10 +86,16 @@
         <Combat @bind-CombatState="currentAdventure!.CombatState"></Combat>
     </FluentTab>
 
-
-    <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
+    <FluentTab Id="tab-tables" Label="Tables" Icon="@(new Icons.Regular.Size24.Table())"
         DeferredLoading=true>
-        Tab three content. This is for testing.
+        <TableViewer />
+    </FluentTab>
+
+
+    <FluentTab Id="tab-note" Label="Game Notes" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
+        DeferredLoading=true>
+
+        <FluentTextArea @bind-Value=@currentAdventure!.Notes Label="Notes:" Rows="15" style="width: 100%;height: 100%;"/>
     </FluentTab>
 
 </FluentTabs>
@@ -90,7 +110,7 @@
     MappedRoom? nextRoom = new MappedRoom();
     DiceResult diceResult = new DiceResult();
 
-    bool isRollDicesDisable = false;
+    bool isRollDiceDisable = false;
     string? activeid = "tab-map";
     FluentTab? changedto;
 
@@ -106,11 +126,17 @@
             gameTurn = new GameTurn();
             gameTurn.d6Service = d6Service;
 
-            currentAdventure = await d6Service.GetAdventure(adventureId);
-            currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
-            currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.IsLobby == true).First<MappedRoom>();
-            gameTurnInstructions = "Press Roll Dices to roll the dimentions and pick a door to enter the next room.";
-            await FillCanvas();
+            if(adventureId > 0)
+            {
+                currentAdventure = await d6Service.GetAdventure(adventureId);
+                currentAdventure.CombatState = new CombatState(currentAdventure.Adventurer);
+                currentRoom = currentAdventure.Dungeon.GetRooms().Where<MappedRoom>(room => room.YouAreHere == true).First<MappedRoom>();
+                if (currentRoom.IsLobby)
+                {
+                    gameTurnInstructions = "You are in the lobby, you can go anywhere!";
+                }
+                await FillCanvas();
+            }
         }
         catch (Exception ex)
         {
@@ -132,17 +158,40 @@
     }
 
 
-    private void RollDices()
+    private void RollDice()
     {
-        var dResult = DiceResult.Roll2Dices();
+        var dResult = DiceResult.Roll2Dice();
     }
 
     private async Task PickADoor()
     {
         Direction? directionTo = await OpenSelectDoorDialogDialogAsync();
         if(directionTo is not null){
+            var exit = currentRoom!.Exits[directionTo.Value];
+
+            if (exit.TargetRoomId > 0)
+            {
+                var destinationRoom = currentAdventure!.Dungeon.GetRoom(exit.TargetRoomId.Value);
+                currentAdventure!.Dungeon.ChangeRoom(currentRoom!, destinationRoom!);
+                currentRoom = destinationRoom;
+                gameTurnInstructions = "You already visited that room, Pick another door!";
+                await RefreshCanvas();
+                return;
+            }
+            else if (exit.TargetRoomId == -1)
+            {
+                gameTurnInstructions = "If you go there you will get out of the dungeon!";
+                //TODO: We should manage that better
+                return;
+            }
+
             Direction directionFrom = GameTurn.GetOppositeDirection(directionTo.Value);
-            await OpenNewRoomDialog(directionFrom);
+            var newRoomId = await OpenNewRoomDialog(directionFrom);
+            if (newRoomId is not null && newRoomId > 0)
+            {
+                exit.TargetRoomId = newRoomId;
+                gameTurnInstructions = "Proceed with the encounter";
+            }
         }
             
     }
@@ -176,7 +225,7 @@
             return null;            
     }
 
-    private async Task OpenNewRoomDialog(Direction directionFrom)
+    private async Task<int?> OpenNewRoomDialog(Direction directionFrom)
     {
         DialogParameters parameters = new()
             {
@@ -189,7 +238,8 @@
                 Modal = true
             };
 
-        nextRoom.IsLobby = false; 
+        nextRoom = currentAdventure!.Dungeon.GetNewRoom();
+
 
         IDialogReference dialog = await DialogService.ShowDialogAsync<NewRoomDialog>(nextRoom, parameters);
         DialogResult? result = await dialog.Result;
@@ -197,19 +247,21 @@
         if (!result.Cancelled)
         {
             nextRoom = result.Data as MappedRoom;
-
+//ID should be there!!!
             //Just temporary
             nextRoom!.CoordX = 20;
             nextRoom.CoordY = 10;
 
-            Char entranceWall = directionFrom.ToString()[0];
-            GameTurn.SetDungeonEntranceDoor(nextRoom!, entranceWall);
-            GameTurn.AssignExits(nextRoom!, entranceWall);
+            @* Char entranceWall = directionFrom.ToString()[0]; *@
+            GameTurn.SetDungeonEntranceDoor(nextRoom!, directionFrom, currentRoom.Id);
+            GameTurn.AssignExits(nextRoom!, directionFrom);
             
             var roomIdTest = nextRoom!.Id;
 
             await MapTools.DrawRoom(JSRuntime, nextRoom);
+            return roomIdTest;
         }
+        return null;
     }
 
     private async Task RenderCanvas()
@@ -248,8 +300,10 @@
     private async Task AddRoomToDungeon()
     {
         currentAdventure!.Dungeon.AddRoom(nextRoom!);
+        currentAdventure!.Dungeon.ChangeRoom(currentRoom!, nextRoom!);
         currentRoom = nextRoom;
-        await d6Service.AdventureSave(currentAdventure);
+
+        await SaveAventure();
 
         nextRoom = new MappedRoom();
         await RefreshCanvas();
@@ -274,4 +328,10 @@
         changed = item;
     }
 
+
+    private async Task SaveAventure()
+    {
+        await d6Service.AdventureSave(currentAdventure);
+        ToastService.ShowToast(ToastIntent.Success, "Adventure saved!");
+    }
 }

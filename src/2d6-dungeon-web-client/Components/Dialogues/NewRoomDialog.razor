@@ -15,18 +15,18 @@
               OnFinish="@OnFinishedAsync">
 
     <Steps>
-        <FluentWizardStep   Label="Dimentions"
+        <FluentWizardStep   Label="Dimensions"
                             Summary="Determine the dimension of the room"
                           OnChange="@OnStepChange">
             <FluentStack Orientation="Orientation.Vertical">
                 <p>@(gameTurn!.Message ?? string.Empty)</p>
-                <FluentButton @onclick=RollDicesForRoomDimensions Appearance="Appearance.Accent" disabled="@(isSizeSet)">Roll Dices</FluentButton>
+                <FluentButton @onclick=RollDiceForRoomDimensions Appearance="Appearance.Accent" disabled="@(isSizeSet)">Roll 2D6 </FluentButton>
 
                 <div style="padding:20px;">
-                    @if(sizeDicesResult != null)
+                    @if(sizeDiceResult != null)
                     {
-                        <Dices face="@sizeDicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
-                        <Dices face="@sizeDicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+                        <Dice  face="@sizeDiceResult.PrimaryDice" size="Dice .DiceSize.regular" color="Dice .DiceColor.red"></Dice >
+                        <Dice  face="@sizeDiceResult.SecondaryDice" size="Dice .DiceSize.regular" color="Dice .DiceColor.purple"></Dice >
                     }
                 </div>
             </FluentStack>
@@ -36,12 +36,12 @@
                           OnChange="@OnStepChange">
             <FluentStack Orientation="Orientation.Vertical">
                 <p>@(gameTurn!.Message ?? string.Empty)</p>
-                <FluentButton @onclick=RollDicesForExits Appearance="Appearance.Accent" disabled="@(isExitsSet)">Roll a Dice</FluentButton>
+                <FluentButton @onclick=RollDiceForExits Appearance="Appearance.Accent" disabled="@(isExitsSet)">Roll 1D6</FluentButton>
 
                 <div style="padding:20px;">
-                    @if(exitsDicesResult != null)
+                    @if(exitsDiceResult != null)
                     {
-                        <Dices face="@exitsDicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
+                        <Dice  face="@exitsDiceResult.PrimaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.red"></Dice>
                     }
                 </div>
             </FluentStack>
@@ -56,13 +56,13 @@
                           Disabled="@(isCorridor)">
             <FluentStack Orientation="Orientation.Vertical">
                 <p>@(gameTurn!.Message ?? string.Empty)</p>
-                <FluentButton @onclick=RollDicesForDescription Appearance="Appearance.Accent" disabled="@(isDescriptionSet)">Roll Dices</FluentButton>
+                <FluentButton @onclick=RollDiceForDescription Appearance="Appearance.Accent" disabled="@(isDescriptionSet)">Roll 2 Dice</FluentButton>
 
                 <div style="padding:20px;">
-                    @if(DescriptionDicesResult != null)
+                    @if(DescriptionDiceResult != null)
                     {
-                        <Dices face="@DescriptionDicesResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
-                        <Dices face="@DescriptionDicesResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+                        <Dice face="@DescriptionDiceResult.PrimaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.red"></Dice>
+                        <Dice face="@DescriptionDiceResult.SecondaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.purple"></Dice>
                     }
                 </div>
             </FluentStack>
@@ -93,9 +93,9 @@
     private GameTurn gameTurn = new GameTurn();
 
     private ActionType currentAction = ActionType.RollForARoom;
-    private DiceResult? sizeDicesResult = null;
-    private DiceResult? exitsDicesResult = null;
-    private DiceResult? DescriptionDicesResult = null;
+    private DiceResult? sizeDiceResult = null;
+    private DiceResult? exitsDiceResult = null;
+    private DiceResult? DescriptionDiceResult = null;
     private bool isSizeSet = false;
     private bool isExitsSet = false;
     private bool isDescriptionSet = false;
@@ -104,7 +104,7 @@
     protected override void OnInitialized()
     {
         gameTurn.d6Service = d6Service;
-        gameTurn.Message = "Roll 2D6 to determine the dimention of the room";
+        gameTurn.Message = "Roll 2D6 to determine the dimension of the room";
         gameTurn.CurrentRoom = Content;
         
         //await MapTools.RefreshCanvas(JSRuntime);
@@ -115,10 +115,10 @@
         Console.WriteLine($"Go to step {e.TargetLabel} (#{e.TargetIndex})");
         switch(e.TargetIndex){
             case 0:
-                gameTurn.Message = "Roll 2D6 to determine the dimention of the room";
+                gameTurn.Message = "Roll 2D6 to determine the dimension of the room";
                 break;
             case 1:
-                gameTurn.Message = "Roll a D6 to determines the number of exits in the room";
+                gameTurn.Message = "Roll 1D6 to determines the number of exits in the room";
                 break;
             case 2:
                 gameTurn.Message = "Roll 2D6 to know what's in that room";
@@ -132,40 +132,45 @@
     private async Task OnFinishedAsync()
     {
         Content = gameTurn.CurrentRoom!;
-        await Dialog.CloseAsync(Content);
+        await Dialog!.CloseAsync(Content);
     }
 
-    private async Task RollDicesForRoomDimensions()
+    private async Task RollDiceForRoomDimensions()
     {
-        sizeDicesResult = DiceResult.Roll2Dices();
-        await gameTurn.ContinueTurn(sizeDicesResult);
-        isSizeSet = true;
-        if(gameTurn.CurrentRoom!.IsCorridor)
+        sizeDiceResult = DiceResult.Roll2Dice();
+        
+        await gameTurn.ContinueTurn(sizeDiceResult);
+        if(gameTurn.NextAction != ActionType.DoubleSizedRoom)
         {
-            isDescriptionSet = true;
-            isCorridor = true;
+            isSizeSet = true;
+            if(gameTurn.CurrentRoom!.IsCorridor)
+            {
+                gameTurn.CurrentRoom.Description = "You found a corridor";
+                isDescriptionSet = true;
+                isCorridor = true;
+            }
         }
     }
 
-    private async Task RollDicesForExits()
+    private async Task RollDiceForExits()
     {
-        exitsDicesResult = DiceResult.Roll1Dice();
+        exitsDiceResult = DiceResult.Roll1Dice();
         gameTurn.NextAction = ActionType.RollForExits;
-        await gameTurn.ContinueTurn(exitsDicesResult);
+        await gameTurn.ContinueTurn(exitsDiceResult);
         isExitsSet = true;
     }
 
-    private async Task RollDicesForDescription()
+    private async Task RollDiceForDescription()
     {
-        DescriptionDicesResult = DiceResult.Roll2Dices();
+        DescriptionDiceResult = DiceResult.Roll2Dice();
         gameTurn.NextAction = ActionType.RollRoomDefinition;
-        await gameTurn.ContinueTurn(DescriptionDicesResult);
+        await gameTurn.ContinueTurn(DescriptionDiceResult);
         isDescriptionSet = true;
     }
 
     private async Task SaveAsync()
     {
-        await Dialog.CloseAsync(Content);
+        await Dialog!.CloseAsync(Content);
     }
 
 }

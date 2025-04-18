@@ -27,14 +27,14 @@
         <FluentHeader>Create a new Dungeon</FluentHeader>
         <FluentStack Orientation="Orientation.Vertical">
             <p id="message"></p>
-            <FluentButton @onclick=RollDices Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel
+            <FluentButton @onclick=RollDice Appearance="Appearance.Accent" disabled="@(!isStartDisable)">@actionLabel
             </FluentButton>
         </FluentStack>
         <div style="padding:20px;">
             @if (dResult != null)
             {
-                <Dices face="@dResult.PrimaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.red"></Dices>
-                <Dices face="@dResult.SecondaryDice" size="Dices.DiceSize.regular" color="Dices.DiceColor.purple"></Dices>
+                <Dice face="@dResult.PrimaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.red"></Dice>
+                <Dice face="@dResult.SecondaryDice" size="Dice.DiceSize.regular" color="Dice.DiceColor.purple"></Dice>
             }
         </div>
         <canvas id="dotCanvas" style="width: 300px; height: 300px;"></canvas>
@@ -69,6 +69,8 @@
         entryRoom!.CoordX = 14;
         entryRoom.CoordY = 20;
 
+        entryRoom.YouAreHere = true;
+
         betaAdventure.Dungeon.AddRoom(entryRoom);
 
         betaAdventure = await D6Service.AdventureSave(betaAdventure);
@@ -84,20 +86,21 @@
     }
 
 
-    private async Task RollDices()
+    private async Task RollDice()
     {
         await MapTools.RefreshCanvas(JSRuntime);
-        dResult = DiceResult.Roll2Dices();
+        dResult = DiceResult.Roll2Dice();
 
         entryRoom = Dungeon.StartDungeonLevel(ref dResult);
         entryRoom.IsLobby = true;
+        entryRoom.YouAreHere = true;
 
         //TODO: hardcoded temporary
         entryRoom.CoordX = 1;
         entryRoom.CoordY = 2;
 
-        GameTurn.SetDungeonEntranceDoor(entryRoom);
-        GameTurn.AssignExits(entryRoom, 'S');
+        GameTurn.SetDungeonEntranceDoor(entryRoom, Direction.South, -1);
+        GameTurn.AssignExits(entryRoom, Direction.South);
         await MapTools.DrawRoom(JSRuntime, entryRoom);
 
         actionLabel = "Press the Start button to begin your adventure";
@@ -108,46 +111,4 @@
     {
         await JSRuntime.InvokeVoidAsync("onResize");
     }
-
-    @* protected void SetDungeonEntranceDoor(MappedRoom currentRoom)
-    {
-        var mainDoor = new Exit();
-        //mainDoor.onWall = 'S';
-        mainDoor.PositionOnWall = (int) Math.Ceiling( (double)currentRoom.Width/2 );
-        mainDoor.Lockable = false;
-
-        if(currentRoom.Exits == null)
-            currentRoom.Exits = new Dictionary<char,Exit>();
-        currentRoom.Exits.Add('S', mainDoor);
-    } *@
-
-    @* protected void AssignExits(MappedRoom currentRoom, char entrance)
-    {
-        int seed = DateTime.UtcNow.Millisecond;
-        Random rnd = new Random(seed);
-        
-        var walls = new List<char>(){'N', 'E', 'S', 'W'};
-        walls.Remove(entrance);
-        var wallsWithExits = walls.OrderBy(x => Guid.NewGuid()).Take<char>(currentRoom.ExitsCount);
-
-        if(currentRoom.Exits == null)
-                currentRoom.Exits = new Dictionary<char,Exit>();
-
-        foreach(var wall in wallsWithExits.ToList())
-        {
-            var aDoor = new Exit();
-            int maxPos = 0;
-            //aDoor.onWall = wall;
-            if("EW".Contains(wall)){
-                maxPos =  (currentRoom.Height +1);
-            }
-            else{
-                maxPos =  (currentRoom.Width +1);
-            }
-            aDoor.PositionOnWall = rnd.Next(1, maxPos);
-            aDoor.Lockable = false;
-            currentRoom.Exits.Add(wall, aDoor); 
-        }
-    } *@
-
 }

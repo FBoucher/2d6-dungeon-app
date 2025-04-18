@@ -3,6 +3,7 @@ using System.Text.Json;
 using Bogus;
 using Bogus.DataSets;
 using c5m._2d6Dungeon;
+using c5m._2d6Dungeon.domain;
 using c5m._2d6Dungeon.Game;
 using Microsoft.Extensions.Logging;
 
@@ -229,6 +230,80 @@ public class D6Service
         var q = $"api/magic_potion?$filter=potion_type eq 'HEALING'";
         var result = await httpClient.GetFromJsonAsync<MagicPotionlList>(q);
         return result!.value.First<MagicPotion>();
+    }
+
+    #endregion
+
+
+    #region == Meta Tables =====
+
+
+    public async Task<MetaTablesList> GetMetaTables()
+    {
+        var result = await httpClient.GetFromJsonAsync<MetaTablesList>("api/meta_table", options);
+        return result ?? new MetaTablesList();
+    }
+
+    public async Task<SimpleTable2D6?> GetTableData(string tableCode)
+    {
+        try
+        {
+            string baseDirectory = AppContext.BaseDirectory;
+            string dataDirectory = Path.Combine(baseDirectory, "data");
+            
+            if (!Directory.Exists(dataDirectory))
+            {
+                string assemblyLocation = Path.GetDirectoryName(typeof(D6Service).Assembly.Location) ?? baseDirectory;
+                dataDirectory = Path.Combine(assemblyLocation, "data");
+                
+                if (!Directory.Exists(dataDirectory))
+                {
+                    string parentDir = Directory.GetParent(assemblyLocation)?.FullName ?? assemblyLocation;
+                    dataDirectory = Path.Combine(parentDir, "data");
+                }
+            }
+            
+            string filePath = Path.Combine(dataDirectory, $"{tableCode}.csv");
+            
+            logger.LogInformation($"Looking for table data at: {filePath}");
+            
+            if (!File.Exists(filePath))
+            {
+                logger.LogError($"Table CSV file not found: {filePath}");
+                return null;
+            }
+            
+            var lines = await File.ReadAllLinesAsync(filePath);
+            
+            if (lines.Length == 0)
+            {
+                return null;
+            }
+            
+            var headers = lines[0].Split('|').Select(h => h.Trim()).ToArray();
+            
+            var rows = new List<SimpleTable2D6Row>();
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var cols = lines[i].Split('|');
+                rows.Add(new SimpleTable2D6Row{
+                                                Roll = cols[0], 
+                                                Description = cols[1].Trim('"')
+                                            });
+            }
+            
+            return new SimpleTable2D6 
+            { 
+                TableCode = tableCode,
+                Headers = headers,
+                Rows = rows
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Error reading table {tableCode}");
+            return null;
+        }
     }
 
     #endregion

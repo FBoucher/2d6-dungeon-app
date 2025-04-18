@@ -15,7 +15,7 @@ public static class MapTools
         int gidX = (currentRoom.CoordX);
         int gidY = (currentRoom.CoordY);
 
-        await js.InvokeVoidAsync("DrawRoom", gidX, gidY, currentRoom.Width, currentRoom.Height);
+        await js.InvokeVoidAsync("DrawRoom", gidX, gidY, currentRoom.Width, currentRoom.Height, currentRoom.YouAreHere);
 
         await DrawDoors(js, currentRoom);
     }
@@ -31,20 +31,20 @@ public static class MapTools
 
             switch (door.Key)
             {
-                case 'N':
+                case Direction.North:
                     x = currentRoom.CoordX + door.Value.PositionOnWall;
                     y = currentRoom.CoordY;
                     break;
-                case 'E':
+                case Direction.East:
                     x = currentRoom.CoordX + currentRoom.Width;
                     y = currentRoom.CoordY + door.Value.PositionOnWall;
                     break;
-                case 'S':
+                case Direction.South:
                     x = currentRoom.CoordX + door.Value.PositionOnWall;
                     y = currentRoom.CoordY + currentRoom.Height;
                     isMain = currentRoom.IsLobby;
                     break;
-                case 'W':
+                case Direction.West:
                     x = currentRoom.CoordX;
                     y = currentRoom.CoordY + door.Value.PositionOnWall;
                     break;
@@ -56,9 +56,9 @@ public static class MapTools
 
     }
 
-    private static string GetDoorOrientation(char onWall)
+    private static string GetDoorOrientation(Direction onWall)
     {
-        if (onWall == 'S' || onWall == 'N')
+        if (onWall == Direction.South || onWall == Direction.North)
         {
             return "H";
         }
