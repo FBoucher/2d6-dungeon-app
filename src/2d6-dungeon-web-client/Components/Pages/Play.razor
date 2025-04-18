@@ -3,10 +3,13 @@
 @inject D6Service d6Service;
 @inject IJSRuntime JSRuntime;
 @inject IDialogService DialogService;
+@inject IToastService ToastService;
 
 @rendermode InteractiveServer
 
 <PageTitle>Play</PageTitle>
+
+<FluentButton @onclick="@( () => SaveAventure())" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Save())" />
 
 <FluentTabs @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange">
 
@@ -88,9 +91,10 @@
     </FluentTab>
 
 
-    <FluentTab Id="tab-stuff" Label="Other Stuff" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
+    <FluentTab Id="tab-note" Label="Game Notes" Icon="@(new Icons.Regular.Size24.ArchiveSettings())"
         DeferredLoading=true>
-        Tab three content. This is for testing.
+
+        <FluentTextArea @bind-Value=@currentAdventure!.Notes Label="Notes:" Rows="15" style="width: 100%;height: 100%;"/>
     </FluentTab>
 
 </FluentTabs>
@@ -298,9 +302,7 @@
         currentAdventure!.Dungeon.ChangeRoom(currentRoom!, nextRoom!);
         currentRoom = nextRoom;
 
-        await d6Service.AdventureSave(currentAdventure);
-
-        
+        await SaveAventure();
 
         nextRoom = new MappedRoom();
         await RefreshCanvas();
@@ -325,4 +327,10 @@
         changed = item;
     }
 
+
+    private async Task SaveAventure()
+    {
+        await d6Service.AdventureSave(currentAdventure);
+        ToastService.ShowToast(ToastIntent.Success, "Adventure saved!");
+    }
 }
