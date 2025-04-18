@@ -11,16 +11,24 @@
                 OnClick="@(() => ToggleExtended())">
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="0">
             <FluentLabel Typo="Typography.H3">@Player.Name</FluentLabel>
-            <FluentLabel Typo="Typography.Body"><b>XP:</b> @Player.XP.ToString()</FluentLabel>
-            <FluentLabel Typo="Typography.Body"><b>Level:</b> @Player.Level.ToString()</FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>XP:</b><FluentNumberField @bind-Value="@Player.XP" style="width: 80px;" /></FluentLabel>
+            <FluentLabel Typo="Typography.Body"><b>Level:</b> <FluentNumberField @bind-Value="@Player.Level" style="width: 80px;" /></FluentLabel>
         </FluentStack>
 </FluentPersona>
 @if(Extented)
 {
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="5" Width="100%">
         <div>
-            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="5" Width="100%">
-                <span class="sheetTitle">HP</span> @Player.HealthPoints.ToString()
+            <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Bottom" HorizontalGap="5" Width="100%">
+                @if(Editable)
+                {
+                    <span class="sheetTitle">HP</span> <FluentNumberField @bind-Value="@Player.HealthPoints" style="width: 80px;" />
+                }
+                else 
+                {
+                    <span class="sheetTitle">HP</span> @Player.HealthPoints.ToString()
+                }
+                    
                 <span class="sheetTitle">SH </span> @Player.Shift.ToString()
                 <span><span class="sheetTitle">Precision</span> @Player.Precision.ToString()</span>
             </FluentStack>
@@ -47,6 +55,9 @@
 
     [Parameter]
     public bool Extented { get; set; } = false;
+
+    [Parameter]
+    public bool Editable { get; set; } = false;
 
     private void ToggleExtended()
     {

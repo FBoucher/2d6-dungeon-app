@@ -53,6 +53,7 @@
 
                         <FluentButton @onclick=RefreshCanvas Appearance="Appearance.Accent">Refresh Canvas</FluentButton>
 
+                        
                         <div style="width: 100px;">
                             <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
                                 <FluentButton @onclick="@( () => MoveRoom("LEFT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowLeft())" />
@@ -63,7 +64,7 @@
                                 <FluentButton @onclick="@( () => MoveRoom("RIGHT"))" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.ArrowRight())" />
                             </FluentStack> 
                         </div>
-    
+                        <FluentLabel Color="@Color.Disabled">Once you have a new room, position it using the arrows above, then pin it to the map with the button below.</FluentLabel>
                         <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
 
                     </FluentStack>
