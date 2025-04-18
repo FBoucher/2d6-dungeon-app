@@ -9,6 +9,7 @@ public class Adventure
     public Dungeon Dungeon { get; set; }
     public CombatState? CombatState { get; set; }
     GameTurn? GameTurn { get; set; }
+    public string Notes { get; set; } = string.Empty;
 
 
     public Adventure()
@@ -31,6 +32,7 @@ public class Adventure
             Adventurer = aComplete.Adventurer;
             Dungeon = aComplete.Dungeon;
             GameTurn = aComplete.GameTurn;
+            Notes = aComplete.Notes;
         }
     }
 

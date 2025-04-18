@@ -9,7 +9,7 @@
 <FluentStack Orientation="Orientation.Vertical">
     <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Bottom">
         <div>
-            <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => t.Name)"
+            <FluentSelect Items=@metatablesQueryable Label="Select Table" OptionText="@(t => string.Concat(t.Code, " - ", t.Name))"
                 OptionValue="@(t => t.Code)" SelectedOptionChanged="@((MetaTables t) => TableSelected(t))"
                 Placeholder="Select a Table" />
         </div>
