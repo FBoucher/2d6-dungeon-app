@@ -478,3 +478,6 @@ $RECYCLE.BIN/
 *.env
 
 notes.md
+.azure
+
+next-steps.md
