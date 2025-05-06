@@ -15,6 +15,7 @@ var dab = builder.AddDataAPIBuilder("dab", ["../../database/dab-config.json"])
 
 builder.AddProject<Projects._2d6_dungeon_web_client>("webapp") 
         .WaitFor(dab)
-        .WithReference(dab); 
+        .WithReference(dab)
+        .WithExternalHttpEndpoints(); 
 
 builder.Build().Run();
