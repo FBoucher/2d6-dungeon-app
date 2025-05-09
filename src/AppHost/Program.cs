@@ -9,7 +9,7 @@ var db2d6 = mysql.AddDatabase("db2d6");
 // mysql.WithBindMount(source: "../../database/scripts/schema.sql", target: "/docker-entrypoint-initdb.d/1.sql")
 //      .WithBindMount(source: "../../database/scripts/data.sql",  target: "/docker-entrypoint-initdb.d/2.sql");
 
-mysql.WithInitBindMount(source: "../../database/scripts", isReadOnly: true);
+mysql.WithInitBindMount(source: "../../database/scripts", isReadOnly: false);
 
 //mysql.WithBindMount(, target: "/docker-entrypoint-initdb.d");
 
