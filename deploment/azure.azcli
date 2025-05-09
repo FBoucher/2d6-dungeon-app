@@ -1,7 +1,0 @@
-
-
-az group create --name c5m2d6Dungeon --location "East US"
-
-az appservice plan create --name 2d6ServicePlan --resource-group c5m2d6Dungeon --sku S1 --is-linux
-
-az webapp create --resource-group c5m2d6Dungeon --plan 2d6ServicePlan --name 2d6DungeonApp --multicontainer-config-type compose --multicontainer-config-file docker-compose-api.yml
