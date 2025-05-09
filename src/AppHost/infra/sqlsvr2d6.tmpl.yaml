@@ -1,0 +1,47 @@
+api-version: 2024-02-02-preview
+location: {{ .Env.AZURE_LOCATION }}
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    ? "{{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}"
+    : {}
+properties:
+  environmentId: {{ .Env.AZURE_CONTAINER_APPS_ENVIRONMENT_ID }}
+  configuration:
+    activeRevisionsMode: single
+    runtime:
+      dotnet:
+        autoConfigureDataProtection: true
+    ingress:
+      external: false
+      targetPort: 3306
+      transport: tcp
+      allowInsecure: false
+    registries:
+      - server: {{ .Env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}
+        identity: {{ .Env.AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID }}
+    secrets:
+      - name: mysql-root-password
+        value: '{{ securedParameter "sqlsvr2d6_password" }}'
+  template:
+    volumes:
+      - name: sqlsvr2d6-bm0
+        storageType: AzureFile
+        storageName: {{ .Env.SERVICE_SQLSVR2D6_VOLUME_BM0_NAME }} 
+    containers:
+      - image: {{ .Image }}
+        name: sqlsvr2d6
+        env:
+          - name: AZURE_CLIENT_ID
+            value: {{ .Env.MANAGED_IDENTITY_CLIENT_ID }}
+          - name: MYSQL_ROOT_PASSWORD
+            secretRef: mysql-root-password
+        volumeMounts:
+          - volumeName: sqlsvr2d6-bm0
+            mountPath: /docker-entrypoint-initdb.d
+    scale:
+      minReplicas: 1
+      maxReplicas: 1
+tags:
+  azd-service-name: sqlsvr2d6
+  aspire-resource-name: sqlsvr2d6
