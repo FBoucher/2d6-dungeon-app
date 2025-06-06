@@ -66,7 +66,7 @@
                         </div>
                         <FluentLabel Color="@Color.Disabled">Once you have a new room, position it using the arrows above, then pin it to the map with the button below.</FluentLabel>
                         <FluentButton @onclick=AddRoomToDungeon Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.LocationAdd())" /> 
-
+                        <FluentButton @onclick=EditRoom Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.TargetEdit())" >Edit Room</FluentButton> 
                     </FluentStack>
                 </div>
             </FluentStack>
@@ -308,6 +308,45 @@
         nextRoom = new MappedRoom();
         await RefreshCanvas();
     }
+
+    private async Task EditRoom()
+    {
+        var editedRoom = await OpenEditRoomDialog();
+        if (editedRoom != null)
+        {
+            nextRoom = editedRoom;
+            await RefreshCanvas();
+            await MapTools.DrawRoom(JSRuntime, nextRoom!);
+        }
+    }
+
+    private async Task<MappedRoom?> OpenEditRoomDialog()
+    {
+        if (nextRoom != null)
+        {     
+            DialogParameters parameters = new()
+                {
+                    Title = $"Edit Room",
+                    PrimaryAction = "Save",
+                    PrimaryActionEnabled = false,
+                    SecondaryAction = "Cancel", 
+                    Width = "800px",
+                    TrapFocus = true,
+                    Modal = true
+                };
+
+            IDialogReference dialog = await DialogService.ShowDialogAsync<EditRoomDialog>(nextRoom, parameters);
+            DialogResult? result = await dialog.Result;
+
+            if (!result.Cancelled)
+            {
+                nextRoom = result.Data as MappedRoom;
+                return nextRoom!;
+            }
+        }
+        return null;
+    }
+
 
     private async Task FillCanvas()
     {

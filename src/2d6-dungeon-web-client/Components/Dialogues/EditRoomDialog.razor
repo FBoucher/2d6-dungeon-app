@@ -1,0 +1,61 @@
+﻿@implements IDialogContentComponent<MappedRoom>
+@rendermode InteractiveServer
+
+
+    <div>
+        <h3>Move a door</h3>
+        <FluentRadioGroup @bind-Value=@selectedExitId Label="Select a door to move" >
+            @foreach(var door in @Content!.Exits!)
+            {
+                <FluentRadioButton Value="@door.Key">@door.Key</FluentRadioButton>
+            }
+        </FluentRadioGroup>
+        <FluentButton OnClick="@(() => MoveExit('A'))" >move to</FluentButton>
+        <FluentButton OnClick="@(() => MoveExit('B'))">move to</FluentButton>
+    </div>
+
+
+
+
+@code {
+
+    [Parameter]
+    public required MappedRoom Content { get; set; } = default!;
+
+    [CascadingParameter]
+    public FluentDialog? Dialog { get; set; } = default!;
+
+    private int selectedExitId { get; set; } = 0;
+    private Exit selectedExit { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // init
+    }
+
+    private async Task SaveAsync()
+    {
+            await Dialog.CloseAsync(Content);
+    }
+
+    private void MoveExit(char direction)
+    {
+        if (Content.Exits == null || Content.Exits.Count == 0 || selectedExitId == 0) 
+            return;
+
+        selectedExit = Content.Exits.ElementAt(selectedExitId).Value;
+        
+        switch (direction)
+        {
+            case 'A':
+                selectedExit.PositionOnWall = selectedExit.PositionOnWall--;
+                break;
+            case 'B':
+                selectedExit.PositionOnWall = selectedExit.PositionOnWall++;
+                break;
+            default:
+                return; // Invalid direction
+        }
+    }
+
+}
