@@ -1,0 +1,13 @@
+operations:
+- type: FileShareUpload
+  description: Upload files for dab
+  config:
+    storageAccount: ${AZURE_VOLUMES_STORAGE_ACCOUNT}
+    fileShareName: ${SERVICE_DAB_FILE_SHARE_BM0_NAME}
+    path: /home/frank/mydev/github/fboucher/2d6-dungeon-app/database/dab-config.json
+- type: FileShareUpload
+  description: Upload files for sqlsvr2d6
+  config:
+    storageAccount: ${AZURE_VOLUMES_STORAGE_ACCOUNT}
+    fileShareName: ${SERVICE_SQLSVR2D6_FILE_SHARE_BM0_NAME}
+    path: /home/frank/mydev/github/fboucher/2d6-dungeon-app/database/scripts
