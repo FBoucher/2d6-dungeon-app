@@ -4,14 +4,20 @@
 
     <div>
         <h3>Move a door</h3>
-        <FluentRadioGroup @bind-Value=@selectedExitId Label="Select a door to move" >
+        <FluentRadioGroup Name="selectedExit" @bind-Value=@selectedExitKey @onchange=@SelectedExit_onchange Label="Select a door to move" >
             @foreach(var door in @Content!.Exits!)
             {
-                <FluentRadioButton Value="@door.Key">@door.Key</FluentRadioButton>
+                <FluentRadio Value="@door.Key">@door.Key</FluentRadio>
             }
         </FluentRadioGroup>
-        <FluentButton OnClick="@(() => MoveExit('A'))" >move to</FluentButton>
-        <FluentButton OnClick="@(() => MoveExit('B'))">move to</FluentButton>
+        <div id="verticalAxe" hidden="@verticalAxeHidden">
+            <FluentButton OnClick="@(() => MoveExit('U'))" >move up</FluentButton>
+            <FluentButton OnClick="@(() => MoveExit('D'))" >move down</FluentButton>
+        </div>
+        <div id="horizontalAxe" hidden="@horizontalAxeHidden">
+            <FluentButton OnClick="@(() => MoveExit('L'))" >move left</FluentButton>
+            <FluentButton OnClick="@(() => MoveExit('R'))" >move right</FluentButton>
+        </div>
     </div>
 
 
@@ -25,8 +31,11 @@
     [CascadingParameter]
     public FluentDialog? Dialog { get; set; } = default!;
 
-    private int selectedExitId { get; set; } = 0;
+    private Direction? selectedExitKey { get; set; } = null;
     private Exit selectedExit { get; set; } = default!;
+
+    private bool verticalAxeHidden = true;
+    private bool horizontalAxeHidden = true;
 
     protected override void OnInitialized()
     {
@@ -38,24 +47,49 @@
             await Dialog.CloseAsync(Content);
     }
 
-    private void MoveExit(char direction)
-    {
-        if (Content.Exits == null || Content.Exits.Count == 0 || selectedExitId == 0) 
-            return;
+    private void SelectedExit_onchange(ChangeEventArgs value){
 
-        selectedExit = Content.Exits.ElementAt(selectedExitId).Value;
+        selectedExitKey = (Direction)Enum.Parse(typeof(Direction), value.Value!.ToString()!);
+
+        var myExit = Content.Exits[(Direction)selectedExitKey!];
+     
+        switch(myExit.Direction){
+            case Direction.North:
+            case Direction.South:
+                    verticalAxeHidden = true;
+                    horizontalAxeHidden = false;
+                    break;
+            case Direction.East:
+            case Direction.West:
+                    verticalAxeHidden = false;
+                    horizontalAxeHidden = true;
+                    break;
+        }
+    }
+
+    private void MoveExit(char moveTo)
+    {
+        @* if (Content.Exits == null || Content.Exits.Count == 0 || selectedExitId == 0) 
+            return; *@
+
+        //selectedExit = Content.Exits.ElementAt(selectedExitId).Value;
+        selectedExit = Content.Exits[(Direction)selectedExitKey!];
         
-        switch (direction)
+        switch (moveTo)
         {
-            case 'A':
+            case 'L':
+            case 'D':
                 selectedExit.PositionOnWall = selectedExit.PositionOnWall--;
                 break;
-            case 'B':
+            case 'R':
+            case 'U':
                 selectedExit.PositionOnWall = selectedExit.PositionOnWall++;
                 break;
             default:
                 return; // Invalid direction
         }
+
+        Dialog.TogglePrimaryActionButton(true);
     }
 
 }
